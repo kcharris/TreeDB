@@ -3,7 +3,6 @@
 
 pub mod db;
 use crate::db::db_init;
-// use sea_orm::{Database, DbErr};
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -16,7 +15,6 @@ fn main() {
         .invoke_handler(tauri::generate_handler![greet])
         .setup(|_app|{
             db_init::init();
-            //let db = Database::connect(db_init::get_db_path);
             Ok(())
             }
         )

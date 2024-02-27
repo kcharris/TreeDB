@@ -2,12 +2,18 @@
 
 use std::fs;
 use std::path::Path;
+use sea_orm::{Database, DbErr};
 
 // Check if a database file exists, and create one if it does not.
 pub fn init() {
     if !db_file_exists() {
         create_db_file();
     }
+}
+
+// establish connection to Sqlite
+fn establish_sql_connection(){
+    let db = Database::connect(get_db_path().clone());
 }
 
 // Create the database file.
