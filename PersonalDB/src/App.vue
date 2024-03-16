@@ -2,6 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import Greet from "./components/Greet.vue";
+import MainList from "./components/MainList.vue";
 </script>
 
 <template>
@@ -15,6 +16,7 @@ import Greet from "./components/Greet.vue";
       <v-list-item link title="List Item 2"></v-list-item>
       <v-list-item link title="List Item 3"></v-list-item>
     </v-navigation-drawer>
+    <MainList />
     <div class="container">
       <h1>Welcome to Tauri!</h1>
 
