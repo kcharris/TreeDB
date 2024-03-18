@@ -2,6 +2,7 @@
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
 import Greet from "./components/Greet.vue";
+import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 </script>
 
@@ -9,15 +10,9 @@ import MainList from "./components/MainList.vue";
   <v-app>
   <v-app-bar title="Application bar"></v-app-bar>
   <v-main>
-    <v-navigation-drawer permanent width="200" location="left">
-      <v-list-item title="My Application" subtitle="Vuetify"></v-list-item>
-      <v-divider></v-divider>
-      <v-list-item link title="List Item 1"></v-list-item>
-      <v-list-item link title="List Item 2"></v-list-item>
-      <v-list-item link title="List Item 3"></v-list-item>
-    </v-navigation-drawer>
+    <LeftNavBar/>
     <MainList />
-    <div class="container">
+    <!-- <div class="container">
       <h1>Welcome to Tauri!</h1>
 
       <div class="row">
@@ -50,7 +45,7 @@ import MainList from "./components/MainList.vue";
         </p>
 
         <Greet />
-    </div>
+    </div> -->
     </v-main>
   </v-app>
   
