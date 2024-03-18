@@ -2,7 +2,7 @@
     <v-data-table-virtual
         :headers="headers"
         :items="virtualBoats"
-        height="400"
+        height="60dvh"
         item-value="name"
     ></v-data-table-virtual>
 </template>
