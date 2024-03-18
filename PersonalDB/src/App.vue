@@ -14,7 +14,10 @@ import MainList from "./components/MainList.vue";
   <v-main>
     <LeftNavBar/>
     <FullDetails/>
-    <CreateNewItemPopup/>
+    <v-toolbar>
+      <v-spacer/>
+      <CreateNewItemPopup/>
+    </v-toolbar>
     <MainList />
     <!-- <div class="container">
       <h1>Welcome to Tauri!</h1>
