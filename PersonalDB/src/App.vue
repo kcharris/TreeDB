@@ -1,7 +1,9 @@
 <script setup lang="ts">
 // This starter template is using Vue 3 <script setup> SFCs
 // Check out https://vuejs.org/api/sfc-script-setup.html#script-setup
-import Greet from "./components/Greet.vue";
+// import Greet from "./components/Greet.vue";
+import CreateNewItemPopup from "./components/CreateNewItemPopup.vue";
+import FullDetails from "./components/FullDetails.vue"
 import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 </script>
@@ -11,6 +13,8 @@ import MainList from "./components/MainList.vue";
   <v-app-bar title="Application bar"></v-app-bar>
   <v-main>
     <LeftNavBar/>
+    <FullDetails/>
+    <CreateNewItemPopup/>
     <MainList />
     <!-- <div class="container">
       <h1>Welcome to Tauri!</h1>
