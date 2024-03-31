@@ -2,6 +2,8 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 pub mod db;
+use db::db_init::establish_sql_connection;
+
 use crate::db::db_init;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -15,6 +17,7 @@ fn main() {
         .invoke_handler(tauri::generate_handler![greet])
         .setup(|_app|{
             db_init::init();
+            establish_sql_connection();
             Ok(())
             }
         )
