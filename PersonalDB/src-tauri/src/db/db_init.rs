@@ -14,6 +14,7 @@ pub fn init() {
 // establish connection to Sqlite
 pub async fn establish_sql_connection() -> Result<(), DbErr>{
     let db = Database::connect(get_db_path().clone()).await?;
+
     Ok(())
 }
 
