@@ -3,10 +3,11 @@
 
 pub mod db;
 pub mod migrator;
+pub mod entities;
+
 use db::db_init::establish_sql_connection;
 use futures::executor::block_on;
 use sea_orm::{Database, DbErr};
-
 use crate::db::db_init;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command

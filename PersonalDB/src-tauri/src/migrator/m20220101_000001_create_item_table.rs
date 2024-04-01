@@ -33,6 +33,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Item::Parent).integer())
                     .col(ColumnDef::new(Item::Name).text().not_null())
                     .col(ColumnDef::new(Item::Availability).text())
+                    .col(ColumnDef::new(Item::Priority).integer())
 
                     .col(ColumnDef::new(Item::Completed).boolean())
                     .col(ColumnDef::new(Item::Resource).text())
@@ -55,9 +56,10 @@ impl MigrationTrait for Migration {
 }
 
 #[derive(DeriveIden)]
-enum Item {
+pub enum Item {
     Table,
     Id,
+    Priority,
 
     Parent,
     Name,

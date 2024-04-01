@@ -1,7 +1,7 @@
 use sea_orm_migration::prelude::*;
 
 pub struct Migrator;
-mod m20220101_000001_create_item_table;
+pub mod m20220101_000001_create_item_table;
 
 #[async_trait::async_trait]
 impl MigratorTrait for Migrator {
