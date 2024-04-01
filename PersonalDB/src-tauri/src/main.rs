@@ -4,6 +4,8 @@
 pub mod db;
 pub mod migrator;
 use db::db_init::establish_sql_connection;
+use futures::executor::block_on;
+use sea_orm::{Database, DbErr};
 
 use crate::db::db_init;
 
@@ -13,12 +15,20 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+async fn run()  -> Result<(), DbErr> {
+    establish_sql_connection().await?;
+    Ok(())
+}
+
 fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![greet])
         .setup(|_app|{
             db_init::init();
-            establish_sql_connection();
+            if let Err(err) = block_on(run()) {
+                panic!("{}", err);
+            }
+            
             Ok(())
             }
         )

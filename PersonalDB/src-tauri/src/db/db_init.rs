@@ -16,7 +16,7 @@ pub fn init() {
 
 // establish connection to Sqlite
 pub async fn establish_sql_connection() -> Result<(), DbErr>{
-    let db = Database::connect(get_db_path().clone()).await?;
+    let db = Database::connect("sqlite://".to_string() + &get_db_path().clone()).await?;
     let schema_manager = SchemaManager::new(&db);
     migrator::Migrator::refresh(&db).await?;
     assert!(schema_manager.has_table("item").await?);
