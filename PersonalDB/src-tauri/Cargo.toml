@@ -21,6 +21,7 @@ sea-orm-migration = "^0.12.0"
 dirs = "5.0"
 time = "0.3.34"
 futures = "0.3.28"
+thiserror = "1.0.58"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

@@ -17,13 +17,15 @@
             { title: 'Est Time', align: 'end', key: 'estTime' },
             { title: 'Link', align: 'end', key: 'link' },
             { title: 'Edit', align: 'end', key: 'edit' },
-        ],
-        items: [],
+            { titel: "Del", align: "end", key: "del"},
+        ]
         }
     },
 
     computed: {
         virtualItems () {
+            // here use rust to get a vec of items
+            
         return [0] // a json list containing the information above, revieced from a call to the database using rust
         // and stored and sent through a struct.
         },
