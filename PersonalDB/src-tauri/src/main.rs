@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 pub mod db;
+pub mod migrator;
 use db::db_init::establish_sql_connection;
 
 use crate::db::db_init;

@@ -4,6 +4,9 @@ use std::fs;
 use std::path::Path;
 use sea_orm::{Database, DbErr};
 
+use crate::migrator;
+use sea_orm_migration::prelude::*;
+
 // Check if a database file exists, and create one if it does not.
 pub fn init() {
     if !db_file_exists() {
@@ -14,7 +17,9 @@ pub fn init() {
 // establish connection to Sqlite
 pub async fn establish_sql_connection() -> Result<(), DbErr>{
     let db = Database::connect(get_db_path().clone()).await?;
-
+    let schema_manager = SchemaManager::new(&db);
+    migrator::Migrator::refresh(&db).await?;
+    assert!(schema_manager.has_table("item").await?);
     Ok(())
 }
 
