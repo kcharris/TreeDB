@@ -14,6 +14,7 @@ use sea_orm::ActiveModelTrait;
 use sea_orm::EntityTrait;
 use sea_orm::QueryFilter;
 use crate::db::db_init::*;
+use serde_json::json;
 
 #[derive(Debug, thiserror::Error)]
 pub enum Error {
@@ -53,8 +54,9 @@ pub async fn test_insert() -> Result<(), DbErr>{
 }
 
 #[tauri::command]
-pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<Vec<serde_json::Value>, Error>{
+pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<String, Error>{
     let db = get_db_conn().await?;
-    let items: Vec<serde_json::Value> = item::Entity::find().filter(item::Column::Parent.eq(id)).into_json().all(&db).await?;
-    Ok(items)
+    let items: serde_json::Value = item::Entity::find_by_id(1).into_json().one(&db).await?.unwrap();
+    let res = items;
+    Ok(res.to_string())
 }

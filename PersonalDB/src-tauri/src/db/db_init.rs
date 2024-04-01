@@ -4,6 +4,7 @@ use std::path::Path;
 use sea_orm::{Database, DbErr};
 
 use crate::migrator;
+use crate::db::db_util::*;
 use crate::entities::*;
 use sea_orm_migration::prelude::*;
 use sea_orm::ActiveValue;
@@ -24,6 +25,7 @@ pub async fn run_migrator() -> Result<(), DbErr>{
     let schema_manager = SchemaManager::new(&db);
     migrator::Migrator::refresh(&db).await?;
     assert!(schema_manager.has_table("item").await?);
+    test_insert().await?;
     Ok(())
 }
 
