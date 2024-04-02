@@ -11,7 +11,7 @@ pub struct Model {
     pub availability: Option<TimeDate>,
     pub completed: Option<bool>,
     pub resource: Option<String>,
-    pub est_time: Option<TimeTime>,
+    pub est_time: Option<String>,
     pub start_time: Option<TimeDate>,
     pub end_time: Option<TimeDate>,
     pub description: Option<String>,
