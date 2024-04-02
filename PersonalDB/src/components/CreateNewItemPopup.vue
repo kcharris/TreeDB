@@ -1,9 +1,15 @@
-<script>
-  export default {
-    data: () => ({
-      dialog: false,
-    }),
-  }
+<script setup>
+import {ref} from "vue";
+    const dialog = ref(false)
+    // const curr_priority = ref(100)
+    const rules = ref({
+      required: value => {
+        if (!value.trim()) return true 
+        if (!isNaN(parseInt(value, 10)) && value >= 0 && value <= 100) return true
+        else return `Must be an integer within 0-100`
+      }
+    })
+  
 </script>
 <template>
     <div class="pa-4 text-center">
@@ -33,7 +39,7 @@
                 sm="6"
               >
                 <v-text-field
-                  label="First name*"
+                  label="Name*"
                   required
                 ></v-text-field>
               </v-col>
@@ -44,8 +50,10 @@
                 sm="6"
               >
                 <v-text-field
-                  hint="example of helper text only on focus"
-                  label="Middle name"
+                  hint="Will default to 100 if left empty"
+                  persistent-hint
+                  :rules="[rules.required]"
+                  label="Priority*"
                 ></v-text-field>
               </v-col>
   
@@ -55,9 +63,7 @@
                 sm="6"
               >
                 <v-text-field
-                  hint="example of persistent helper text"
                   label="Last name*"
-                  persistent-hint
                   required
                 ></v-text-field>
               </v-col>
