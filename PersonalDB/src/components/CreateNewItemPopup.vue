@@ -1,15 +1,31 @@
 <script setup>
-import {ref} from "vue";
+import {ref, reactive} from "vue";
 import CalendarField from "./CalendarField.vue";
+    // defineEmits(["sendValues"])
     const dialog = ref(false)
     // const curr_priority = ref(100)
+    const values = reactive({
+      name: "",
+      priority: "",
+      estTime: "",
+      resource: "",
+      startDate: "",
+      endDate: "",
+      availability: "",
+      completed: "",
+      description: "",
+    })
     const rules = ref({
       required: value => {
-        if (!value.trim()) return true 
         if (!isNaN(parseInt(value, 10)) && value >= 0 && value <= 100) return true
         else return `Must be an integer within 0-100`
       }
     })
+
+    function onSubmit(){
+      dialog=false
+      // $emit("sendValues", values)
+    }
   
 </script>
 <template>
@@ -41,6 +57,7 @@ import CalendarField from "./CalendarField.vue";
               >
                 <v-text-field
                   label="Name*"
+                  v-model="values.name"
                   required
                 ></v-text-field>
               </v-col>
@@ -87,7 +104,8 @@ import CalendarField from "./CalendarField.vue";
                 md="4"
                 sm="6"
               >
-              <CalendarField name="Start Date"/>
+              <!-- @sendDate="(v) => values.startDate = v" -->
+              <CalendarField name="Start Date" />
               </v-col>
   
               <v-col
@@ -149,7 +167,7 @@ import CalendarField from "./CalendarField.vue";
               text="Add Another"
               prepend-icon="mdi-plus-circle"
               variant="plain"
-              @click="dialog = false"
+              @click="onSubmit"
             ></v-btn>
 
           </v-card-actions>
