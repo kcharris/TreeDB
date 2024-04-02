@@ -2,12 +2,16 @@
     <v-data-table-virtual
         :headers="headers"
         :items="virtualItems"
-        height="60dvh"
+        height="55dvh"
         item-value="name"
-    ></v-data-table-virtual>
-    <v-btn @click="get_list">Press me</v-btn>
-    <v-btn @click="do_thing">Press me</v-btn>
-    <p>{{ res }} and more</p>
+    >
+        <template v-slot:item.edit="{item}">
+            <v-icon @click="deleteItem(item)">mdi-pencil</v-icon>
+        </template>
+        <template v-slot:item.del="{item}">
+            <v-icon @click="editItem(item)">mdi-delete</v-icon>
+        </template>
+    </v-data-table-virtual>
 </template>
 
 <script setup>
@@ -16,14 +20,16 @@ import { ref, reactive, computed } from "vue";
 import { VDataTableVirtual, VBtn } from "vuetify/components";
 
     const id = ref(1);
-    const res = ref("")
 
+    function deleteItem(item){
+        return 0
+    }
+    function editItem(item){
+        return 0
+    }
     async function get_list(){
             res.value = await invoke("find_items_by_parent_id", {id: id.value})
         }
-    function do_thing(){
-        res.value += "a"
-    } 
     const virtualItems = computed(()=>{
             let l = []
             const item = {
@@ -32,10 +38,9 @@ import { VDataTableVirtual, VBtn } from "vuetify/components";
                     estTime: Date(25),
                     link: "https://www.google.com/",
                     edit: "e but",
-                    del: "del but"
+                    del: "del but",
                 }
-            for (let i =0; i< 20; i++){
-                
+            for (let i =0; i< 20; i++){               
                     l.push({...item})
                 }
             return l
@@ -49,7 +54,7 @@ import { VDataTableVirtual, VBtn } from "vuetify/components";
             { title: 'Est Time', align: 'end', key: 'estTime' },
             { title: 'Link', align: 'end', key: 'link' },
             { title: 'Edit', align: 'end', key: 'edit' },
-            { titel: "Del", align: "end", key: "del"},
+            { title: "Del", align: "end", key: "del"},
     ])
 
 // export default {
