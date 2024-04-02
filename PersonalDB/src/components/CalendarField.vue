@@ -1,7 +1,7 @@
 <script setup>
-import {ref, reactive, computed, defineModel} from "vue";
+import {ref, reactive, computed, defineModel, defineEmits} from "vue";
 import { useDate } from 'vuetify'
-
+    const emit = defineEmits(["sendDate"])
     const uDate = useDate()
     const calDate = ref(new Date())
     
@@ -10,10 +10,9 @@ import { useDate } from 'vuetify'
     })
     const dialog = ref(false)
     
-    // defineEmits(["sendDate"])
     function emitDate(){
-        dialog = false
-        // $emit("sendDate", date)
+        emit("sendDate", getTextDate)
+        dialog.value = false
     }
     const getTextDate = computed(() =>{
         return uDate.format(calDate.value, "keyboardDate")
@@ -37,14 +36,15 @@ import { useDate } from 'vuetify'
             >
             <v-card>
                 <v-date-picker v-model="calDate"></v-date-picker>
-            </v-card>
-            <template v-slot:actions>
+                <template v-slot:actions>
                 <v-btn
                 class="ms-auto"
                 text="Ok"
                 @click="emitDate"
                 ></v-btn>
-            </template>   
+            </template>  
+            </v-card>
+             
         </v-dialog>
     </div>
 </template>

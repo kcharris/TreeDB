@@ -6,6 +6,11 @@ import CreateNewItemPopup from "./components/CreateNewItemPopup.vue";
 import FullDetails from "./components/FullDetails.vue"
 import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
+import {ref} from "vue"
+
+    const values = ref({
+      v: {}
+    })
 </script>
 
 <template>
@@ -16,7 +21,8 @@ import MainList from "./components/MainList.vue";
     <FullDetails/>
     <v-toolbar>
       <v-spacer/>
-      <CreateNewItemPopup/>
+      <CreateNewItemPopup @send-values="(v:object) => values.v = v"/>
+        <span>{{ values }}</span>
     </v-toolbar>
     <MainList />
     <!-- <div class="container">

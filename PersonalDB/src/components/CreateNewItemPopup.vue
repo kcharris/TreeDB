@@ -1,10 +1,10 @@
 <script setup>
-import {ref, reactive} from "vue";
+import {ref, reactive, defineEmits} from "vue";
 import CalendarField from "./CalendarField.vue";
-    // defineEmits(["sendValues"])
+    const emit = defineEmits(["sendValues"])
     const dialog = ref(false)
     // const curr_priority = ref(100)
-    const values = reactive({
+    const values = ref({
       name: "",
       priority: "",
       estTime: "",
@@ -23,8 +23,8 @@ import CalendarField from "./CalendarField.vue";
     })
 
     function onSubmit(){
-      dialog=false
-      // $emit("sendValues", values)
+      emit("sendValues", values)
+      dialog.value=false
     }
   
 </script>
@@ -104,15 +104,14 @@ import CalendarField from "./CalendarField.vue";
                 md="4"
                 sm="6"
               >
-              <!-- @sendDate="(v) => values.startDate = v" -->
-              <CalendarField name="Start Date" />
+              <CalendarField name="Start Date" @send-date="(v) => values.startDate = v" />
               </v-col>
   
               <v-col
                 cols="12"
                 sm="4"
               >
-                <CalendarField name="End Date"/>
+                <CalendarField name="End Date" @send-date="(v) => values.endDate = v"/>
               </v-col>
 
               <v-col
@@ -120,7 +119,7 @@ import CalendarField from "./CalendarField.vue";
                 md="4"
                 sm="6"
               >
-              <CalendarField name="Availability"/>
+              <CalendarField name="Availability" @send-date="(v) => values.availability = v"/>
               </v-col>
 
               <v-col
@@ -137,6 +136,7 @@ import CalendarField from "./CalendarField.vue";
                 sm="12"
               >
                 <v-textarea
+                  v-model="values.description"
                   label="Description"
                 ></v-textarea>
               </v-col>
@@ -152,7 +152,7 @@ import CalendarField from "./CalendarField.vue";
               color="primary"
               text="Save"
               variant="tonal"
-              @click="dialog = false"
+              @click="onSubmit"
             ></v-btn>
             
             <v-spacer></v-spacer>
@@ -160,7 +160,7 @@ import CalendarField from "./CalendarField.vue";
             <v-btn
               text="Discard"
               variant="plain"
-              @click="dialog = false"
+              @click="onSubmit"
             ></v-btn>
             
             <v-btn
