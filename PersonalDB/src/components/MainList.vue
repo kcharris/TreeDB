@@ -37,6 +37,8 @@ import { VDataTableVirtual, VBtn } from "vuetify/components";
                     priority: 0,
                     estTime: Date.now(),
                     link: "https://www.google.com/",
+                    availability: Date(0),
+                    completed: "No",
                     edit: "e but",
                     del: "del but",
                 }
@@ -56,6 +58,8 @@ import { VDataTableVirtual, VBtn } from "vuetify/components";
             { title: 'Priority', align: 'end', key: 'priority' },
             { title: 'Est Time', align: 'end', key: 'estTime' },
             { title: 'Link', align: 'end', key: 'link' },
+            { title: 'Available', align: 'end', key: 'availability' },
+            { title: 'Completed', align: 'end', key:'completed'},
             { title: 'Edit', align: 'end', key: 'edit' },
             { title: "Del", align: "end", key: "del"},
     ])
