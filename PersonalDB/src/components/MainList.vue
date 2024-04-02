@@ -2,7 +2,7 @@
     <v-data-table-virtual
         :headers="headers"
         :items="virtualItems"
-        height="55dvh"
+        height="100dvh"
         item-value="name"
     >
         <template v-slot:item.edit="{item}">
@@ -35,13 +35,16 @@ import { VDataTableVirtual, VBtn } from "vuetify/components";
             const item = {
                     name: "name",
                     priority: 0,
-                    estTime: Date(25),
+                    estTime: Date.now(),
                     link: "https://www.google.com/",
                     edit: "e but",
                     del: "del but",
                 }
-            for (let i =0; i< 20; i++){               
-                    l.push({...item})
+            for (let i =0; i < 20; i++){
+                    let item_copy = {...item}
+                    item_copy.priority = i
+                    item_copy.name = `${item_copy.name}#${i}`
+                    l.push(item_copy)
                 }
             return l
         }
