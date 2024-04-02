@@ -1,5 +1,6 @@
 <script setup>
 import {ref} from "vue";
+import CalendarField from "./CalendarField.vue";
     const dialog = ref(false)
     // const curr_priority = ref(100)
     const rules = ref({
@@ -50,10 +51,10 @@ import {ref} from "vue";
                 sm="6"
               >
                 <v-text-field
+                  label="Priority"
                   hint="Will default to 100 if left empty"
                   persistent-hint
-                  :rules="[rules.required]"
-                  label="Priority*"
+                  :rules="[rules.required]"                 
                 ></v-text-field>
               </v-col>
   
@@ -63,8 +64,9 @@ import {ref} from "vue";
                 sm="6"
               >
                 <v-text-field
-                  label="Last name*"
-                  required
+                  hint="Estimated time the item will take"
+                  label="Est Time"
+                  suffix="hrs"
                 ></v-text-field>
               </v-col>
   
@@ -74,56 +76,51 @@ import {ref} from "vue";
                 sm="6"
               >
                 <v-text-field
-                  label="Email*"
+                  hint="Will try to convert to link"
+                  label="Resource"
                   required
                 ></v-text-field>
               </v-col>
-  
+
               <v-col
                 cols="12"
                 md="4"
                 sm="6"
               >
-                <v-text-field
-                  label="Password*"
-                  type="password"
-                  required
-                ></v-text-field>
+              <CalendarField name="Start Date"/>
               </v-col>
   
+              <v-col
+                cols="12"
+                sm="4"
+              >
+                <CalendarField name="End Date"/>
+              </v-col>
+
               <v-col
                 cols="12"
                 md="4"
                 sm="6"
               >
-                <v-text-field
-                  label="Confirm Password*"
-                  type="password"
-                  required
-                ></v-text-field>
+              <CalendarField name="Availability"/>
+              </v-col>
+
+              <v-col
+                cols="12"
+                sm="4"
+              >
+                <v-checkbox-btn
+                  label="Completed?"
+                ></v-checkbox-btn>
               </v-col>
   
               <v-col
                 cols="12"
-                sm="6"
+                sm="12"
               >
-                <v-select
-                  :items="['0-17', '18-29', '30-54', '54+']"
-                  label="Age*"
-                  required
-                ></v-select>
-              </v-col>
-  
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-autocomplete
-                  :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                  label="Interests"
-                  auto-select-first
-                  multiple
-                ></v-autocomplete>
+                <v-textarea
+                  label="Description"
+                ></v-textarea>
               </v-col>
             </v-row>
   
