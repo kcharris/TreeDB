@@ -1,16 +1,23 @@
 <script setup>
-import {ref, reactive} from "vue";
+import {ref, reactive, computed, defineModel} from "vue";
+import { useDate } from 'vuetify'
+
+    const uDate = useDate()
+    const calDate = ref(new Date())
+    
     defineProps({
         name: String
     })
     const dialog = ref(false)
-    const date = ref(new Date());
     
     // defineEmits(["sendDate"])
     function emitDate(){
         dialog = false
         // $emit("sendDate", date)
     }
+    const getTextDate = computed(() =>{
+        return uDate.format(calDate.value, "keyboardDate")
+    })
     
   
 </script>
@@ -18,8 +25,8 @@ import {ref, reactive} from "vue";
     <div>
         <v-text-field
         :label="name"
-        v-model="date"
-        hint="Use YYYY-MM-DD format"
+        :model-value="getTextDate"
+        hint="Use MM/DD/YYYY format"
         prepend-inner-icon="mdi-calendar"
         @click:prepend-inner="dialog = true"
         >
@@ -29,7 +36,7 @@ import {ref, reactive} from "vue";
             max-width="500"
             >
             <v-card>
-                <v-date-picker v-model="date"></v-date-picker>
+                <v-date-picker v-model="calDate"></v-date-picker>
             </v-card>
             <template v-slot:actions>
                 <v-btn
