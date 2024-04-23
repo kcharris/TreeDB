@@ -4,15 +4,13 @@ use std::fs;
 use std::path::Path;
 use thiserror::Error;
 use sea_orm::{ColumnTrait, DatabaseConnection};
-use sea_orm::{Database, DbErr};
+use sea_orm::{Database, DbErr, InsertResult};
 
 use crate::migrator;
 use crate::entities::*;
 use sea_orm_migration::prelude::*;
-use sea_orm::ActiveValue;
-use sea_orm::ActiveModelTrait;
-use sea_orm::EntityTrait;
-use sea_orm::QueryFilter;
+// use sea_orm_migration::prelude::ColumnSpec::Default;
+use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter} ;
 use crate::db::db_init::*;
 use serde_json::json;
 
@@ -59,4 +57,16 @@ pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<String, Error>{
     let items: serde_json::Value = item::Entity::find_by_id(1).into_json().one(&db).await?.unwrap();
     let res = items;
     Ok(res.to_string())
+}
+
+#[tauri::command]
+pub async fn add_item(payload: String) -> Result<Option<i32>, Error>{
+  // the payload has to include the parent objects integer or nothing. I guess it's not a problem now but I need to ability to add the 
+    let db = get_db_conn().await?;
+    let json_item = serde_json::from_str(&payload).unwrap();
+    let mut item = item::ActiveModel{..Default::default()};
+    item.set_from_json(json_item)?;
+
+    let res = item::Entity::insert(item).exec(&db).await?;
+    Ok(Some(res.last_insert_id))
 }
