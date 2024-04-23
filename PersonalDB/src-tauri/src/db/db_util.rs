@@ -37,8 +37,12 @@ async fn get_db_conn() -> Result<DatabaseConnection, DbErr> {
     return Ok(db);
 }
 
-pub async fn test_insert() -> Result<(), DbErr>{
+pub async fn test_insert() -> Result<(), Error>{
     let db = get_db_conn().await?;
+    add_item(r#"{"name": "cat"}"#.to_owned()).await?;
+    add_item(r#"{"name": "dog"}"#.to_owned()).await?;
+    add_item(r#"{"name": "butt"}"#.to_owned()).await?;
+    add_item(r#"{"name": ""}"#.to_owned()).await?;
     let item1 = item::ActiveModel {
         name: ActiveValue::Set("first item".to_owned()),
         priority: ActiveValue::Set(Some(88)),
@@ -47,7 +51,7 @@ pub async fn test_insert() -> Result<(), DbErr>{
     // let item1 = item1.insert(&db).await?;
     let res = item::Entity::insert(item1).exec(&db).await?;
     let items: Vec<item::Model> = item::Entity::find().all(&db).await?;
-    assert_eq!(items.len(), 1);
+    assert_eq!(items.len(), 5);
     Ok(())
 }
 

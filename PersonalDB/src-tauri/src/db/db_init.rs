@@ -20,7 +20,7 @@ pub fn init() {
 }
 
 // test connection to Sqlite
-pub async fn run_migrator() -> Result<(), DbErr>{
+pub async fn run_migrator() -> Result<(), Error>{
     let db = Database::connect("sqlite://".to_string() + &get_db_path().clone()).await?;
     let schema_manager = SchemaManager::new(&db);
     migrator::Migrator::refresh(&db).await?;
