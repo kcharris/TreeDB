@@ -45,7 +45,7 @@ import { onMounted } from "vue";
       end_date: "",
       availability: "",
       completed: false,
-      description: "",
+      description: "This is an example of the fully available items details. This Cleaning item serves as a categorical item that will contain other items.",
     }
     const data_str = ref("")
     const data_list = computed(() => {return data_str.value == "" ? [] : JSON.parse(data_str.value)})
@@ -94,7 +94,7 @@ import { onMounted } from "vue";
 
   <v-main>
     <LeftNavBar/>
-    <FullDetails/>
+    <FullDetails :parent = "curr_parent"/>
     <v-toolbar>
       <v-btn class="bg-primary mr-2" :onclick="navHome">Home</v-btn>
       <v-btn class="bg-primary mr-10" :onclick="navBack" variant="text">Back</v-btn >
