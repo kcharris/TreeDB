@@ -41,7 +41,7 @@ pub async fn test_insert() -> Result<(), Error>{
     let db = get_db_conn().await?;
     add_item(r#"{"name": "cat"}"#.to_owned()).await?;
     add_item(r#"{"name": "dog"}"#.to_owned()).await?;
-    add_item(r#"{"name": "butt"}"#.to_owned()).await?;
+    add_item(r#"{"name": "bird"}"#.to_owned()).await?;
     add_item(r#"{"name": ""}"#.to_owned()).await?;
     let item1 = item::ActiveModel {
         name: ActiveValue::Set("first item".to_owned()),
