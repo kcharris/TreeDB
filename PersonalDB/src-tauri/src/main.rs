@@ -13,8 +13,9 @@ use crate::db::db_util::*;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
-fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+fn greet(msg: &str) -> String {
+    println!("Hello from {}", msg);
+    "Greet".to_owned()
 }
 
 async fn run()  -> Result<(), Error> {
@@ -24,7 +25,7 @@ async fn run()  -> Result<(), Error> {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![find_items_by_parent_id, add_item])
+        .invoke_handler(tauri::generate_handler![find_items_by_parent_id, add_item, greet])
         .setup(|_app|{
             db_init::init();
             if let Err(err) = block_on(run()) {

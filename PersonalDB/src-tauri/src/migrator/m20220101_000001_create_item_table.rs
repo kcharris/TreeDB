@@ -37,10 +37,10 @@ impl MigrationTrait for Migration {
 
                     .col(ColumnDef::new(Item::Completed).boolean())
                     .col(ColumnDef::new(Item::Resource).text())
-                    .col(ColumnDef::new(Item::EstTime).text())
+                    .col(ColumnDef::new(Item::EstTime).integer())
 
-                    .col(ColumnDef::new(Item::StartTime).text())
-                    .col(ColumnDef::new(Item::EndTime).text())
+                    .col(ColumnDef::new(Item::StartDate).text())
+                    .col(ColumnDef::new(Item::EndDate).text())
                     .col(ColumnDef::new(Item::Description).text())
                     .to_owned(),
             )
@@ -67,9 +67,12 @@ pub enum Item {
 
     Completed,
     Resource,
+    #[sea_orm(iden = "est_time")]
     EstTime,
 
-    StartTime,
-    EndTime,
+    #[sea_orm(iden = "start_date")]
+    StartDate,
+    #[sea_orm(iden = "end_date")]
+    EndDate,
     Description    
 }

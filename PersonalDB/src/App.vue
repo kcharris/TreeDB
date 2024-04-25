@@ -7,14 +7,18 @@ import FullDetails from "./components/FullDetails.vue"
 import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 import {ref} from "vue"
+import { invoke } from "@tauri-apps/api/tauri";
 
-    const values = ref({
-      v: {}
-    })
-    function addItem(itemObject:object){
-      values.value.v = itemObject;
-      // send to rust.
 
+    const currParent = ref(NaN)
+    // const values = ref({
+    //   v: {}
+    // })
+    async function addItem(itemObject: any){
+      itemObject.parent = currParent.value
+      let strObject = JSON.stringify(itemObject)
+      // currParent.value = 9
+      await invoke("add_item", {payload: strObject})
     }
 </script>
 
@@ -25,11 +29,12 @@ import {ref} from "vue"
     <LeftNavBar/>
     <FullDetails/>
     <v-toolbar>
+      <v-label>{{ currParent }}</v-label>
       <v-spacer/>
       <CreateNewItemPopup @send-values="addItem"/>
         <!-- <span>{{ values }}</span> -->
     </v-toolbar>
-    <MainList />
+    <MainList />h
     </v-main>
   </v-app>
   

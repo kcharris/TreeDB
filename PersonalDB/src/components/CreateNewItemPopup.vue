@@ -1,18 +1,24 @@
 <script setup>
 import {ref, reactive} from "vue";
 import CalendarField from "./CalendarField.vue";
+import { computed } from "vue";
+
     const emit = defineEmits(["sendValues"])
     const dialog = ref(false)
-    // const curr_priority = ref(100)
+    const field = ref({
+      priority: "",
+      est_time: "",
+    })
     const values = ref({
       name: "",
-      priority: "",
-      estTime: "",
+      parent: NaN,
+      priority: computed(()=> {return field.value.priority == "" ? NaN : parseInt(field.value.priority)}),
+      est_time: computed(()=> {return field.value.est_time == "" ? NaN : parseInt(field.value.est_time)}),
       resource: "",
-      startDate: "",
-      endDate: "",
+      start_date: "",
+      end_date: "",
       availability: "",
-      completed: "",
+      completed: false,
       description: "",
     })
     const rules = ref({
@@ -23,7 +29,7 @@ import CalendarField from "./CalendarField.vue";
     })
 
     function onSubmit(){
-      emit("sendValues", values)
+      emit("sendValues", values.value)
       dialog.value=false
     }
   
@@ -69,6 +75,7 @@ import CalendarField from "./CalendarField.vue";
               >
                 <v-text-field
                   label="Priority"
+                  v-model="field.priority"
                   hint="Will default to 100 if left empty"
                   persistent-hint
                   :rules="[rules.required]"                 
@@ -81,9 +88,11 @@ import CalendarField from "./CalendarField.vue";
                 sm="6"
               >
                 <v-text-field
+                  v-model="field.est_time"
                   hint="Estimated time the item will take"
                   label="Est Time"
                   suffix="hrs"
+                  :rules="[rules.required]" 
                 ></v-text-field>
               </v-col>
   
@@ -93,6 +102,7 @@ import CalendarField from "./CalendarField.vue";
                 sm="6"
               >
                 <v-text-field
+                  v-model="values.resource"
                   hint="Will try to convert to link"
                   label="Resource"
                   required
@@ -104,14 +114,14 @@ import CalendarField from "./CalendarField.vue";
                 md="4"
                 sm="6"
               >
-              <CalendarField name="Start Date" @send-date="(v) => values.startDate = v" />
+              <CalendarField name="Start Date" @send-date="(v) => values.start_date = v" />
               </v-col>
   
               <v-col
                 cols="12"
                 sm="4"
               >
-                <CalendarField name="End Date" @send-date="(v) => values.endDate = v"/>
+                <CalendarField name="End Date" @send-date="(v) => values.end_date = v"/>
               </v-col>
 
               <v-col
@@ -127,6 +137,7 @@ import CalendarField from "./CalendarField.vue";
                 sm="4"
               >
                 <v-checkbox-btn
+                  v-model="values.completed"
                   label="Completed?"
                 ></v-checkbox-btn>
               </v-col>
