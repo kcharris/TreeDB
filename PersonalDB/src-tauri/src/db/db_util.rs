@@ -10,7 +10,7 @@ use crate::migrator;
 use crate::entities::*;
 use sea_orm_migration::prelude::*;
 // use sea_orm_migration::prelude::ColumnSpec::Default;
-use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter} ;
+use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter, ModelTrait};
 use crate::db::db_init::*;
 use serde_json::json;
 
@@ -81,4 +81,13 @@ pub async fn add_item(payload: String) -> Result<Option<i32>, Error>{
 
     let res = item::Entity::insert(item).exec(&db).await?;
     Ok(Some(res.last_insert_id))
+}
+
+#[tauri::command]
+pub async fn delete_item(id: i32) -> Result<(), Error>{
+  // the payload has to include the parent objects integer or nothing. I guess it's not a problem now but I need to ability to add the 
+    let db = get_db_conn().await?;
+    let item1 = item::Entity::find_by_id(id).one(&db).await?.unwrap();
+    let res = item1.delete(&db).await?;
+    Ok(())
 }

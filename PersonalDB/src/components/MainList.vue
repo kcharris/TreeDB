@@ -12,7 +12,7 @@
             <v-icon @click="deleteItem(item)">mdi-pencil</v-icon>
         </template>
         <template v-slot:item.del="{item}">
-            <v-icon @click="editItem(item)">mdi-delete</v-icon>
+            <DeleteItemPopup @delete="() => deleteItem(item)"/>
         </template>
     </v-data-table-virtual>
 </template>
@@ -21,13 +21,15 @@
 import { invoke } from "@tauri-apps/api/tauri";
 import { ref, reactive, computed} from "vue";
 import { VDataTableVirtual, VBtn } from "vuetify/components";
-    const emit = defineEmits(["nextItem"])
+import DeleteItemPopup from "./DeleteItemPopup.vue";
+
+    const emit = defineEmits(["nextItem", "delete"])
     defineProps({
             dataList: Object
     })
 
     function deleteItem(item){
-        return 0
+        emit("delete", item)
     }
     function editItem(item){
         return 0

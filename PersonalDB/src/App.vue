@@ -8,7 +8,10 @@ import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 import {ref, computed} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
-
+import { onMounted } from "vue";
+    onMounted(()=> {
+      getList()
+    })
     const path_stack = ref(Array())
     const path = computed(() => {
       let res_str = ""
@@ -47,18 +50,23 @@ import { invoke } from "@tauri-apps/api/tauri";
     const data_str = ref("")
     const data_list = computed(() => {return data_str.value == "" ? [] : JSON.parse(data_str.value)})
 
-    async function addItem(itemObject: any){
-      itemObject.parent = curr_parent.value.id
-      let strObject = JSON.stringify(itemObject)
+    async function addItem(item_object: any){
+      item_object.parent = curr_parent.value.id
+      let strObject = JSON.stringify(item_object)
       // currParent.value = 9
       await invoke("add_item", {payload: strObject})
+      getList()
+    }
+    async function deleteItem(item_object:any){
+      await invoke("delete_item", {id: item_object.id})
+      getList()
     }
     async function getList(){
       data_str.value = await invoke("find_items_by_parent_id", {id: curr_parent.value.id})
     }
-    async function nextItem(new_parent: any){
-      path_stack.value.push(JSON.parse(JSON.stringify(new_parent)))
-      curr_parent.value = new_parent
+    async function nextItem(item_object: any){
+      path_stack.value.push(JSON.parse(JSON.stringify(item_object)))
+      curr_parent.value = item_object
       getList()
     }
     async function navBack(){
@@ -95,7 +103,7 @@ import { invoke } from "@tauri-apps/api/tauri";
       <CreateNewItemPopup @send-values="addItem"/>
         <!-- <span>{{ values }}</span> -->
     </v-toolbar>
-    <MainList :data-list = "data_list"  @next-item="nextItem"/>
+    <MainList :data-list = "data_list"  @next-item="nextItem" @delete="deleteItem"/>
     </v-main>
   </v-app>
   
