@@ -6,19 +6,39 @@ import CreateNewItemPopup from "./components/CreateNewItemPopup.vue";
 import FullDetails from "./components/FullDetails.vue"
 import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
-import {ref} from "vue"
+import {ref, computed} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
 
 
-    const currParent = ref(NaN)
-    // const values = ref({
-    //   v: {}
-    // })
+    const curr_parent = ref({
+      name: "",
+      id: NaN,
+      parent: NaN,
+      priority: NaN,
+      est_time: NaN,
+      resource: "",
+      start_date: "",
+      end_date: "",
+      availability: "",
+      completed: false,
+      description: "",
+    })
+    const test = ref("Starter val")
+    const data_str = ref("")
+    const data_list = computed(() => {return data_str.value == "" ? [] : JSON.parse(data_str.value)})
+
     async function addItem(itemObject: any){
-      itemObject.parent = currParent.value
+      itemObject.parent = curr_parent.value
       let strObject = JSON.stringify(itemObject)
       // currParent.value = 9
       await invoke("add_item", {payload: strObject})
+    }
+    async function getList(){
+      data_str.value = await invoke("find_items_by_parent_id", {id: curr_parent.value.id})
+    }
+    async function nextItem(new_parent: any){
+      curr_parent.value = new_parent
+      getList()
     }
 </script>
 
@@ -29,12 +49,14 @@ import { invoke } from "@tauri-apps/api/tauri";
     <LeftNavBar/>
     <FullDetails/>
     <v-toolbar>
-      <v-label>{{ currParent }}</v-label>
+      <v-label>{{ curr_parent }} </v-label>
+      <v-label>{{ test }}</v-label>
+      <v-btn :onclick="getList">"Refresh"</v-btn>
       <v-spacer/>
       <CreateNewItemPopup @send-values="addItem"/>
         <!-- <span>{{ values }}</span> -->
     </v-toolbar>
-    <MainList />h
+    <MainList :data-list = "data_list"  @next-item="nextItem"/>
     </v-main>
   </v-app>
   

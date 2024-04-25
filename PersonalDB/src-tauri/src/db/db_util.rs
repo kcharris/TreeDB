@@ -58,7 +58,15 @@ pub async fn test_insert() -> Result<(), Error>{
 #[tauri::command]
 pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<String, Error>{
     let db = get_db_conn().await?;
-    let items: serde_json::Value = item::Entity::find_by_id(1).into_json().one(&db).await?.unwrap();
+    let res: String;
+    let mut items: serde_json::Value;
+    if id.is_none() {
+      items = sea_orm::JsonValue::Array(item::Entity::find().filter(Expr::col(item::Column::Parent).is_null()).into_json().all(&db).await?);
+    }
+    else{
+      items = sea_orm::JsonValue::Array(item::Entity::find().filter(item::Column::Parent.eq(id.unwrap())).into_json().all(&db).await?);
+    }
+    
     let res = items;
     Ok(res.to_string())
 }
