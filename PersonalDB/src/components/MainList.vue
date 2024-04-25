@@ -17,7 +17,7 @@
     </v-data-table-virtual>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { invoke } from "@tauri-apps/api/tauri";
 import { ref, reactive, computed} from "vue";
 import { VDataTableVirtual, VBtn } from "vuetify/components";
