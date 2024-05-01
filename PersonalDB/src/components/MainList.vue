@@ -1,12 +1,12 @@
 <template>
     <v-data-table-virtual
-        :headers="headers"
-        :items="dataList"
+        :headers = "headers"
+        :items ="dataList"
         height="100dvh"
         item-value="name"
     >
         <template v-slot:item.name="item">
-            <v-btn @click="updateData(item.item)" width="80%">{{ item.item.name }}</v-btn>
+            <v-btn @click="updateData(item.item)" width="80%">{{ getName(item) }}</v-btn>
         </template>
         <template v-slot:item.edit="{item}">
             <v-icon @click="deleteItem(item)">mdi-pencil</v-icon>
@@ -18,27 +18,35 @@
 </template>
 
 <script setup lang="ts">
-import { invoke } from "@tauri-apps/api/tauri";
-import { ref, reactive, computed} from "vue";
+import { ref} from "vue";
 import { VDataTableVirtual, VBtn } from "vuetify/components";
 import DeleteItemPopup from "./DeleteItemPopup.vue";
 
     const emit = defineEmits(["nextItem", "delete"])
-    defineProps({
-            dataList: Object
-    })
+    defineProps<{
+            dataList: any
+    }>()
 
-    function deleteItem(item){
+    function getName(item: any): string {
+        if (typeof item.item === "object"){
+            return item.item.name
+        }
+        else{
+            return "Error"
+        }
+    }
+
+    function deleteItem(item: any){
         emit("delete", item)
     }
-    function editItem(item){
-        return 0
-    }
-    function updateData(item){
+    // function editItem(item:Object){
+    //     return 0
+    // }
+    function updateData(item: any){
         emit("nextItem", item)
     }
 
-    const headers = ref([
+    const headers: any = ref([
             { title: 'Name', align: 'start', key: 'name' },
             { title: 'Priority', align: 'end', key: 'priority' },
             { title: 'Est Time', align: 'end', key: 'est_time' },

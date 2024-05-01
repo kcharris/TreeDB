@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, reactive} from "vue";
+import {ref} from "vue";
 import CalendarField from "./CalendarField.vue";
 import { computed } from "vue";
 
@@ -22,8 +22,8 @@ import { computed } from "vue";
       description: "",
     })
     const rules = ref({
-      required: value => {
-        if (!isNaN(parseInt(value, 10)) && value >= 0 && value <= 100) return true
+      required: (value: string) => {
+        if (!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100) return true
         else return `Must be an integer within 0-100`
       }
     })

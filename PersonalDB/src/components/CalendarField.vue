@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, reactive, computed, defineModel} from "vue";
+import {ref, computed} from "vue";
 import { useDate } from 'vuetify'
 
     const emit = defineEmits(["sendDate"])

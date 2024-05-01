@@ -31,7 +31,7 @@
 
 
 <script setup lang="ts">
-import { ref, reactive, computed} from "vue";
+import { ref} from "vue";
 
     const emit = defineEmits(["delete"])
     const dialog = ref(false)
