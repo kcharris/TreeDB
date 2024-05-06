@@ -21,19 +21,6 @@ import { onMounted } from "vue";
       }
       return "HOME:/" + res_str
     })
-    const curr_parent = ref({
-      name: "",
-      id: NaN,
-      parent: NaN,
-      priority: NaN,
-      est_time: NaN,
-      resource: "",
-      start_date: "",
-      end_date: "",
-      availability: "",
-      completed: false,
-      description: "",
-    })
     const default_item = {
       name: "default",
       id: NaN,
@@ -47,6 +34,8 @@ import { onMounted } from "vue";
       completed: false,
       description: "This is an example of the fully available items details. This Cleaning item serves as a categorical item that will contain other items.",
     }
+    const curr_parent = ref(default_item)
+    
     const data_str = ref("")
     const data_list = computed(() => {return data_str.value == "" ? [] : JSON.parse(data_str.value)})
 
