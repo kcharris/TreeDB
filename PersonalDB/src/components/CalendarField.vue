@@ -20,6 +20,8 @@ import { useDate } from 'vuetify'
     }
     function openDialog(){
         dialog.value = true
+        calDate.value = new Date()
+        stringDate.value = ""
     }
     
   

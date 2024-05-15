@@ -3,6 +3,7 @@ import {ref} from "vue";
 import CalendarField from "./CalendarField.vue";
 import { computed } from "vue";
 import { SubmitEventPromise } from "vuetify";
+import { watch } from "vue";
 
     const emit = defineEmits(["sendValues"])
     const dialog = ref(false)
@@ -10,6 +11,7 @@ import { SubmitEventPromise } from "vuetify";
       priority: "",
       est_time: "",
     })
+
     const values = ref({
       name: "",
       parent: NaN,
@@ -22,6 +24,23 @@ import { SubmitEventPromise } from "vuetify";
       completed: false,
       description: "",
     })
+
+    watch(dialog, (val) => {
+      if (val == true){
+        field.value.est_time = ""
+        field.value.priority = ""
+
+        values.value.name = ""
+        values.value.parent = NaN
+        values.value.resource = ""
+        values.value.start_date = ""
+        values.value.end_date = ""
+        values.value.availability = ""
+        values.value.completed = false
+        values.value.description = ""
+      }
+    })
+
     const rules = ref({
       isSmallInt: (value: string) => {
         if (!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100 || value == "") return true
