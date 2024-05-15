@@ -1,23 +1,26 @@
 <script setup lang="ts">
-import {ref, computed} from "vue";
+import {ref, watch} from "vue";
 import { useDate } from 'vuetify'
 
     const emit = defineEmits(["sendDate"])
     const uDate = useDate()
+    const stringDate = ref("")
     const calDate = ref(new Date())
+    const dialog = ref(false)
     
     defineProps({
         name: String
     })
-    const dialog = ref(false)
+    
+    watch(calDate, () => {stringDate.value = uDate.format(calDate.value, "keyboardDate")})
     
     function emitDate(){
-        emit("sendDate", getTextDate)
+        emit("sendDate", stringDate)
         dialog.value = false
     }
-    const getTextDate = computed(() =>{
-        return uDate.format(calDate.value, "keyboardDate")
-    })
+    function openDialog(){
+        dialog.value = true
+    }
     
   
 </script>
@@ -25,10 +28,10 @@ import { useDate } from 'vuetify'
     <div>
         <v-text-field
         :label="name"
-        :model-value="getTextDate"
-        hint="Use MM/DD/YYYY format"
+        :model-value="stringDate"
         prepend-inner-icon="mdi-calendar"
-        @click:prepend-inner="dialog = true"
+        @click:prepend-inner="openDialog"
+        readonly
         >
         </v-text-field>
         <v-dialog
