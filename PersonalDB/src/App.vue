@@ -4,7 +4,7 @@
 // import Greet from "./components/Greet.vue";
 import CreateNewItemPopup from "./components/CreateNewItemPopup.vue";
 import FullDetails from "./components/FullDetails.vue"
-import LeftNavBar from "./components/LeftNavBar.vue";
+// import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 import {ref, computed} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
@@ -82,7 +82,7 @@ import { onMounted } from "vue";
   <v-app-bar title="Application bar"></v-app-bar>
 
   <v-main>
-    <LeftNavBar/>
+    <!-- <LeftNavBar/> -->
     <FullDetails :parent = "curr_parent"/>
     <v-toolbar>
       <v-btn class="bg-primary mr-2" :onclick="navHome">Home</v-btn>

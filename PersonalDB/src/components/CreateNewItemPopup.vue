@@ -2,6 +2,7 @@
 import {ref} from "vue";
 import CalendarField from "./CalendarField.vue";
 import { computed } from "vue";
+import { SubmitEventPromise } from "vuetify";
 
     const emit = defineEmits(["sendValues"])
     const dialog = ref(false)
@@ -12,7 +13,7 @@ import { computed } from "vue";
     const values = ref({
       name: "",
       parent: NaN,
-      priority: computed(()=> {return field.value.priority == "" ? NaN : parseInt(field.value.priority)}),
+      priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
       est_time: computed(()=> {return field.value.est_time == "" ? NaN : parseInt(field.value.est_time)}),
       resource: "",
       start_date: "",
@@ -22,15 +23,22 @@ import { computed } from "vue";
       description: "",
     })
     const rules = ref({
-      required: (value: string) => {
-        if (!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100) return true
+      isSmallInt: (value: string) => {
+        if (!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100 || value == "") return true
         else return `Must be an integer within 0-100`
+      },
+      required: (value: string) => {
+        if (value) return true
+        else return "Required"
       }
     })
 
-    function onSubmit(){
-      emit("sendValues", values.value)
-      dialog.value=false
+    async function submit(event: SubmitEventPromise){
+      const result: any = await event
+      if(result.valid){
+        emit("sendValues", values.value)
+        dialog.value=false
+      }
     }
   
 </script>
@@ -49,140 +57,141 @@ import { computed } from "vue";
             v-bind="activatorProps"
           ></v-btn>
         </template>
-  
-        <v-card
-          prepend-icon="mdi-plus-circle"
-          title="Add Item"
-        >
-          <v-card-text>
-            <v-row dense>
-              <v-col
-                cols="12"
-                md="4"
-                sm="6"
-              >
-                <v-text-field
-                  label="Name*"
-                  v-model="values.name"
-                  required
-                ></v-text-field>
-              </v-col>
-  
-              <v-col
-                cols="12"
-                md="4"
-                sm="6"
-              >
-                <v-text-field
-                  label="Priority"
-                  v-model="field.priority"
-                  hint="Will default to 100 if left empty"
-                  persistent-hint
-                  :rules="[rules.required]"                 
-                ></v-text-field>
-              </v-col>
-  
-              <v-col
-                cols="12"
-                md="4"
-                sm="6"
-              >
-                <v-text-field
-                  v-model="field.est_time"
-                  hint="Estimated time the item will take"
-                  label="Est Time"
-                  suffix="hrs"
-                  :rules="[rules.required]" 
-                ></v-text-field>
-              </v-col>
-  
-              <v-col
-                cols="12"
-                md="4"
-                sm="6"
-              >
-                <v-text-field
-                  v-model="values.resource"
-                  hint="Will try to convert to link"
-                  label="Resource"
-                  required
-                ></v-text-field>
-              </v-col>
 
-              <v-col
-                cols="12"
-                md="4"
-                sm="6"
-              >
-              <CalendarField name="Start Date" @send-date="(v) => values.start_date = v" />
-              </v-col>
-  
-              <v-col
-                cols="12"
-                sm="4"
-              >
-                <CalendarField name="End Date" @send-date="(v) => values.end_date = v"/>
-              </v-col>
+        <v-form validate-on="submit" @submit.prevent="submit">
+          <v-card
+            prepend-icon="mdi-plus-circle"
+            title="Add Item"
+          >
+            <v-card-text>
+              <v-row dense>
+                <v-col
+                  cols="12"
+                  md="4"
+                  sm="6"
+                >
+                  <v-text-field
+                    label="Name*"
+                    v-model="values.name"
+                    :rules="[rules.required]"
+                  ></v-text-field>
+                </v-col>
+    
+                <v-col
+                  cols="12"
+                  md="4"
+                  sm="6"
+                >
+                  <v-text-field
+                    label="Priority"
+                    v-model="field.priority"
+                    hint="Will default to 100 if left empty"
+                    default="100"
+                    persistent-hint
+                    :rules="[rules.isSmallInt]"                 
+                  ></v-text-field>
+                </v-col>
+    
+                <v-col
+                  cols="12"
+                  md="4"
+                  sm="6"
+                >
+                  <v-text-field
+                    v-model="field.est_time"
+                    hint="Estimated time the item will take"
+                    label="Est Time"
+                    suffix="hrs"
+                  ></v-text-field>
+                </v-col>
+    
+                <v-col
+                  cols="12"
+                  md="4"
+                  sm="6"
+                >
+                  <v-text-field
+                    v-model="values.resource"
+                    hint="Will try to convert to link"
+                    label="Resource"
+                  ></v-text-field>
+                </v-col>
 
-              <v-col
-                cols="12"
-                md="4"
-                sm="6"
-              >
-              <CalendarField name="Availability" @send-date="(v) => values.availability = v"/>
-              </v-col>
+                <v-col
+                  cols="12"
+                  md="4"
+                  sm="6"
+                >
+                <CalendarField name="Start Date" @send-date="(v) => values.start_date = v" />
+                </v-col>
+    
+                <v-col
+                  cols="12"
+                  sm="4"
+                >
+                  <CalendarField name="End Date" @send-date="(v) => values.end_date = v"/>
+                </v-col>
 
-              <v-col
-                cols="12"
-                sm="4"
-              >
-                <v-checkbox-btn
-                  v-model="values.completed"
-                  label="Completed?"
-                ></v-checkbox-btn>
-              </v-col>
-  
-              <v-col
-                cols="12"
-                sm="12"
-              >
-                <v-textarea
-                  v-model="values.description"
-                  label="Description"
-                ></v-textarea>
-              </v-col>
-            </v-row>
-  
-            <small class="text-caption text-medium-emphasis">*indicates required field</small>
-          </v-card-text>
-  
-          <v-divider></v-divider>
-  
-          <v-card-actions>
-            <v-btn
-              color="primary"
-              text="Save"
-              variant="tonal"
-              @click="onSubmit"
-            ></v-btn>
-            
-            <v-spacer></v-spacer>
-  
-            <v-btn
-              text="Discard"
-              variant="plain"
-              @click="onSubmit"
-            ></v-btn>
-            
-            <v-btn
-              text="Add Another"
-              prepend-icon="mdi-plus-circle"
-              variant="plain"
-              @click="onSubmit"
-            ></v-btn>
+                <v-col
+                  cols="12"
+                  md="4"
+                  sm="6"
+                >
+                <CalendarField name="Availability" @send-date="(v) => values.availability = v"/>
+                </v-col>
 
-          </v-card-actions>
-        </v-card>
+                <v-col
+                  cols="12"
+                  sm="4"
+                >
+                  <v-checkbox-btn
+                    v-model="values.completed"
+                    label="Completed?"
+                  ></v-checkbox-btn>
+                </v-col>
+    
+                <v-col
+                  cols="12"
+                  sm="12"
+                >
+                  <v-textarea
+                    v-model="values.description"
+                    label="Description"
+                  ></v-textarea>
+                </v-col>
+              </v-row>
+    
+              <small class="text-caption text-medium-emphasis">*indicates required field</small>
+            </v-card-text>
+    
+            <v-divider></v-divider>
+    
+            <v-card-actions>
+              <v-btn
+                color="primary"
+                text="Save"
+                variant="tonal"
+                type="submit"
+              ></v-btn>
+              
+              <v-spacer></v-spacer>
+    
+              <v-btn
+                text="Discard"
+                variant="plain"
+                @click= "dialog = false"
+              ></v-btn>
+              
+              <!-- <v-btn
+                text="Add Another"
+                prepend-icon="mdi-plus-circle"
+                variant="plain"
+                @click="onSubmit"
+              ></v-btn> -->
+
+            </v-card-actions>
+          </v-card>
+        </v-form>
       </v-dialog>
     </div>
   </template>
