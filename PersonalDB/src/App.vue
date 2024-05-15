@@ -79,7 +79,7 @@ import { onMounted } from "vue";
 
 <template>
   <v-app>
-  <v-app-bar title="Application bar"></v-app-bar>
+  <!-- <v-app-bar title="Application bar"></v-app-bar> -->
 
   <v-main>
     <!-- <LeftNavBar/> -->
