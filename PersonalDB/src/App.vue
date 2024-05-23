@@ -76,6 +76,7 @@ import { onMounted } from "vue";
       getList()
     }
     async function getList(){
+      name_filter.value = ""
       data_str.value = await invoke("find_items_by_parent_id", {id: curr_parent.value.id})
     }
     async function nextItem(item_object: any){
