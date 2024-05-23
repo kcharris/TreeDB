@@ -34,11 +34,36 @@ import { onMounted } from "vue";
       completed: false,
       description: "This is an example of the fully available items details. This Cleaning item serves as a categorical item that will contain other items.",
     }
+
     const curr_parent = ref(default_item)
     
     const data_str = ref("")
-    const data_list = computed(() => {return data_str.value == "" ? [] : JSON.parse(data_str.value)})
+    const name_filter = ref("")
+    const data_list = computed(() => {
+      let res = data_str.value == "" ? [] : JSON.parse(data_str.value)
+      if (name_filter.value != ""){
+        return res.filter((obj:any) => containsSubsequence(obj.name.toLowerCase(), name_filter.value))
+      }
+      return res
+    })
 
+    function containsSubsequence(s:string, sub:string){
+      if (s.length < sub.length){
+        return false
+      }
+      let i = 0
+      let j = 0
+      while (i < s.length && j < sub.length){
+        if (s[i] == sub[j]){
+          j += 1
+        }
+        i += 1
+      }
+      if (j == sub.length){
+        return true
+      }
+      return false
+    }
     async function addItem(item_object: any){
       item_object.parent = curr_parent.value.id
       let strObject = JSON.stringify(item_object)
@@ -90,6 +115,17 @@ import { onMounted } from "vue";
     <v-toolbar density="compact">
       <v-btn class="bg-primary mr-2 ml-5 my-auto" :onclick="navHome">Home</v-btn>
       <v-btn class="bg-primary mr-10 my-auto" :onclick="navBack" variant="text">Back</v-btn >
+      <v-text-field
+        class="mt-5"
+        density="comfortable"
+        v-model="name_filter"
+        max-width="275"
+        maxlength="40"
+        placeholder="Search"
+        outlined
+        single-line
+        clearable
+      ></v-text-field>
       <v-spacer/>
       <CreateNewItemPopup @send-values="addItem"/>
         <!-- <span>{{ values }}</span> -->
