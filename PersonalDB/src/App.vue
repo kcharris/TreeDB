@@ -79,15 +79,17 @@ import { onMounted } from "vue";
 
 <template>
   <v-app>
-  <!-- <v-app-bar title="Application bar"></v-app-bar> -->
+  <v-app-bar density="compact">
+    <v-label class="ml-5">{{ path }}</v-label>
+    <v-spacer/>
+  </v-app-bar>
 
   <v-main>
     <!-- <LeftNavBar/> -->
     <FullDetails :parent = "curr_parent"/>
-    <v-toolbar>
-      <v-btn class="bg-primary mr-2" :onclick="navHome">Home</v-btn>
-      <v-btn class="bg-primary mr-10" :onclick="navBack" variant="text">Back</v-btn >
-      <v-label>{{ path }}</v-label>
+    <v-toolbar density="compact">
+      <v-btn class="bg-primary mr-2 ml-5 my-auto" :onclick="navHome">Home</v-btn>
+      <v-btn class="bg-primary mr-10 my-auto" :onclick="navBack" variant="text">Back</v-btn >
       <v-spacer/>
       <CreateNewItemPopup @send-values="addItem"/>
         <!-- <span>{{ values }}</span> -->

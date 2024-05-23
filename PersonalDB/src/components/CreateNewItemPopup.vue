@@ -62,7 +62,7 @@ import { watch } from "vue";
   
 </script>
 <template>
-    <div class="pa-4 text-center">
+    <div class="mr-5 text-center">
       <v-dialog
         v-model="dialog"
         max-width="1000"
