@@ -93,7 +93,7 @@ import { watch } from "vue";
                     label="Name*"
                     v-model="values.name"
                     :rules="[rules.required]"
-                    maxlength="40"
+                    maxlength="30"
                   ></v-text-field>
                 </v-col>
     

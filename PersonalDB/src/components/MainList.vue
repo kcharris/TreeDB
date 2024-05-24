@@ -6,7 +6,7 @@
         item-value="name"
     >
         <template v-slot:item.name="item">
-            <v-btn @click="updateData(item.item)" width="80%">{{ getName(item) }}</v-btn>
+            <v-btn @click="updateData(item.item)" class="w-100 text-none">{{ getName(item) }}</v-btn>
         </template>
         <template v-slot:item.edit="{item}">
             <v-icon @click="deleteItem(item)">mdi-pencil</v-icon>
