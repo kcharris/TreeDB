@@ -106,7 +106,7 @@ import { onMounted } from "vue";
 <template>
   <v-app>
   <v-app-bar density="compact">
-    <v-label class="ml-5">{{ path }}</v-label>
+    <v-label class="ml-5"><div class="text-truncate text-nowrap">{{ path }}</div></v-label>
     <v-spacer/>
   </v-app-bar>
 

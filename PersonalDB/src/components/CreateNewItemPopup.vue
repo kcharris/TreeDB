@@ -93,6 +93,7 @@ import { watch } from "vue";
                     label="Name*"
                     v-model="values.name"
                     :rules="[rules.required]"
+                    maxlength="40"
                   ></v-text-field>
                 </v-col>
     
@@ -107,7 +108,8 @@ import { watch } from "vue";
                     hint="Will default to 100 if left empty"
                     default="100"
                     persistent-hint
-                    :rules="[rules.isSmallInt]"                 
+                    :rules="[rules.isSmallInt]"
+                    maxlength="3"            
                   ></v-text-field>
                 </v-col>
     
@@ -121,6 +123,7 @@ import { watch } from "vue";
                     hint="Estimated time the item will take"
                     label="Est Time"
                     suffix="hrs"
+                    maxlength="8"
                   ></v-text-field>
                 </v-col>
     
@@ -176,6 +179,7 @@ import { watch } from "vue";
                   <v-textarea
                     v-model="values.description"
                     label="Description"
+                    maxlength="500"
                   ></v-textarea>
                 </v-col>
               </v-row>
