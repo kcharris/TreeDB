@@ -16,7 +16,7 @@ import { onMounted } from "vue";
     const path = computed(() => {
       let res_str = ""
       if (path_stack.value.length > 0 ){
-        let arr_map: string[] = path_stack.value.map((s) => s.name.replace(" ", "-"))
+        let arr_map: string[] = path_stack.value.map((s) => s.name.replaceAll(" ", "-"))
         res_str = arr_map.join("/")
       }
       return "HOME:/" + res_str
