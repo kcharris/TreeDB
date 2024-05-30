@@ -5,7 +5,7 @@ import { useDate } from 'vuetify'
     const emit = defineEmits(["sendDate"])
     const u_date = useDate()
     const string_date = ref(props.date_str != undefined ? props.date_str : "")
-    const cal_date = ref(new Date())
+    const cal_date = ref(props.date_str != undefined ? new Date(props.date_str) : "")
     const dialog = ref(false)
     
     watch(cal_date, () => {string_date.value = u_date.format(cal_date.value, "keyboardDate")})
@@ -16,14 +16,12 @@ import { useDate } from 'vuetify'
     }
     function openDialog(){
         dialog.value = true
-        cal_date.value = new Date()
-        string_date.value = ""
+        cal_date.value = props.date_str != undefined ? new Date(props.date_str) : new Date()
+        string_date.value = props.date_str != undefined ? props.date_str : ""
     }
-    
-  
+     
 </script>
 <template>
-    <div>
         <v-text-field
         :label="name"
         :model-value="string_date"
@@ -37,16 +35,15 @@ import { useDate } from 'vuetify'
             max-width="500"
             >
             <v-card>
-                <v-date-picker v-model="cal_date"></v-date-picker>
-                <template v-slot:actions>
-                <v-btn
-                class="ms-auto"
-                text="Ok"
-                @click="emitDate"
-                ></v-btn>
-            </template>  
+                <v-layout class="d-flex flex-column">
+                    <v-date-picker class="mx-auto" v-model="cal_date"></v-date-picker>
+                        <v-btn
+                        class="mx-auto mb-10 bg-primary"
+                        text="Ok"
+                        @click="emitDate"
+                        ></v-btn>
+                </v-layout>
             </v-card>
              
         </v-dialog>
-    </div>
 </template>
