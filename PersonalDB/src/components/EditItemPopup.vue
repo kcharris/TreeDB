@@ -139,14 +139,14 @@ import { watch } from "vue";
                   md="4"
                   sm="6"
                 >
-                <CalendarField name="Start Date" @send-date="(v) => values.start_date = v" />
+                <CalendarField :date_str="values.start_date" name="Start Date" @send-date="(v) => values.start_date = v" />
                 </v-col>
     
                 <v-col
                   cols="12"
                   sm="4"
                 >
-                  <CalendarField name="End Date" @send-date="(v) => values.end_date = v"/>
+                  <CalendarField :date_str="values.end_date" name="End Date" @send-date="(v) => values.end_date = v"/>
                 </v-col>
 
                 <v-col
@@ -154,7 +154,7 @@ import { watch } from "vue";
                   md="4"
                   sm="6"
                 >
-                <CalendarField name="Availability" @send-date="(v) => values.availability = v"/>
+                <CalendarField :date_str="values.availability" name="Availability" @send-date="(v) => values.availability = v"/>
                 </v-col>
 
                 <v-col

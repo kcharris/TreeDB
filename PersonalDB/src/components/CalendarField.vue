@@ -1,27 +1,23 @@
 <script setup lang="ts">
 import {ref, watch} from "vue";
 import { useDate } from 'vuetify'
-
+    const props = defineProps(["date_str", "name"])
     const emit = defineEmits(["sendDate"])
-    const uDate = useDate()
-    const stringDate = ref("")
-    const calDate = ref(new Date())
+    const u_date = useDate()
+    const string_date = ref(props.date_str != undefined ? props.date_str : "")
+    const cal_date = ref(new Date())
     const dialog = ref(false)
     
-    defineProps({
-        name: String
-    })
-    
-    watch(calDate, () => {stringDate.value = uDate.format(calDate.value, "keyboardDate")})
+    watch(cal_date, () => {string_date.value = u_date.format(cal_date.value, "keyboardDate")})
     
     function emitDate(){
-        emit("sendDate", stringDate)
+        emit("sendDate", string_date)
         dialog.value = false
     }
     function openDialog(){
         dialog.value = true
-        calDate.value = new Date()
-        stringDate.value = ""
+        cal_date.value = new Date()
+        string_date.value = ""
     }
     
   
@@ -30,7 +26,7 @@ import { useDate } from 'vuetify'
     <div>
         <v-text-field
         :label="name"
-        :model-value="stringDate"
+        :model-value="string_date"
         prepend-inner-icon="mdi-calendar"
         @click:prepend-inner="openDialog"
         readonly
@@ -41,7 +37,7 @@ import { useDate } from 'vuetify'
             max-width="500"
             >
             <v-card>
-                <v-date-picker v-model="calDate"></v-date-picker>
+                <v-date-picker v-model="cal_date"></v-date-picker>
                 <template v-slot:actions>
                 <v-btn
                 class="ms-auto"
