@@ -9,7 +9,7 @@
             <v-btn @click="updateData(item.item)" class="w-100 text-none">{{ getName(item) }}</v-btn>
         </template>
         <template v-slot:item.edit="{item}">
-            <v-icon @click="deleteItem(item)">mdi-pencil</v-icon>
+            <v-icon @click="editItem(item)">mdi-pencil</v-icon>
         </template>
         <template v-slot:item.del="{item}">
             <DeleteItemPopup @delete="() => deleteItem(item)"/>
@@ -22,7 +22,7 @@ import { ref} from "vue";
 import { VDataTableVirtual, VBtn } from "vuetify/components";
 import DeleteItemPopup from "./DeleteItemPopup.vue";
 
-    const emit = defineEmits(["nextItem", "delete"])
+    const emit = defineEmits(["nextItem", "delete", "edit"])
     defineProps<{
             dataList: any
     }>()
@@ -34,6 +34,10 @@ import DeleteItemPopup from "./DeleteItemPopup.vue";
         else{
             return "Error"
         }
+    }
+    
+    function editItem(item: any){
+        emit("edit", item)
     }
 
     function deleteItem(item: any){

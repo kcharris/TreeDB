@@ -6,6 +6,7 @@ import CreateNewItemPopup from "./components/CreateNewItemPopup.vue";
 import FullDetails from "./components/FullDetails.vue"
 // import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
+import EditItemPopup from "./components/EditItemPopup.vue"
 import {ref, computed} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
 import { onMounted } from "vue";
@@ -34,9 +35,7 @@ import { onMounted } from "vue";
       completed: false,
       description: "This is an example of the fully available items details. This Cleaning item serves as a categorical item that will contain other items.",
     }
-
     const curr_parent = ref(default_item)
-    
     const data_str = ref("")
     const name_filter = ref("")
     const data_list = computed(() => {
@@ -46,6 +45,8 @@ import { onMounted } from "vue";
       }
       return res
     })
+    const item_to_edit = ref({})
+    const edit_dialog_bool = ref(false)
 
     function containsSubsequence(s:string, sub:string){
       if (s.length < sub.length){
@@ -66,15 +67,26 @@ import { onMounted } from "vue";
     }
     async function addItem(item_object: any){
       item_object.parent = curr_parent.value.id
-      let strObject = JSON.stringify(item_object)
+      let str_object = JSON.stringify(item_object)
       // currParent.value = 9
-      await invoke("add_item", {payload: strObject})
+      await invoke("add_item", {payload: str_object})
       getList()
     }
     async function deleteItem(item_object:any){
       await invoke("delete_item", {id: item_object.id})
       getList()
     }
+    async function updateItem(item_object: any){
+      let str_object = JSON.stringify(item_object)
+      await invoke("update_item", {payload: str_object})
+      getList()
+    }
+
+    function getEditItemPopup(item_object: any){
+      item_to_edit.value = item_object
+      edit_dialog_bool.value = true
+    }
+
     async function getList(){
       name_filter.value = ""
       data_str.value = await invoke("find_items_by_parent_id", {id: curr_parent.value.id})
@@ -109,6 +121,7 @@ import { onMounted } from "vue";
     <v-label class="ml-5"><div class="text-truncate text-nowrap">{{ path }}</div></v-label>
     <v-spacer/>
   </v-app-bar>
+  <EditItemPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
 
   <v-main>
     <!-- <LeftNavBar/> -->
@@ -129,9 +142,8 @@ import { onMounted } from "vue";
       ></v-text-field>
       <v-spacer/>
       <CreateNewItemPopup @send-values="addItem"/>
-        <!-- <span>{{ values }}</span> -->
     </v-toolbar>
-    <MainList :data-list = "data_list"  @next-item="nextItem" @delete="deleteItem"/>
+    <MainList :data-list = "data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
     </v-main>
   </v-app>
   
