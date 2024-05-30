@@ -38,9 +38,14 @@ import { useDate } from 'vuetify'
                 <v-layout class="d-flex flex-column">
                     <v-date-picker class="mx-auto" v-model="cal_date"></v-date-picker>
                         <v-btn
-                        class="mx-auto mb-10 bg-primary"
+                        class="mx-auto mb-5 bg-primary"
                         text="Ok"
                         @click="emitDate"
+                        ></v-btn>
+                        <v-btn
+                        class="mx-auto mb-5 bg-grey"
+                        text="Discard"
+                        @click="dialog=false"
                         ></v-btn>
                 </v-layout>
             </v-card>

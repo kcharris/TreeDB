@@ -43,7 +43,7 @@ import { watch } from "vue";
 
     const rules = ref({
       isSmallInt: (value: string) => {
-        if (!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100 || value == "") return true
+        if ((!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100) || value=="") return true
         else return `Must be an integer within 0-100`
       },
       required: (value: string) => {
