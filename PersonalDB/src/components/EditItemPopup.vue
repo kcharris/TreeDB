@@ -41,9 +41,6 @@ import { watch } from "vue";
         values.value.completed = props.item_to_edit.completed
         values.value.description = props.item_to_edit.description
       }
-      if (val == false){
-        emit('updateOpenDialogBool')
-      }
     })
 
     const rules = ref({
