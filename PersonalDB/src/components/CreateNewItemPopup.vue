@@ -191,7 +191,7 @@ import { watch } from "vue";
     
             <v-card-actions>
               <v-btn
-                color="primary"
+                class="bg-primary"
                 text="Save"
                 variant="tonal"
                 type="submit"
@@ -200,6 +200,7 @@ import { watch } from "vue";
               <v-spacer></v-spacer>
     
               <v-btn
+                class="bg-grey"
                 text="Discard"
                 variant="plain"
                 @click= "dialog = false"

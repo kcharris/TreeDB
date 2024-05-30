@@ -141,7 +141,7 @@ import { onMounted } from "vue";
         clearable
       ></v-text-field>
       <v-spacer/>
-      <CreateNewItemPopup @send-values="addItem"/>
+      <CreateNewItemPopup class = "bg-primary" @send-values="addItem"/>
     </v-toolbar>
     <MainList :data-list = "data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
     </v-main>
