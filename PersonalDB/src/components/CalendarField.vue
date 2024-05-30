@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
+import {ref} from "vue";
 import { useDate } from 'vuetify'
     const props = defineProps(["date_str", "name"])
     const emit = defineEmits(["sendDate"])
@@ -7,10 +7,9 @@ import { useDate } from 'vuetify'
     const string_date = ref(props.date_str != undefined ? props.date_str : "")
     const cal_date = ref(props.date_str != undefined ? new Date(props.date_str) : "")
     const dialog = ref(false)
-    
-    watch(cal_date, () => {string_date.value = u_date.format(cal_date.value, "keyboardDate")})
-    
+        
     function emitDate(){
+        string_date.value = u_date.format(cal_date.value, "keyboardDate")
         emit("sendDate", string_date)
         dialog.value = false
     }
@@ -28,6 +27,7 @@ import { useDate } from 'vuetify'
         prepend-inner-icon="mdi-calendar"
         @click:prepend-inner="openDialog"
         readonly
+        clearable
         >
         </v-text-field>
         <v-dialog
