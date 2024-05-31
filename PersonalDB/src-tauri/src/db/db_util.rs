@@ -19,7 +19,9 @@ pub enum Error {
   #[error(transparent)]
   Io(#[from] std::io::Error),
   #[error("Error accessing or modifying database")]
-  DbErr(#[from] sea_orm::DbErr)
+  DbErr(#[from] sea_orm::DbErr),
+  #[error("Error trying from integer")]
+  TryFromIntError(#[from] std::num::TryFromIntError)
 }
 
 // we must manually implement serde::Serialize
@@ -39,17 +41,16 @@ async fn get_db_conn() -> Result<DatabaseConnection, DbErr> {
 
 pub async fn test_insert() -> Result<(), Error>{
     let db = get_db_conn().await?;
-    add_item(r#"{"name": "cat"}"#.to_owned()).await?;
-    add_item(r#"{"name": "dog"}"#.to_owned()).await?;
-    add_item(r#"{"name": "bird"}"#.to_owned()).await?;
-    add_item(r#"{"name": ""}"#.to_owned()).await?;
-    let item1 = item::ActiveModel {
-        name: ActiveValue::Set("first item".to_owned()),
-        priority: ActiveValue::Set(Some(88)),
+    for i in 1..=5{
+      let item1 = item::ActiveModel {
+        name: ActiveValue::Set(format!("item{i}").to_owned()),
+        priority: ActiveValue::Set(Some(88 + i)),
         ..Default::default()
     };
     // let item1 = item1.insert(&db).await?;
     let res = item::Entity::insert(item1).exec(&db).await?;
+    }
+    
     let items: Vec<item::Model> = item::Entity::find().all(&db).await?;
     assert_eq!(items.len(), 5);
     Ok(())
@@ -73,7 +74,6 @@ pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<String, Error>{
 
 #[tauri::command]
 pub async fn add_item(payload: String) -> Result<Option<i32>, Error>{
-  // the payload has to include the parent objects integer or nothing. I guess it's not a problem now but I need to ability to add the 
     let db = get_db_conn().await?;
     let json_item = serde_json::from_str(&payload).unwrap();
     let mut item = item::ActiveModel{..Default::default()};
@@ -85,9 +85,21 @@ pub async fn add_item(payload: String) -> Result<Option<i32>, Error>{
 
 #[tauri::command]
 pub async fn delete_item(id: i32) -> Result<(), Error>{
-  // the payload has to include the parent objects integer or nothing. I guess it's not a problem now but I need to ability to add the 
     let db = get_db_conn().await?;
     let item1 = item::Entity::find_by_id(id).one(&db).await?.unwrap();
     let res = item1.delete(&db).await?;
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn update_item(payload: String) -> Result<(), Error>{
+    let db = get_db_conn().await?;
+    let json_item: serde_json::Value = serde_json::from_str(&payload).unwrap();
+    let mut item = item::ActiveModel{..Default::default()};
+    item.set_from_json(json_item.clone())?;
+    let n: i32 = json_item["id"].as_i64().unwrap().try_into()?;
+    item.id = ActiveValue::Set(n);
+    
+    let _res = item.save(&db).await?;
     Ok(())
 }

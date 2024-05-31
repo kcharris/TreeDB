@@ -43,9 +43,7 @@ import DeleteItemPopup from "./DeleteItemPopup.vue";
     function deleteItem(item: any){
         emit("delete", item)
     }
-    // function editItem(item:Object){
-    //     return 0
-    // }
+    
     function updateData(item: any){
         emit("nextItem", item)
     }

@@ -15,6 +15,7 @@ import { watch } from "vue";
     })
 
     const values = ref({
+      id: NaN,
       name: "",
       parent: NaN,
       priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
@@ -32,6 +33,7 @@ import { watch } from "vue";
         field.value.est_time = props.item_to_edit.est_time
         field.value.priority = props.item_to_edit.priority
 
+        values.value.id = props.item_to_edit.id
         values.value.name = props.item_to_edit.name
         values.value.parent = props.item_to_edit.parent
         values.value.resource = props.item_to_edit.resource
