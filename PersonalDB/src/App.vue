@@ -4,7 +4,7 @@
 // import Greet from "./components/Greet.vue";
 import CreateNewItemPopup from "./components/CreateNewItemPopup.vue";
 import FullDetails from "./components/FullDetails.vue"
-// import LeftNavBar from "./components/LeftNavBar.vue";
+import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 import EditItemPopup from "./components/EditItemPopup.vue"
 import {ref, computed} from "vue"
@@ -47,6 +47,7 @@ import { onMounted } from "vue";
     })
     const item_to_edit = ref({})
     const edit_dialog_bool = ref(false)
+    const page = ref(0)
 
     function containsSubsequence(s:string, sub:string){
       if (s.length < sub.length){
@@ -68,7 +69,6 @@ import { onMounted } from "vue";
     async function addItem(item_object: any){
       item_object.parent = curr_parent.value.id
       let str_object = JSON.stringify(item_object)
-      // currParent.value = 9
       await invoke("add_item", {payload: str_object})
       getList()
     }
@@ -124,26 +124,31 @@ import { onMounted } from "vue";
   <EditItemPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
 
   <v-main>
-    <!-- <LeftNavBar/> -->
-    <FullDetails :parent = "curr_parent"/>
-    <v-toolbar density="compact">
-      <v-btn class="bg-primary mr-2 ml-5 my-auto" :onclick="navHome">Home</v-btn>
-      <v-btn class="bg-primary mr-10 my-auto" :onclick="navBack" variant="text">Back</v-btn >
-      <v-text-field
-        class="mt-5"
-        density="comfortable"
-        v-model="name_filter"
-        max-width="275"
-        maxlength="40"
-        placeholder="Search"
-        outlined
-        single-line
-        clearable
-      ></v-text-field>
-      <v-spacer/>
-      <CreateNewItemPopup class = "bg-primary" @send-values="addItem"/>
-    </v-toolbar>
-    <MainList :data-list = "data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
+    <LeftNavBar/>
+    <template v-if="page == 0">
+      <FullDetails :parent = "curr_parent"/>
+      <v-toolbar density="compact">
+        <v-btn class="bg-primary mr-2 ml-5 my-auto" :onclick="navHome">Home</v-btn>
+        <v-btn class="bg-primary mr-10 my-auto" :onclick="navBack" variant="text">Back</v-btn >
+        <v-text-field
+          class="mt-5"
+          density="comfortable"
+          v-model="name_filter"
+          max-width="275"
+          maxlength="40"
+          placeholder="Search"
+          outlined
+          single-line
+          clearable
+        ></v-text-field>
+        <v-spacer/>
+        <CreateNewItemPopup class = "bg-primary" @send-values="addItem"/>
+      </v-toolbar>
+      <MainList :data-list = "data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
+    </template>
+    <template v-else-if="page == 1">
+      <v-btn @click="page = 0"></v-btn>
+    </template>
     </v-main>
   </v-app>
   
