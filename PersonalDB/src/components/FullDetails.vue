@@ -1,7 +1,16 @@
 <script setup lang="ts">
-    defineProps({
+    import { ref, computed } from 'vue';
+    const props = defineProps({
         parent: Object
     })
+    const toggle = ref(false)
+    // const description_class = computed(() => {return `text-md ${toggle.value == false ? "text-truncate" : ""}`})
+    const button_icon = computed(() => {return toggle.value == false ? "mdi-arrow-expand" : "mdi-close-circle-outline"})
+    const description = computed(() => {return "Description: " + (props.parent?.description != undefined ? props.parent.description : "")})
+
+    function toggleTruncate(){
+        toggle.value = !toggle.value
+    }
 
 </script>
 <template >
@@ -20,6 +29,20 @@
             <div>               </div>
             <div class="text-md">{{"End Time: "+ (parent?.end_date != undefined ? parent.end_date : "") }}</div>
         </div>
-        <div class="text-md text-truncate text-nowrap"> {{"Description: "+ (parent?.description != undefined ? parent.description : "") }}</div>
+        <div>
+            <v-textarea
+                class="text-md"
+                :prepend-icon="button_icon"
+                @click:prepend="toggleTruncate"
+                rows="1"
+                :max-rows="toggle == false ? 1 : 50"
+                row-height="15"
+                auto-grow
+                variant="underlined"
+                readonly
+                :model-value="description"
+                >   
+            </v-textarea>
+        </div>
     </div>
 </template>
