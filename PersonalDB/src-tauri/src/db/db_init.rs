@@ -19,13 +19,15 @@ pub fn init() {
     }
 }
 
-// test connection to Sqlite
+// create tables if they do not exist
 pub async fn run_migrator() -> Result<(), Error>{
     let db = Database::connect("sqlite://".to_string() + &get_db_path().clone()).await?;
     let schema_manager = SchemaManager::new(&db);
-    migrator::Migrator::refresh(&db).await?;
+    if (!schema_manager.has_table("item").await?){
+        migrator::Migrator::fresh(&db).await?;
+    }
     assert!(schema_manager.has_table("item").await?);
-    test_insert().await?;
+    //test_insert().await?;
     Ok(())
 }
 
