@@ -33,7 +33,7 @@ import { onMounted } from "vue";
       end_date: "",
       availability: "",
       completed: false,
-      description: "This is an example of the fully available items details. This Cleaning item serves as a categorical item that will contain other items.",
+      description: "This is an example of the fully available items details. This item serves as a categorical item that will contain other items.",
     }
     const curr_parent = ref(default_item)
     const data_str = ref("")
