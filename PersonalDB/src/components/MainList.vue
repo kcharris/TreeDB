@@ -2,8 +2,7 @@
     <v-data-table-virtual
         :headers = "headers"
         :items ="dataList"
-        height="100dvh"
-        item-value="name"
+        height="65dvh"
     >
         <template v-slot:item.name="item">
             <v-btn @click="updateData(item.item)" class="w-100 text-none">{{ getName(item) }}</v-btn>

@@ -40,7 +40,7 @@ import { onMounted } from "vue";
     const name_filter = ref("")
     const data_list = computed(() => {
       let res = data_str.value == "" ? [] : JSON.parse(data_str.value)
-      if (name_filter.value != ""){
+      if (name_filter.value){
         return res.filter((obj:any) => containsSubsequence(obj.name.toLowerCase(), name_filter.value))
       }
       return res
