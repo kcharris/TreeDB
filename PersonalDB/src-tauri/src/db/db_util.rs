@@ -46,10 +46,21 @@ pub async fn test_insert() -> Result<(), Error>{
         name: ActiveValue::Set(format!("item{i}").to_owned()),
         priority: ActiveValue::Set(Some(88 + i)),
         ..Default::default()
-    };
-    // let item1 = item1.insert(&db).await?;
-    let res = item::Entity::insert(item1).exec(&db).await?;
+      };
+      // let item1 = item1.insert(&db).await?;
+      let res = item::Entity::insert(item1).exec(&db).await?;
+      for j in 1..=5{
+        let item1 = item::ActiveModel {
+          name: ActiveValue::Set(format!("item{j}").to_owned()),
+          priority: ActiveValue::Set(Some(88 + j)),
+          parent: ActiveValue::Set(Some(i)),
+          ..Default::default()
+        };
+      // let item1 = item1.insert(&db).await?;
+      let res = item::Entity::insert(item1).exec(&db).await?;
+      }
     }
+    
     
     let items: Vec<item::Model> = item::Entity::find().all(&db).await?;
     //assert_eq!(items.len(), 5);

@@ -27,7 +27,7 @@ pub async fn run_migrator() -> Result<(), Error>{
         migrator::Migrator::fresh(&db).await?;
     }
     assert!(schema_manager.has_table("item").await?);
-    //test_insert().await?;
+    //test_insert().await?; // uncomment to fill with a few low detail test items
     Ok(())
 }
 
