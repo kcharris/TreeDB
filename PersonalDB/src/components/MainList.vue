@@ -2,10 +2,14 @@
     <v-data-table-virtual
         :headers = "headers"
         :items ="dataList"
-        height="65dvh"
+        density="compact"
+        class="fill-height"
+        height="60dvh"
+        fixed-header
+        multi-sort
     >
         <template v-slot:item.name="item">
-            <v-btn @click="updateData(item.item)" class="w-100 text-none">{{ getName(item) }}</v-btn>
+            <v-btn max-width="350" density="comfortable" @click="updateData(item.item)" class="w-100 text-none text-truncate">{{ getName(item) }}</v-btn>
         </template>
         <template v-slot:item.edit="{item}">
             <v-icon @click="editItem(item)">mdi-pencil</v-icon>
@@ -18,7 +22,7 @@
 
 <script setup lang="ts">
 import { ref} from "vue";
-import { VDataTableVirtual, VBtn } from "vuetify/components";
+import { VDataTableVirtual, VBtn} from "vuetify/components";
 import DeleteItemPopup from "./DeleteItemPopup.vue";
 
     const emit = defineEmits(["nextItem", "delete", "edit"])

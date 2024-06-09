@@ -7,6 +7,7 @@ import FullDetails from "./components/FullDetails.vue"
 import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 import EditItemPopup from "./components/EditItemPopup.vue"
+import FullDetailsHome from "./components/FullDetailsHome.vue"
 import {ref, computed} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
 import { onMounted } from "vue";
@@ -122,11 +123,16 @@ import { onMounted } from "vue";
     <v-spacer/>
   </v-app-bar>
   <EditItemPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
-
-  <v-main>
-    <LeftNavBar/>
+  <LeftNavBar/>
+  <v-main fluid class="d-flex flex-column">
     <template v-if="page == 0">
-      <FullDetails :parent = "curr_parent"/>
+      <template v-if="!Number.isNaN(curr_parent.id)">
+        <FullDetails :parent = "curr_parent"/>
+      </template>
+      <template v-else>
+        <FullDetailsHome />
+      </template>
+      
       <v-toolbar density="compact">
         <v-btn class="bg-primary mr-2 ml-5 my-auto" :onclick="navHome">Home</v-btn>
         <v-btn class="bg-primary mr-10 my-auto" :onclick="navBack" variant="text">Back</v-btn >
@@ -142,24 +148,16 @@ import { onMounted } from "vue";
           clearable
         ></v-text-field>
         <v-spacer/>
-        <CreateNewItemPopup class = "bg-primary" @send-values="addItem"/>
+        <CreateNewItemPopup @send-values="addItem"/>
       </v-toolbar>
-      <MainList :data-list = "data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
+      <MainList :data-list="data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
     </template>
     <template v-else-if="page == 1">
       <v-btn @click="page = 0"></v-btn>
     </template>
     </v-main>
+    
   </v-app>
   
 </template>
 
-<style scoped>
-.logo.vite:hover {
-  filter: drop-shadow(0 0 2em #747bff);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #249b73);
-}
-</style>
