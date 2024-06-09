@@ -32,8 +32,9 @@ import DeleteItemPopup from "./DeleteItemPopup.vue";
     const headers: any = ref([
             { title: 'Name', align: 'start', key: 'name' },
             { title: 'Priority', align: 'end', key: 'priority' },
-            { title: 'Est Time', align: 'end', key: 'est_time' },
+            { title: 'EstTime', align: 'end', key: 'est_time' },
             { title: 'Resource', align: 'end', key: 'resource' },
+            { title: 'StartDate', align: 'end', key: 'start_date' },
             { title: 'Available', align: 'end', key: 'availability' },
             { title: 'Completed', align: 'end', key:'completed'},
             { title: 'Edit', align: 'end', key: 'edit' },
