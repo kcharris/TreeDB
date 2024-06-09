@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import { ref} from "vue";
+
+    const emit = defineEmits(["delete"])
+    const dialog = ref(false)
+
+    function emitDelete(){
+        emit("delete")
+        dialog.value = false
+    }
+</script>
+
 <template>
     <v-icon
     icon="mdi-delete"
@@ -26,16 +38,3 @@
             
     </v-dialog>
 </template>
-
-
-<script setup lang="ts">
-import { ref} from "vue";
-
-    const emit = defineEmits(["delete"])
-    const dialog = ref(false)
-
-    function emitDelete(){
-        emit("delete")
-        dialog.value = false
-    }
-</script>

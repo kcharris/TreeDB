@@ -1,25 +1,3 @@
-<template>
-    <v-data-table-virtual
-        :headers = "headers"
-        :items ="dataList"
-        density="compact"
-        class="fill-height"
-        height="60dvh"
-        fixed-header
-        multi-sort
-    >
-        <template v-slot:item.name="item">
-            <v-btn max-width="350" density="comfortable" @click="updateData(item.item)" class="w-100 text-none text-truncate">{{ getName(item) }}</v-btn>
-        </template>
-        <template v-slot:item.edit="{item}">
-            <v-icon @click="editItem(item)">mdi-pencil</v-icon>
-        </template>
-        <template v-slot:item.del="{item}">
-            <DeleteItemPopup @delete="() => deleteItem(item)"/>
-        </template>
-    </v-data-table-virtual>
-</template>
-
 <script setup lang="ts">
 import { ref} from "vue";
 import { VDataTableVirtual, VBtn} from "vuetify/components";
@@ -64,3 +42,24 @@ import DeleteItemPopup from "./DeleteItemPopup.vue";
 
 </script>
 
+<template>
+    <v-data-table-virtual
+        :headers = "headers"
+        :items ="dataList"
+        density="compact"
+        class="fill-height"
+        height="60dvh"
+        fixed-header
+        multi-sort
+    >
+        <template v-slot:item.name="item">
+            <v-btn max-width="350" density="comfortable" @click="updateData(item.item)" class="w-100 text-none text-truncate">{{ getName(item) }}</v-btn>
+        </template>
+        <template v-slot:item.edit="{item}">
+            <v-icon @click="editItem(item)">mdi-pencil</v-icon>
+        </template>
+        <template v-slot:item.del="{item}">
+            <DeleteItemPopup @delete="() => deleteItem(item)"/>
+        </template>
+    </v-data-table-virtual>
+</template>
