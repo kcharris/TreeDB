@@ -9,7 +9,7 @@ import { useDate } from 'vuetify'
     const dialog = ref(false)
         
     function emitDate(){
-        string_date.value = u_date.format(cal_date.value, "keyboardDate")
+        string_date.value = cal_date.value.toISOString().slice(0,10)
         emit("sendDate", string_date)
         dialog.value = false
     }
