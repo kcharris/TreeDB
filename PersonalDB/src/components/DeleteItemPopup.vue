@@ -1,32 +1,30 @@
 <template>
-    <div>
-        <v-icon
-        icon="mdi-delete"
-        @click ="dialog = true"
+    <v-icon
+    icon="mdi-delete"
+    @click ="dialog = true"
+    >
+    </v-icon>
+    <v-dialog
+        v-model="dialog"
+        max-width="500"
         >
-        </v-icon>
-        <v-dialog
-            v-model="dialog"
-            max-width="500"
-            >
-            <v-card>
-                <template v-slot:actions>
-                <v-label>Are you sure you want to delete?</v-label>
-                <v-btn
+        <v-card>
+            <template v-slot:actions>
+            <v-label>Are you sure you want to delete?</v-label>
+            <v-btn
+            class="ms-auto"
+            text="Yes"
+            @click="emitDelete"
+            ></v-btn>
+            <v-btn
                 class="ms-auto"
-                text="Yes"
-                @click="emitDelete"
-                ></v-btn>
-                <v-btn
-                    class="ms-auto"
-                    text="Back"
-                    @click="dialog=false"
-                ></v-btn>
-            </template>  
-            </v-card>
-             
-        </v-dialog>
-    </div>
+                text="Back"
+                @click="dialog=false"
+            ></v-btn>
+        </template>  
+        </v-card>
+            
+    </v-dialog>
 </template>
 
 

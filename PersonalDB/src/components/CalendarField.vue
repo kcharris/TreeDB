@@ -26,6 +26,7 @@ import { useDate } from 'vuetify'
         :model-value="string_date"
         prepend-inner-icon="mdi-calendar"
         @click:prepend-inner="openDialog"
+        persistent-clear
         readonly
         clearable
         >
