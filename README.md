@@ -1,6 +1,11 @@
 ## Personal Database for Desktop
 Currently under development, a release of the application for Windows will be out in a few days. If you want to work on it, follow the Tauri installation guide [here](https://tauri.app/v1/guides/getting-started/prerequisites) and then start the application using commands on this development page [here](https://tauri.app/v1/guides/development/development-cycle).
 
+#### To-do
+* Settings Page
+* DB Management page
+* Tagging System
+
 ### Overview
 This is a tool to manage user created nested lists of items, that can be kept track of over time, that don't want to be forgotten. A few examples include: movies, books, music, games, art projects, chores around the house, and cooking ideas. Tens to hundreds of things in each category can build up over time and become hard to manage. This tools aims to make their management easier and more efficient.  
 
