@@ -22,7 +22,7 @@ import { ref} from "vue";
         >
         <v-card>
             <template v-slot:actions>
-            <v-label>Are you sure you want to delete?</v-label>
+            <p>Are you sure you want to delete?</p>
             <v-btn
             class="ms-auto"
             text="Yes"

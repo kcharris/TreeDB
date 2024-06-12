@@ -8,6 +8,7 @@ import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 import EditItemPopup from "./components/EditItemPopup.vue"
 import FullDetailsHome from "./components/FullDetailsHome.vue"
+import SettingsPage from "./components/SettingsPage.vue"
 import {ref, computed} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
 import { onMounted } from "vue";
@@ -114,17 +115,23 @@ import { onMounted } from "vue";
       curr_parent.value = default_item
       getList()
     }
+    function updatePage(pageNum: Number){
+      page.value = pageNum
+    }
 </script>
 
 <template>
   <v-app>
-  <v-app-bar density="compact">
-    <v-label class="ml-5"><div class="text-truncate text-nowrap">{{ path }}</div></v-label>
+  <v-app-bar color="blue-grey-lighten-5" density="compact" :elevation="2">
+    <p class="ml-5"><div class="text-truncate text-nowrap">{{ path }}</div></p>
     <v-spacer/>
   </v-app-bar>
-  <EditItemPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
-  <LeftNavBar/>
+  <LeftNavBar @update-page="updatePage"/>
+
   <v-main fluid class="d-flex flex-column">
+    <EditItemPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
+
+    
     <template v-if="page == 0">
       <template v-if="!Number.isNaN(curr_parent.id)">
         <FullDetails :parent = "curr_parent"/>
@@ -133,7 +140,7 @@ import { onMounted } from "vue";
         <FullDetailsHome />
       </template>
       
-      <v-toolbar density="compact">
+      <v-toolbar color="blue-grey-lighten-5" density="compact">
         <v-btn class="bg-primary mr-2 ml-5 my-auto" :onclick="navHome">Home</v-btn>
         <v-btn class="bg-primary mr-10 my-auto" :onclick="navBack" variant="text">Back</v-btn >
         <v-text-field
@@ -152,8 +159,10 @@ import { onMounted } from "vue";
       </v-toolbar>
       <MainList :data-list="data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
     </template>
-    <template v-else-if="page == 1">
-      <v-btn @click="page = 0"></v-btn>
+
+
+    <template v-if="page == 1">
+      <SettingsPage/>
     </template>
     </v-main>
     
