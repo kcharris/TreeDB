@@ -50,6 +50,7 @@ import { onMounted } from "vue";
     const item_to_edit = ref({})
     const edit_dialog_bool = ref(false)
     const page = ref(0)
+    const can_edit = computed(() => Number.isNaN(curr_parent.value.id))
 
     function containsSubsequence(s:string, sub:string){
       if (s.length < sub.length){
@@ -81,12 +82,21 @@ import { onMounted } from "vue";
     async function updateItem(item_object: any){
       let str_object = JSON.stringify(item_object)
       await invoke("update_item", {payload: str_object})
-      getList()
+      if (item_object.id == curr_parent.value.id){
+        str_object = await invoke("get_item_by_id", {id: item_object.id})
+        curr_parent.value = JSON.parse(str_object)
+      }
+      else{
+        getList()
+      }
     }
 
     function getEditItemPopup(item_object: any){
       item_to_edit.value = item_object
       edit_dialog_bool.value = true
+    }
+    function editCurrent(){
+      getEditItemPopup(curr_parent.value)
     }
 
     async function getList(){
@@ -115,7 +125,7 @@ import { onMounted } from "vue";
       curr_parent.value = default_item
       getList()
     }
-    function updatePage(pageNum: Number){
+    function updatePage(pageNum: number){
       page.value = pageNum
     }
 </script>
@@ -155,6 +165,7 @@ import { onMounted } from "vue";
           clearable
         ></v-text-field>
         <v-spacer/>
+        <v-btn :disabled="can_edit" @click="editCurrent" class="bg-primary mr-2">Edit</v-btn>
         <CreateNewItemPopup @send-values="addItem"/>
       </v-toolbar>
       <MainList :data-list="data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>

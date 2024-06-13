@@ -71,7 +71,6 @@ import { watch } from "vue";
           class="bg-primary mr-5"
           prepend-icon="mdi-plus-circle"
           text="Add Item"
-          variant="tonal"
           v-bind="activatorProps"
         ></v-btn>
       </template>

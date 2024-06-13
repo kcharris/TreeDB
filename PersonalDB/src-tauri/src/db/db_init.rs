@@ -23,7 +23,7 @@ pub fn init() {
 pub async fn run_migrator() -> Result<(), Error>{
     let db = Database::connect("sqlite://".to_string() + &get_db_path().clone()).await?;
     let schema_manager = SchemaManager::new(&db);
-    if (!schema_manager.has_table("item").await?){
+    if !schema_manager.has_table("item").await?{
         migrator::Migrator::fresh(&db).await?;
     }
     assert!(schema_manager.has_table("item").await?);

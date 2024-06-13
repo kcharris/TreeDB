@@ -84,6 +84,16 @@ pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<String, Error>{
 }
 
 #[tauri::command]
+pub async fn get_item_by_id(id: i32) -> Result<String, Error>{
+    let db = get_db_conn().await?;
+    let mut items: serde_json::Value;
+    
+    let res = item::Entity::find_by_id(id).into_json().one(&db).await?.expect("Item not found with id").to_string();
+    
+    Ok(res)
+}
+
+#[tauri::command]
 pub async fn add_item(payload: String) -> Result<Option<i32>, Error>{
     let db = get_db_conn().await?;
     let json_item = serde_json::from_str(&payload).unwrap();
