@@ -4,7 +4,6 @@
         parent: Object
     })
     const toggle = ref(false)
-    // const description_class = computed(() => {return `text-md ${toggle.value == false ? "text-truncate" : ""}`})
     const button_icon = computed(() => {return toggle.value == false ? "mdi-arrow-expand" : "mdi-close-circle-outline"})
     const description = computed(() => {return "Description: " + (props.parent?.description != undefined ? props.parent.description : "")})
 

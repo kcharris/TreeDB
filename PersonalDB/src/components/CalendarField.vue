@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import { useDate } from 'vuetify'
     const props = defineProps(["date_str", "name"])
     const emit = defineEmits(["sendDate"])
-    const u_date = useDate()
     const string_date = ref(props.date_str != undefined ? props.date_str : "")
     const cal_date = ref(props.date_str != undefined ? new Date(props.date_str) : "")
     const dialog = ref(false)
