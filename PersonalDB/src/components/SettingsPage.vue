@@ -4,7 +4,7 @@
 
 
 <template>
-    <v-sheet width="70dvh" class="mx-auto" rounded :elevation="10">
+    <v-sheet width="70dvh" class="mx-auto mt-10" rounded :elevation="10">
         <v-container>
             <p class="text-h1">Settings</p>
             <v-divider></v-divider>
