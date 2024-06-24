@@ -48,7 +48,7 @@ import DeleteItemPopup from "./DeleteItemPopup.vue";
         :headers = "headers"
         :items ="dataList"
         density="compact"
-        class="fill-height"
+        class="fill-height overflow-x-auto"
         height="60dvh"
         fixed-header
         multi-sort

@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
     const emit = defineEmits(["updatePage"])
 
     function changePage(pageNum){
