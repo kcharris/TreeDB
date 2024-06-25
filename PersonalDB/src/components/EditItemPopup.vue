@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {ref} from "vue";
 import CalendarField from "./CalendarField.vue";
+import ResourcePopup from "./ResourcePopup.vue";
 import { computed } from "vue";
 import { SubmitEventPromise } from "vuetify";
 import { watch } from "vue";
@@ -13,6 +14,7 @@ import { watch } from "vue";
       priority: "",
       est_time: "",
     })
+    const resource_dialog = ref(false)
 
     const values = ref({
       id: NaN,
@@ -21,6 +23,8 @@ import { watch } from "vue";
       priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
       est_time: computed(()=> {return field.value.est_time == "" ? NaN : parseInt(field.value.est_time)}),
       resource: "",
+      resource_link: "",
+      resource_type: "",
       start_date: "",
       end_date: "",
       availability: "",
@@ -37,6 +41,8 @@ import { watch } from "vue";
         values.value.name = props.item_to_edit.name
         values.value.parent = props.item_to_edit.parent
         values.value.resource = props.item_to_edit.resource
+        values.value.resource_link = props.item_to_edit.resource_link
+        values.value.resource_type = props.item_to_edit.resource_type
         values.value.start_date = props.item_to_edit.start_date
         values.value.end_date = props.item_to_edit.end_date
         values.value.availability = props.item_to_edit.availability
@@ -62,6 +68,10 @@ import { watch } from "vue";
         emit("sendValues", values.value)
         dialog.value=false
       }
+    }
+    function updateAddress(address_arr: Array<string>){
+      values.value.resource_type = address_arr[0]
+      values.value.resource_link = address_arr[1]
     }
   
 </script>
@@ -127,10 +137,16 @@ import { watch } from "vue";
               >
                 <v-text-field
                   v-model="values.resource"
-                  hint="Will try to convert to link"
+                  append-inner-icon="mdi-link"
+                  @click:append-inner="resource_dialog=true"
+                  maxlength="15"
+                  hint="If a link exists while this textfield is empty, it will default to 'link'"
+                  persistent-hint
+                  counter
                   label="Resource"
                 ></v-text-field>
               </v-col>
+              <ResourcePopup v-model="resource_dialog" :address_str="values.resource_link" :address_type="values.resource_type" @add-address="updateAddress"/>
 
               <v-col
                 cols="12"

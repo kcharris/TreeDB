@@ -2,6 +2,8 @@
 import { ref} from "vue";
 import { VDataTableVirtual, VBtn} from "vuetify/components";
 import DeleteItemPopup from "./DeleteItemPopup.vue";
+import { invoke } from "@tauri-apps/api/tauri";
+
 
     const emit = defineEmits(["nextItem", "delete", "edit"])
     defineProps<{
@@ -40,6 +42,9 @@ import DeleteItemPopup from "./DeleteItemPopup.vue";
             { title: 'Edit', align: 'end', key: 'edit' },
             { title: "Del", align: "end", key: "del"},
     ])
+    function openDir(link: string){
+        invoke("open_file_explorer", {dirAddress: link})
+    }
 
 </script>
 
@@ -53,6 +58,42 @@ import DeleteItemPopup from "./DeleteItemPopup.vue";
         fixed-header
         multi-sort
     >
+    
+        <template v-slot:item.resource="item">
+            <v-btn class="text-none" 
+                v-if="item.item.resource_type == undefined && item.item.resource_link != undefined"
+                density="compact"
+                variant="text"
+                >
+                no target selected
+            </v-btn>
+            <v-btn class="text-none"
+                v-else-if="item.item.resource != undefined && item.item.resource_link == undefined"
+                density="compact"
+                variant="text"
+                >
+                {{item.item.resource}}
+            </v-btn>
+            <v-btn
+                class="text-none text-primary text-decoration-underline" 
+                density="compact"
+                v-else-if="item.item.resource_type=='web'"
+                :href="item.item.resource_link"
+                target="_blank"
+                variant="text"
+                >
+                {{ item.item.resource == undefined ? "link" : item.item.resource}}
+            </v-btn>
+            <v-btn
+                class= "text-none text-primary text-decoration-underline"
+                density="compact"
+                v-else-if="item.item.resource_type=='dir'"
+                @click="openDir(item.item.resource_link)"
+                variant="text"
+                >
+                {{ !item.item.resource == undefined ? "link" : item.item.resource}}
+            </v-btn>
+        </template>
         <template v-slot:item.name="item">
             <v-btn max-width="350" density="comfortable" @click="updateData(item.item)" class="w-100 text-none text-truncate">{{ getName(item) }}</v-btn>
         </template>

@@ -37,6 +37,8 @@ impl MigrationTrait for Migration {
 
                     .col(ColumnDef::new(Item::Completed).boolean())
                     .col(ColumnDef::new(Item::Resource).text())
+                    .col(ColumnDef::new(Item::ResourceLink).text())
+                    .col(ColumnDef::new(Item::ResourceType).text())
                     .col(ColumnDef::new(Item::EstTime).integer())
 
                     .col(ColumnDef::new(Item::StartDate).text())
@@ -67,6 +69,10 @@ pub enum Item {
 
     Completed,
     Resource,
+    #[sea_orm(iten = "resource_link")]
+    ResourceLink,
+    #[sea_orm(iten = "resource_type")]
+    ResourceType,
     #[sea_orm(iden = "est_time")]
     EstTime,
 

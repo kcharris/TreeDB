@@ -29,6 +29,7 @@ import { onMounted } from "vue";
       priority: NaN,
       est_time: NaN,
       resource: "",
+      resource_link: "",
       start_date: "",
       end_date: "",
       availability: "",

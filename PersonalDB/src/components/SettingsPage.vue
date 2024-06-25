@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import {VLabel, VContainer} from "vuetify/components";
+    import { VContainer} from "vuetify/components";
 </script>
 
 

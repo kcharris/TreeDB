@@ -15,6 +15,8 @@ pub struct Model {
     pub availability: Option<String>,
     pub completed: Option<bool>,
     pub resource: Option<String>,
+    pub resource_link: Option<String>,
+    pub resource_type: Option<String>,
     pub est_time: Option<i32>,
     pub start_date: Option<String>,
     pub end_date: Option<String>,

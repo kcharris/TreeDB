@@ -1,7 +1,7 @@
 <script setup lang="ts">
     const emit = defineEmits(["updatePage"])
 
-    function changePage(pageNum){
+    function changePage(pageNum:number){
         emit("updatePage", pageNum)
     }
 </script>

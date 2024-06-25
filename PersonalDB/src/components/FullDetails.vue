@@ -1,5 +1,7 @@
 <script setup lang="ts">
     import { ref, computed } from 'vue';
+    import { invoke } from "@tauri-apps/api/tauri";
+
     const props = defineProps({
         parent: Object
     })
@@ -10,6 +12,9 @@
     function toggleTruncate(){
         toggle.value = !toggle.value
     }
+    function openDir(){
+        invoke("open_file_explorer", {dirAddress: props.parent?.resource_link})
+    }
 
 </script>
 <template >
@@ -19,7 +24,20 @@
             <div class="text-md mr-16">{{"Priority: "+ (parent?.priority != undefined ? parent.priority : "") }}</div>
             <div class="text-md">{{ "Completed?: "+ (parent?.completed != undefined ? parent.completed : "") }}</div>
         </div>
-        <div class="text-md">{{ "Link to resource: "+ (parent?.resource != undefined ? parent.resource : "") }}</div>
+        <div class="d-flex">
+            <div class="text-md mr-8">{{ "Resource: "+ (parent?.resource != undefined ? parent.resource : "") }}</div>
+            <div class="text-md mr-8">{{ "Type: " + (parent?.resource_type != undefined ? parent.resource_type : "") }}</div>
+            <div class="text-md">
+                <p>Link to resource:
+                    <v-btn v-if="parent?.resource_type=='web'" class="text-truncate text-none text-primary" density="compact" :href="parent?.resource_link" target="_blank" variant="text">
+                        {{(parent?.resource_link != undefined ? parent.resource_link : "") }}
+                    </v-btn>
+                    <v-btn v-else-if="parent?.resource_type=='dir'" class="text-truncate text-none text-primary" density="compact" @click="openDir" variant="text">
+                        {{(parent?.resource_link != undefined ? parent.resource_link : "") }}
+                    </v-btn>
+                </p>
+            </div>
+        </div>
         <div class="text-md">{{"Est Time: " + (parent?.est_time != undefined ? parent.est_time : "") }} hrs</div>
         <div class="text-md">{{ "Available: "+ (parent?.availability != undefined ? parent.availability : "") }}</div>
         <div class="d-flex">
