@@ -29,10 +29,10 @@
             <div class="text-md mr-8">{{ "Type: " + (parent?.resource_type != undefined ? parent.resource_type : "") }}</div>
             <div class="text-md">
                 <p>Link to resource:
-                    <v-btn v-if="parent?.resource_type=='web'" class="text-truncate text-none text-primary" density="compact" :href="parent?.resource_link" target="_blank" variant="text">
+                    <v-btn v-if="parent?.resource_type=='web'" class="text-truncate text-none text-primary text-decoration-underline" density="compact" :href="parent?.resource_link" target="_blank" variant="text">
                         {{(parent?.resource_link != undefined ? parent.resource_link : "") }}
                     </v-btn>
-                    <v-btn v-else-if="parent?.resource_type=='dir'" class="text-truncate text-none text-primary" density="compact" @click="openDir" variant="text">
+                    <v-btn v-else-if="parent?.resource_type=='dir'" class="text-truncate text-none text-primary text-decoration-underline" density="compact" @click="openDir" variant="text">
                         {{(parent?.resource_link != undefined ? parent.resource_link : "") }}
                     </v-btn>
                     <v-btn v-else-if="parent?.resource_type == undefined" class="text-truncate text-none" density="compact">
