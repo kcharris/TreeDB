@@ -35,6 +35,9 @@
                     <v-btn v-else-if="parent?.resource_type=='dir'" class="text-truncate text-none text-primary" density="compact" @click="openDir" variant="text">
                         {{(parent?.resource_link != undefined ? parent.resource_link : "") }}
                     </v-btn>
+                    <v-btn v-else-if="parent?.resource_type == undefined" class="text-truncate text-none" density="compact">
+                        {{(parent?.resource_link != undefined ? parent.resource_link : "") }}
+                    </v-btn>
                 </p>
             </div>
         </div>
