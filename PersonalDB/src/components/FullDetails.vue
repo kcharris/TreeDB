@@ -22,7 +22,12 @@
         <div class="text-h5">{{ "Name: " + (parent?.name != undefined ? parent.name : "")}}</div>
         <div class="d-flex">
             <div class="text-md mr-16">{{"Priority: "+ (parent?.priority != undefined ? parent.priority : "") }}</div>
-            <div class="text-md">{{ "Completed?: "+ (parent?.completed != undefined ? parent.completed : "") }}</div>
+            <div class="text-md">
+                <p>Completed?: 
+                    <v-icon v-if="parent?.completed==false">mdi-checkbox-blank-outline</v-icon>
+                    <v-icon color="primary" v-else-if="parent?.completed==true">mdi-checkbox-marked</v-icon>
+                </p>
+            </div>
         </div>
         <div class="d-flex">
             <div class="text-md mr-8">{{ "Resource: "+ (parent?.resource != undefined ? parent.resource : "") }}</div>

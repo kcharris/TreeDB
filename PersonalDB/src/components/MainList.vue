@@ -97,6 +97,10 @@ import { invoke } from "@tauri-apps/api/tauri";
         <template v-slot:item.name="item">
             <v-btn max-width="350" density="comfortable" @click="updateData(item.item)" class="w-100 text-none text-truncate">{{ getName(item) }}</v-btn>
         </template>
+        <template v-slot:item.completed="item">
+            <v-icon v-if="item.item.completed==false">mdi-checkbox-blank-outline</v-icon>
+            <v-icon color="primary" v-else-if="item.item.completed==true">mdi-checkbox-marked</v-icon>
+        </template>
         <template v-slot:item.edit="{item}">
             <v-icon @click="editItem(item)">mdi-pencil</v-icon>
         </template>
