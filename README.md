@@ -23,10 +23,11 @@ This tool is best used in conjunction with a calendar, where items can be placed
 ### Data
 This tool generalizes items and their properties for management. Here are the properties of each item.
 
-| | | | | |
-| --- | --- | --- | --- | --- |
-| Name    | Parent | Priority | Estimated Time | Start Date |
-| End Date | Resource | Availability | Completed | Description |
+| | | | |
+| --- | --- | --- | --- |
+| Name    | Parent | Priority | Estimated Time |
+| Start Date | End Date | Resource | Availability |
+| Completed | Description | Resource Type | Resource Link |
 
 ### Tools Used
 * Tauri
