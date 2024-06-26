@@ -3,11 +3,11 @@ import {ref} from "vue";
     const props = defineProps(["date_str", "name"])
     const emit = defineEmits(["sendDate"])
     const string_date = ref(props.date_str != undefined ? props.date_str : "")
-    const cal_date = ref(props.date_str != undefined ? new Date(props.date_str) : "")
+    const cal_date = ref(props.date_str != undefined ? new Date(props.date_str) : undefined)
     const dialog = ref(false)
         
     function emitDate(){
-        string_date.value = cal_date.value.toISOString().slice(0,10)
+        string_date.value = cal_date.value == undefined ? "" : cal_date.value.toISOString().slice(0,10)
         emit("sendDate", string_date)
         dialog.value = false
     }
@@ -15,6 +15,10 @@ import {ref} from "vue";
         dialog.value = true
         cal_date.value = props.date_str != undefined ? new Date(props.date_str) : new Date()
         string_date.value = props.date_str != undefined ? props.date_str : ""
+    }
+    function onClear(){
+        string_date.value = ""
+        emit("sendDate", string_date)
     }
      
 </script>
@@ -27,6 +31,7 @@ import {ref} from "vue";
         persistent-clear
         readonly
         clearable
+        @click:clear="onClear"
         >
         </v-text-field>
         <v-dialog
