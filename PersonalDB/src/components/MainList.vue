@@ -61,45 +61,45 @@ import { invoke } from "@tauri-apps/api/tauri";
     
         <template v-slot:item.resource="item">
             <v-btn class="text-none" 
-                v-if="item.item.resource_type == undefined && item.item.resource_link != undefined"
+                v-if="(item.item as any).resource_type == undefined && (item.item as any).resource_link != undefined"
                 density="compact"
                 variant="text"
                 >
                 no target selected
             </v-btn>
             <v-btn class="text-none"
-                v-else-if="item.item.resource != undefined && item.item.resource_link == undefined"
+                v-else-if="(item.item as any).resource != undefined && (item.item as any).resource_link == undefined"
                 density="compact"
                 variant="text"
                 >
-                {{item.item.resource}}
+                {{(item.item as any).resource}}
             </v-btn>
             <v-btn
                 class="text-none text-primary text-decoration-underline" 
                 density="compact"
-                v-else-if="item.item.resource_type=='web'"
-                :href="item.item.resource_link"
+                v-else-if="(item.item as any).resource_type=='web'"
+                :href="(item.item as any).resource_link"
                 target="_blank"
                 variant="text"
                 >
-                {{ item.item.resource == undefined ? "link" : item.item.resource}}
+                {{ (item.item as any).resource == undefined ? "link" : (item.item as any).resource}}
             </v-btn>
             <v-btn
                 class= "text-none text-primary text-decoration-underline"
                 density="compact"
-                v-else-if="item.item.resource_type=='dir'"
-                @click="openDir(item.item.resource_link)"
+                v-else-if="(item.item as any).resource_type=='dir'"
+                @click="openDir((item.item as any).resource_link)"
                 variant="text"
                 >
-                {{ !item.item.resource == undefined ? "link" : item.item.resource}}
+                {{ !(item.item as any).resource == undefined ? "link" : (item.item as any).resource}}
             </v-btn>
         </template>
         <template v-slot:item.name="item">
             <v-btn max-width="350" density="comfortable" @click="updateData(item.item)" class="w-100 text-none text-truncate">{{ getName(item) }}</v-btn>
         </template>
         <template v-slot:item.completed="item">
-            <v-icon v-if="item.item.completed==false">mdi-checkbox-blank-outline</v-icon>
-            <v-icon color="primary" v-else-if="item.item.completed==true">mdi-checkbox-marked</v-icon>
+            <v-icon v-if="(item.item as any).completed==false">mdi-checkbox-blank-outline</v-icon>
+            <v-icon color="primary" v-else-if="(item.item as any).completed==true">mdi-checkbox-marked</v-icon>
         </template>
         <template v-slot:item.edit="{item}">
             <v-icon @click="editItem(item)">mdi-pencil</v-icon>
