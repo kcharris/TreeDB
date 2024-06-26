@@ -51,11 +51,12 @@ import { ref, watch} from "vue";
                         v-model="address_type"
                         :items="items"
                         label="Select Target"
+                        class="ms-auto"
                     >
                     </v-select>
                     
                     <v-btn
-                        class="ms-auto bg-primary"
+                        class="ml-5 mr-2 bg-primary"
                         text="Update"
                         @click="emitAddAddress"
                     ></v-btn>
