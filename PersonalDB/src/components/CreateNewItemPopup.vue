@@ -11,14 +11,13 @@ import { watch } from "vue";
     const resource_dialog= ref(false)
     const field = ref({
       priority: "",
-      est_time: "",
     })
 
     const values = ref({
       name: "",
       parent: NaN,
       priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
-      est_time: computed(()=> {return field.value.est_time == "" ? NaN : parseInt(field.value.est_time)}),
+      est_time: "",
       resource: "",
       resource_link: "",
       resource_type: "",
@@ -31,11 +30,12 @@ import { watch } from "vue";
 
     watch(dialog, (val) => {
       if (val == true){
-        field.value.est_time = ""
+        
         field.value.priority = ""
 
         values.value.name = ""
         values.value.parent = NaN
+        values.value.est_time = ""
         values.value.resource = ""
         values.value.resource_type = ""
         values.value.resource_link = ""
@@ -127,7 +127,7 @@ import { watch } from "vue";
                 sm="6"
               >
                 <v-text-field
-                  v-model="field.est_time"
+                  v-model="values.est_time"
                   hint="Estimated time the item will take"
                   label="Est Time"
                   suffix="hrs"

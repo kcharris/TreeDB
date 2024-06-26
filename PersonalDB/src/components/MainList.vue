@@ -94,6 +94,9 @@ import { invoke } from "@tauri-apps/api/tauri";
                 {{ !(item.item as any).resource == undefined ? "link" : (item.item as any).resource}}
             </v-btn>
         </template>
+        <template v-slot:item.est_time="item">
+            <p>{{ (item.item as any).est_time ? (item.item as any).est_time + " hrs" : "-- hrs" }}</p>
+        </template>
         <template v-slot:item.name="item">
             <v-btn max-width="350" density="comfortable" @click="updateData(item.item)" class="w-100 text-none text-truncate">{{ getName(item) }}</v-btn>
         </template>

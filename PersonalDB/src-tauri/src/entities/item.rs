@@ -17,7 +17,7 @@ pub struct Model {
     pub resource: Option<String>,
     pub resource_link: Option<String>,
     pub resource_type: Option<String>,
-    pub est_time: Option<i32>,
+    pub est_time: Option<String>,
     pub start_date: Option<String>,
     pub end_date: Option<String>,
     pub description: Option<String>,

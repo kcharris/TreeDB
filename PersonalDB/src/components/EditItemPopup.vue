@@ -12,7 +12,6 @@ import { watch } from "vue";
     const emit = defineEmits(["sendValues", "updateOpenDialogBool"])
     const field = ref({
       priority: "",
-      est_time: "",
     })
     const resource_dialog = ref(false)
 
@@ -21,7 +20,7 @@ import { watch } from "vue";
       name: "",
       parent: NaN,
       priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
-      est_time: computed(()=> {return field.value.est_time == "" ? NaN : parseInt(field.value.est_time)}),
+      est_time: "",
       resource: "",
       resource_link: "",
       resource_type: "",
@@ -34,12 +33,12 @@ import { watch } from "vue";
 
     watch(dialog, (val) => {
       if (val == true){
-        field.value.est_time = props.item_to_edit.est_time
         field.value.priority = props.item_to_edit.priority
 
         values.value.id = props.item_to_edit.id
         values.value.name = props.item_to_edit.name
         values.value.parent = props.item_to_edit.parent
+        values.value.est_time = props.item_to_edit.est_time
         values.value.resource = props.item_to_edit.resource
         values.value.resource_link = props.item_to_edit.resource_link
         values.value.resource_type = props.item_to_edit.resource_type
@@ -122,7 +121,7 @@ import { watch } from "vue";
                 sm="6"
               >
                 <v-text-field
-                  v-model="field.est_time"
+                  v-model="values.est_time"
                   hint="Estimated time the item will take"
                   label="Est Time"
                   suffix="hrs"

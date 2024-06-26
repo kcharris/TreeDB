@@ -39,7 +39,7 @@ impl MigrationTrait for Migration {
                     .col(ColumnDef::new(Item::Resource).text())
                     .col(ColumnDef::new(Item::ResourceLink).text())
                     .col(ColumnDef::new(Item::ResourceType).text())
-                    .col(ColumnDef::new(Item::EstTime).integer())
+                    .col(ColumnDef::new(Item::EstTime).text())
 
                     .col(ColumnDef::new(Item::StartDate).text())
                     .col(ColumnDef::new(Item::EndDate).text())
