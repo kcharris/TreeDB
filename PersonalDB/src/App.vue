@@ -2,7 +2,7 @@
 
 import CreateNewItemPopup from "./components/CreateNewItemPopup.vue";
 import FullDetails from "./components/FullDetails.vue"
-import LeftNavBar from "./components/LeftNavBar.vue";
+// import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
 import EditItemPopup from "./components/EditItemPopup.vue"
 import FullDetailsHome from "./components/FullDetailsHome.vue"
@@ -124,9 +124,9 @@ import { onMounted } from "vue";
       curr_parent.value = default_item
       getList()
     }
-    function updatePage(pageNum: number){
-      page.value = pageNum
-    }
+    // function updatePage(pageNum: number){
+    //   page.value = pageNum
+    // }
 </script>
 
 <template>
@@ -135,7 +135,7 @@ import { onMounted } from "vue";
     <p class="ml-5"><div class="text-truncate text-nowrap">{{ path }}</div></p>
     <v-spacer/>
   </v-app-bar>
-  <LeftNavBar @update-page="updatePage"/>
+  <!-- <LeftNavBar @update-page="updatePage"/> -->
 
   <v-main fluid class="d-flex flex-column">
     <EditItemPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
