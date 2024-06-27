@@ -102,6 +102,7 @@ import { watch } from "vue";
                   v-model="values.name"
                   :rules="[rules.required]"
                   maxlength="30"
+                  aria-autocomplete="none"
                 ></v-text-field>
               </v-col>
   
@@ -149,6 +150,7 @@ import { watch } from "vue";
                   persistent-hint
                   counter
                   label="Resource"
+                  aria-autocomplete="none"
                 ></v-text-field>
               </v-col>
               <ResourcePopup v-model="resource_dialog" :address_str="values.resource_link" :address_type="values.resource_type" @add-address="updateAddress"/>
