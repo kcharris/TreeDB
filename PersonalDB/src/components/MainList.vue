@@ -61,14 +61,14 @@ import { invoke } from "@tauri-apps/api/tauri";
     
         <template v-slot:item.resource="item">
             <v-btn class="text-none" 
-                v-if="(item.item as any).resource_type == undefined && (item.item as any).resource_link != undefined"
+                v-if="(item.item as any).resource_type == '' && (item.item as any).resource_link != ''"
                 density="compact"
                 variant="text"
                 >
                 no target selected
             </v-btn>
             <v-btn class="text-none"
-                v-else-if="(item.item as any).resource != undefined && (item.item as any).resource_link == undefined"
+                v-else-if="(item.item as any).resource != '' && (item.item as any).resource_link == ''"
                 density="compact"
                 variant="text"
                 >
@@ -82,7 +82,7 @@ import { invoke } from "@tauri-apps/api/tauri";
                 target="_blank"
                 variant="text"
                 >
-                {{ (item.item as any).resource == undefined ? "link" : (item.item as any).resource}}
+                {{ (item.item as any).resource == '' ? "link" : (item.item as any).resource}}
             </v-btn>
             <v-btn
                 class= "text-none text-primary text-decoration-underline"
@@ -91,7 +91,7 @@ import { invoke } from "@tauri-apps/api/tauri";
                 @click="openDir((item.item as any).resource_link)"
                 variant="text"
                 >
-                {{ !(item.item as any).resource == undefined ? "link" : (item.item as any).resource}}
+                {{ !((item.item as any).resource == '') ? "link" : (item.item as any).resource}}
             </v-btn>
         </template>
         <template v-slot:item.est_time="item">
