@@ -1,6 +1,7 @@
 ## Personal Database for Desktop
-A pre-release version can be found on the right under releases.
-Currently under development. If you want to work on it, follow the Tauri installation guide [here](https://tauri.app/v1/guides/getting-started/prerequisites) and then start the application using commands on this development page [here](https://tauri.app/v1/guides/development/development-cycle).
+A pre-release version can be found on the right under releases.  
+
+This project is currently under development. If you want to work on it, follow the Tauri installation guide [here](https://tauri.app/v1/guides/getting-started/prerequisites) and then start the application using commands on this development page [here](https://tauri.app/v1/guides/development/development-cycle).
 
 #### To-do
 * Settings Page
