@@ -5,15 +5,19 @@ import ResourcePopup from "./ResourcePopup.vue";
 import { computed } from "vue";
 import { SubmitEventPromise } from "vuetify";
 import { watch } from "vue";
-
-    const emit = defineEmits(["sendValues"])
-    const dialog = ref(false)
-    const resource_dialog= ref(false)
+    const props = defineProps([
+      'item_to_edit'
+    ])
+    const dialog = defineModel({type: Boolean})
+    const resource_dialog = ref(false)
+    const emit = defineEmits(["sendValues", "updateOpenDialogBool"])
     const field = ref({
       priority: "",
     })
+    
 
     const values = ref({
+      id: NaN, // may cause error
       name: "",
       parent: NaN,
       priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
@@ -29,27 +33,46 @@ import { watch } from "vue";
     })
 
     watch(dialog, (val) => {
-      if (val == true){
-        
-        field.value.priority = ""
+        if (val == true){
+            if(props.item_to_edit != undefined){
+                
+                field.value.priority = props.item_to_edit.priority
 
-        values.value.name = ""
-        values.value.parent = NaN
-        values.value.est_time = ""
-        values.value.resource = ""
-        values.value.resource_type = ""
-        values.value.resource_link = ""
-        values.value.start_date = ""
-        values.value.end_date = ""
-        values.value.availability = ""
-        values.value.completed = false
-        values.value.description = ""
-      }
+                values.value.id = props.item_to_edit.id
+                values.value.name = props.item_to_edit.name
+                values.value.parent = props.item_to_edit.parent
+                values.value.est_time = props.item_to_edit.est_time
+                values.value.resource = props.item_to_edit.resource
+                values.value.resource_link = props.item_to_edit.resource_link
+                values.value.resource_type = props.item_to_edit.resource_type
+                values.value.start_date = props.item_to_edit.start_date
+                values.value.end_date = props.item_to_edit.end_date
+                values.value.availability = props.item_to_edit.availability
+                values.value.completed = props.item_to_edit.completed
+                values.value.description = props.item_to_edit.description
+            }
+            else{
+                field.value.priority = ""
+
+                values.value.name = ""
+                values.value.parent = NaN
+                values.value.est_time = ""
+                values.value.resource = ""
+                values.value.resource_type = ""
+                values.value.resource_link = ""
+                values.value.start_date = ""
+                values.value.end_date = ""
+                values.value.availability = ""
+                values.value.completed = false
+                values.value.description = ""
+            }
+        }
+      
     })
 
     const rules = ref({
       isSmallInt: (value: string) => {
-        if ((!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100) || value=="") return true
+        if ((!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100) || value == "") return true
         else return `Must be an integer within 0-100`
       },
       required: (value: string) => {
@@ -71,12 +94,12 @@ import { watch } from "vue";
     }
   
 </script>
-<template>
+<template class="mr-5 text-center">
     <v-dialog
       v-model="dialog"
       max-width="1000"
     >
-      <template v-slot:activator="{ props: activatorProps }">
+        <template v-if="props.item_to_edit == undefined" v-slot:activator="{ props: activatorProps }">
         <v-btn
           class="bg-primary mr-5"
           prepend-icon="mdi-plus-circle"
@@ -141,7 +164,7 @@ import { watch } from "vue";
                 md="4"
                 sm="6"
               >
-              <v-text-field
+                <v-text-field
                   v-model="values.resource"
                   append-inner-icon="mdi-link"
                   @click:append-inner="resource_dialog=true"
@@ -160,14 +183,14 @@ import { watch } from "vue";
                 md="4"
                 sm="6"
               >
-              <CalendarField name="Start Date" @send-date="(v) => values.start_date = v" />
+              <CalendarField :date_str="values.start_date" name="Start Date" @send-date="(v) => values.start_date = v" />
               </v-col>
   
               <v-col
                 cols="12"
                 sm="4"
               >
-                <CalendarField name="End Date" @send-date="(v) => values.end_date = v"/>
+                <CalendarField :date_str="values.end_date" name="End Date" @send-date="(v) => values.end_date = v"/>
               </v-col>
 
               <v-col
@@ -175,7 +198,7 @@ import { watch } from "vue";
                 md="4"
                 sm="6"
               >
-              <CalendarField name="Availability" @send-date="(v) => values.availability = v"/>
+              <CalendarField :date_str="values.availability" name="Availability" @send-date="(v) => values.availability = v"/>
               </v-col>
 
               <v-col
@@ -208,7 +231,7 @@ import { watch } from "vue";
           <v-card-actions>
             <v-btn
               class="bg-primary"
-              text="Save"
+              :text="props.item_to_edit == undefined ? 'Save' : 'Update'"
               variant="tonal"
               type="submit"
             ></v-btn>

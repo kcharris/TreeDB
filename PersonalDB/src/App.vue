@@ -1,10 +1,9 @@
 <script setup lang="ts">
 
-import CreateNewItemPopup from "./components/CreateNewItemPopup.vue";
+import CreateAndEditPopup from "./components/CreateAndEditPopup.vue";
 import FullDetails from "./components/FullDetails.vue"
 // import LeftNavBar from "./components/LeftNavBar.vue";
 import MainList from "./components/MainList.vue";
-import EditItemPopup from "./components/EditItemPopup.vue"
 import FullDetailsHome from "./components/FullDetailsHome.vue"
 import SettingsPage from "./components/SettingsPage.vue"
 import {ref, computed} from "vue"
@@ -138,7 +137,7 @@ import { onMounted } from "vue";
   <!-- <LeftNavBar @update-page="updatePage"/> -->
 
   <v-main fluid class="d-flex flex-column">
-    <EditItemPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
+    <CreateAndEditPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
 
     
     <template v-if="page == 0">
@@ -165,7 +164,7 @@ import { onMounted } from "vue";
         ></v-text-field>
         <v-spacer/>
         <v-btn :disabled="can_edit" @click="editCurrent" class="bg-primary mr-2">Edit</v-btn>
-        <CreateNewItemPopup @send-values="addItem"/>
+        <CreateAndEditPopup @send-values="addItem"/>
       </v-toolbar>
       <MainList :data-list="data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
     </template>
