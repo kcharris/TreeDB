@@ -1,3 +1,9 @@
+<!--
+This component handles opening a dialog popup for both editing and creating items.
+It does this by detecting if a prop has been passed or not.
+The create function has a btn for the UI.
+The edit function only has a dialog and relies on separate UI such as an edit button or edit icon to function.
+-->
 <script setup lang="ts">
 import {ref} from "vue";
 import CalendarField from "./CalendarField.vue";
@@ -17,7 +23,7 @@ import { watch } from "vue";
     
 
     const values = ref({
-      id: NaN, // may cause error
+      id: NaN,
       name: "",
       parent: NaN,
       priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
