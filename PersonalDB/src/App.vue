@@ -24,7 +24,7 @@ import { onMounted } from "vue";
     const default_item = {
       name: "default",
       id: NaN,
-      parent: NaN,
+      parent_id: NaN,
       priority: NaN,
       est_time: NaN,
       resource: "",
@@ -68,7 +68,7 @@ import { onMounted } from "vue";
       return false
     }
     async function addItem(item_object: any){
-      item_object.parent = curr_parent.value.id
+      item_object.parent_id = curr_parent.value.id
       let str_object = JSON.stringify(item_object)
       await invoke("add_item", {payload: str_object})
       getList()

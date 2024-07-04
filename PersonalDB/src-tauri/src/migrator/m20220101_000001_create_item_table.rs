@@ -30,7 +30,14 @@ impl MigrationTrait for Migration {
                     )
                     // info on ColumnDef: https://docs.rs/sea-orm-migration/latest/sea_orm_migration/prelude/struct.ColumnDef.html
                     // reference to column types across rust and sqlite: https://www.sea-ql.org/SeaORM/docs/generate-entity/entity-structure/
-                    .col(ColumnDef::new(Item::Parent).integer())
+                    .col(ColumnDef::new(Item::ParentId).integer())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("FK_parent")
+                            .from(Item::Table, Item::ParentId)
+                            .to(Item::Table, Item::Id)
+                            .on_delete(ForeignKeyAction::Cascade)
+                    )
                     .col(ColumnDef::new(Item::Name).text().not_null())
                     .col(ColumnDef::new(Item::Availability).text())
                     .col(ColumnDef::new(Item::Priority).integer())
@@ -63,15 +70,16 @@ pub enum Item {
     Id,
     Priority,
 
-    Parent,
+    #[sea_orm(iden = "parent_id")]
+    ParentId,
     Name,
     Availability,
 
     Completed,
     Resource,
-    #[sea_orm(iten = "resource_link")]
+    #[sea_orm(iden = "resource_link")]
     ResourceLink,
-    #[sea_orm(iten = "resource_type")]
+    #[sea_orm(iden = "resource_type")]
     ResourceType,
     #[sea_orm(iden = "est_time")]
     EstTime,

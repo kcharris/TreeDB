@@ -10,7 +10,7 @@ pub struct Model {
     #[serde(skip_deserializing)] // Skip deserializing
     pub id: i32,
     pub name: String,
-    pub parent: Option<i32>,
+    pub parent_id: Option<i32>,
     pub priority: Option<i32>,
     pub availability: Option<String>,
     pub completed: Option<bool>,

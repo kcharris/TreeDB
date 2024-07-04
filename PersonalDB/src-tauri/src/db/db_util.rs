@@ -39,44 +39,16 @@ async fn get_db_conn() -> Result<DatabaseConnection, DbErr> {
     return Ok(db);
 }
 
-pub async fn test_insert() -> Result<(), Error>{
-    let db = get_db_conn().await?;
-    for i in 1..=5{
-      let item1 = item::ActiveModel {
-        name: ActiveValue::Set(format!("item{i}").to_owned()),
-        priority: ActiveValue::Set(Some(88 + i)),
-        ..Default::default()
-      };
-      // let item1 = item1.insert(&db).await?;
-      let res = item::Entity::insert(item1).exec(&db).await?;
-      for j in 1..=5{
-        let item1 = item::ActiveModel {
-          name: ActiveValue::Set(format!("item{j}").to_owned()),
-          priority: ActiveValue::Set(Some(88 + j)),
-          parent: ActiveValue::Set(Some(i)),
-          ..Default::default()
-        };
-      // let item1 = item1.insert(&db).await?;
-      let res = item::Entity::insert(item1).exec(&db).await?;
-      }
-    }
-    
-    
-    let items: Vec<item::Model> = item::Entity::find().all(&db).await?;
-    //assert_eq!(items.len(), 5);
-    Ok(())
-}
-
 #[tauri::command]
 pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<String, Error>{
     let db = get_db_conn().await?;
     let res: String;
     let mut items: serde_json::Value;
     if id.is_none() {
-      items = sea_orm::JsonValue::Array(item::Entity::find().filter(Expr::col(item::Column::Parent).is_null()).into_json().all(&db).await?);
+      items = sea_orm::JsonValue::Array(item::Entity::find().filter(Expr::col(item::Column::ParentId).is_null()).into_json().all(&db).await?);
     }
     else{
-      items = sea_orm::JsonValue::Array(item::Entity::find().filter(item::Column::Parent.eq(id.unwrap())).into_json().all(&db).await?);
+      items = sea_orm::JsonValue::Array(item::Entity::find().filter(item::Column::ParentId.eq(id.unwrap())).into_json().all(&db).await?);
     }
     
     let res = items;
