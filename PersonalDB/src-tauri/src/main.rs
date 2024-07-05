@@ -12,18 +12,12 @@ use crate::db::db_init;
 use crate::db::db_util::*;
 use std::process::Command;
 
-// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-#[tauri::command]
-fn greet(msg: &str) -> String {
-    println!("Hello from {}", msg);
-    "Greet".to_owned()
-}
-
 async fn run()  -> Result<(), Error> {
     run_migrator().await?;
     Ok(())
 }
 
+// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
 fn open_file_explorer(dir_address: &str) {
     println!("Opening");
@@ -49,7 +43,7 @@ fn open_file_explorer(dir_address: &str) {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![find_items_by_parent_id, get_item_by_id, add_item, greet, delete_item, update_item, open_file_explorer])
+        .invoke_handler(tauri::generate_handler![find_items_by_parent_id, get_item_by_id, add_item, delete_item, update_item, open_file_explorer])
         .setup(|_app|{
             db_init::init();
             if let Err(err) = block_on(run()) {

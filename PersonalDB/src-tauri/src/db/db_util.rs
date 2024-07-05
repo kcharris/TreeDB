@@ -3,14 +3,11 @@ use std::env::Args;
 use std::fs;
 use std::path::Path;
 use thiserror::Error;
-use sea_orm::{ColumnTrait, DatabaseConnection};
-use sea_orm::{Database, DbErr, InsertResult};
 
 use crate::migrator;
 use crate::entities::*;
 use sea_orm_migration::prelude::*;
-// use sea_orm_migration::prelude::ColumnSpec::Default;
-use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter, ModelTrait};
+use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter, ModelTrait, ColumnTrait, DatabaseConnection, Database, DbErr, InsertResult};
 use crate::db::db_init::*;
 use serde_json::json;
 

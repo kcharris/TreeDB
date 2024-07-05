@@ -7,7 +7,7 @@ use serde;
 #[sea_orm(table_name = "item")]
 pub struct Model {
     #[sea_orm(primary_key)]
-    #[serde(skip_deserializing)] // Skip deserializing
+    #[serde(skip_deserializing)]
     pub id: i32,
     pub name: String,
     pub parent_id: Option<i32>,
