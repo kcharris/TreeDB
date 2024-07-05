@@ -1,16 +1,13 @@
 // code used from https://blog.moonguard.dev/how-to-use-local-sqlite-database-with-tauri
 use std::fs;
 use std::path::Path;
-use sea_orm::{Database, DbErr};
 
-use crate::migrator;
 use crate::db::db_util::*;
 use crate::entities::*;
+
+use crate::migrator;
+use sea_orm::{Database, DbErr, ActiveValue, ActiveModelTrait, EntityTrait};
 use sea_orm_migration::prelude::*;
-use sea_orm::ActiveValue;
-use sea_orm::ActiveModelTrait;
-use sea_orm::EntityTrait;
-use crate::db::db_util::*;
 
 // Check if a database file exists, and create one if it does not.
 pub fn init() {
@@ -23,10 +20,15 @@ pub fn init() {
 pub async fn run_migrator() -> Result<(), Error>{
     let db = Database::connect("sqlite://".to_string() + &get_db_path().clone()).await?;
     let schema_manager = SchemaManager::new(&db);
-    if !schema_manager.has_table("item").await?{
+
+    // starts a fresh migration if one of the tables does not exist
+    if !schema_manager.has_table("item").await? || !schema_manager.has_table("item_tag").await? || !schema_manager.has_table("tag").await? {
         migrator::Migrator::fresh(&db).await?;
     }
     assert!(schema_manager.has_table("item").await?);
+    assert!(schema_manager.has_table("tag").await?);
+    assert!(schema_manager.has_table("item_tag").await?);
+
     Ok(())
 }
 
@@ -45,7 +47,7 @@ fn create_db_file() {
 }
 
 // Check whether the database file exists.
-fn db_file_exists() -> bool {
+pub fn db_file_exists() -> bool {
     let db_path = get_db_path();
     Path::new(&db_path).exists()
 }
