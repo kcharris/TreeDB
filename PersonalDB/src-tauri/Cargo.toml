@@ -22,6 +22,7 @@ dirs = "5.0"
 time = "0.3.34"
 futures = "0.3.28"
 thiserror = "1.0.58"
+async-std = { version = "1.12.0", features= ["attributes"] }
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem

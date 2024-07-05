@@ -1,13 +1,19 @@
 // code used from https://blog.moonguard.dev/how-to-use-local-sqlite-database-with-tauri
 use std::fs;
 use std::path::Path;
+use std::time::Duration;
+use serde_json::json;
 
+use async_std::prelude::*;
+use async_std::task;
 use crate::db::db_util::*;
 use crate::entities::*;
 
 use crate::migrator;
 use sea_orm::{Database, DbErr, ActiveValue, ActiveModelTrait, EntityTrait};
 use sea_orm_migration::prelude::*;
+use sea_orm_migration::MigrationStatus;
+
 
 // Check if a database file exists, and create one if it does not.
 pub fn init() {
@@ -56,5 +62,92 @@ pub fn db_file_exists() -> bool {
 pub fn get_db_path() -> String {
     let home_dir = dirs::home_dir().unwrap();
     home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/database.sqlite"
+}
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // Sets up a test database to avoid over-writing original
+    pub fn get_test_db_path() -> String {
+        let home_dir = dirs::home_dir().unwrap();
+        let db_path = home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/test_database.sqlite";
+        if !Path::new(&db_path).exists(){
+            let db_dir = Path::new(&db_path).parent().unwrap();
+
+            // If the parent directory does not exist, create it.
+            if !db_dir.exists() {
+                fs::create_dir_all(db_dir).unwrap();
+            }
+
+            // Create the database file.
+            fs::File::create(db_path.clone()).unwrap();
+        }
+        return db_path;
+    }
+
+    #[async_std::test]
+    async fn test_migrations() -> Result<(), Error> {
+        let db = Database::connect("sqlite://".to_string() + &get_test_db_path().clone()).await?;
+        let schema_manager = SchemaManager::new(&db);
+
+        migrator::Migrator::fresh(&db).await?;
+
+        assert!(schema_manager.has_table("item").await?);
+        assert!(schema_manager.has_table("tag").await?);
+        assert!(schema_manager.has_table("item_tag").await?);
+
+        Ok(())
+    }
+
+    #[async_std::test]
+    async fn test_insert_basic() -> Result<(), Error> {
+        task::sleep(Duration::from_millis(500)).await;
+        let db = Database::connect("sqlite://".to_string() + &get_test_db_path().clone()).await?;
+        for i in 0..=5 {
+            let mut item = item::ActiveModel{..Default::default()};
+            item.name = ActiveValue::Set(format!("itemy-{i}"));
+            let res = item::Entity::insert(item).exec(&db).await?;
+        }
+        let mut item = item::ActiveModel{..Default::default()};
+        item.name = ActiveValue::Set(format!("itemy-55"));
+        let res = item::Entity::insert(item).exec(&db).await?;
+
+        assert_eq!(res.last_insert_id, 7);
+
+        for i in 0..=5 {
+            let mut tag = tag::ActiveModel{..Default::default()};
+            tag.name = ActiveValue::Set(format!("taggy-{i}"));
+            let res = tag::Entity::insert(tag).exec(&db).await?;
+        }
+        let mut tag = tag::ActiveModel{..Default::default()};
+        tag.name = ActiveValue::Set(format!("taggy-77"));
+        let res = tag::Entity::insert(tag).exec(&db).await?;
+        
+        assert_eq!(res.last_insert_id, 7);
+        Ok(())
+    }
+    #[async_std::test]
+    async fn test_insert_junction() -> Result<(), Error> {
+        task::sleep(Duration::from_millis(1000)).await;
+        let db = Database::connect("sqlite://".to_string() + &get_test_db_path().clone()).await?;
+        for i in 1..=5{
+            for j in 1..=5{
+                let mut item_tag = item_tag::ActiveModel::from_json(json!({
+                    "item_id": i,
+                    "tag_id": j
+                }))?;
+                let res = item_tag::Entity::insert(item_tag).exec(&db).await?;
+            }
+        }
+        let mut item_tag = item_tag::ActiveModel::from_json(json!({
+            "item_id": 6,
+            "tag_id": 6
+        }))?;
+        let res = item_tag::Entity::insert(item_tag).exec(&db).await?;
+        assert_eq!(res.last_insert_id, (6,6));
+        Ok(())
+    }
 }
 
