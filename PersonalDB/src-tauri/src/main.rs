@@ -4,18 +4,15 @@
 pub mod db;
 pub mod migrator;
 pub mod entities;
+pub mod errors;
 
-use db::db_init::run_migrator;
 use futures::executor::block_on;
-use sea_orm::{Database, DbErr};
-use crate::db::db_init;
 use crate::db::db_util::*;
-use std::process::Command;
+use crate::db::tag_db_util::*;
+use crate::db::item_tag_db_util::*;
+use crate::db::item_db_util::*;
 
-async fn run()  -> Result<(), Error> {
-    run_migrator().await?;
-    Ok(())
-}
+use std::process::Command;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 #[tauri::command]
@@ -45,8 +42,8 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![find_items_by_parent_id, get_item_by_id, add_item, delete_item, update_item, open_file_explorer])
         .setup(|_app|{
-            db_init::init();
-            if let Err(err) = block_on(run()) {
+            init();
+            if let Err(err) = block_on(run_migrator()) {
                 panic!("{}", err);
             }
             Ok(())
