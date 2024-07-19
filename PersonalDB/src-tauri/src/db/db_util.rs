@@ -23,9 +23,7 @@ pub async fn init() -> Result<(), ItemDBError> {
     let num_files = paths.count();
     if num_files < 1{
         create_db_file("default");
-        if let Err(err) = block_on(run_migrator("default")) {
-            panic!("{}", err);
-        }
+        run_migrator("default").await;
     }
     Ok(())
 }
@@ -53,7 +51,7 @@ pub async fn run_migrator(db_name: &str) -> Result<(), ItemDBError>{
 }
 
 // Create the database file.
-fn create_db_file(db_name: &str) {
+pub fn create_db_file(db_name: &str) {
     let db_path = get_db_path(db_name);
     let db_dir = Path::new(&db_path).parent().unwrap();
 
@@ -78,38 +76,34 @@ pub fn get_db_path(db_name: &str) -> String {
     home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/" + &db_name + ".sqlite"
 }
 
+pub fn delete_db_file(db_name: &str) {
+    if db_file_exists(db_name) {
+        let db_path = get_db_path(db_name);
+        let db_path = Path::new(&db_path);
+        let _ = fs::remove_file(db_path).unwrap();
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    // test with "$ cargo test -- --test-threads=1 ", this is because of issues with async functions sharing resources
     // Sets up a test database to avoid over-writing original and get the connection
-    pub async fn get_test_db_conn() -> Result<DatabaseConnection, DbErr> {
-        let home_dir = dirs::home_dir().unwrap();
-        let db_path = home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/test_database.sqlite";
-        if !Path::new(&db_path).exists(){
-            create_db_file("test_database");
-            run_migrator("test_database").await;
-        }
-        let db = get_db_conn("test_database").await?;
+    pub async fn setup() -> Result<(), ItemDBError> {
+        delete_db_file("test_database");
+        create_db_file("test_database");
+        run_migrator("test_database").await?;
 
-        return Ok(db);
-    }
-
-    #[test]
-    fn db_util_test_setup() -> Result<(), ItemDBError>{
-        let home_dir = dirs::home_dir().unwrap();
-        let db_path = home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/test_database.sqlite";
-        if Path::new(&db_path).exists(){
-            fs::remove_file(&db_path);
-        }
-        Ok(())
+        return Ok(());
     }
 
     #[async_std::test]
     async fn test_insert_basic() -> Result<(), ItemDBError> {
-        task::sleep(Duration::from_millis(50)).await;
-        let db = get_test_db_conn().await?;
+        setup().await?;
+        // test basic insert
+        let db = get_db_conn("test_database").await?;
         for i in 0..=5 {
             let mut item = item::ActiveModel{..Default::default()};
             item.name = ActiveValue::Set(format!("itemy-{i}"));
@@ -131,13 +125,9 @@ mod tests {
         let res = tag::Entity::insert(tag).exec(&db).await?;
         
         assert_eq!(res.last_insert_id, 7);
-        Ok(())
-    }
-
-    #[async_std::test]
-    async fn test_insert_junction() -> Result<(), ItemDBError> {
-        task::sleep(Duration::from_millis(500)).await;
-        let db = get_test_db_conn().await?;
+  
+        
+        // test junction
         for i in 1..=5{
             for j in 1..=5{
                 let mut item_tag = item_tag::ActiveModel::from_json(json!({
