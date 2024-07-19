@@ -15,8 +15,8 @@ use serde_json::json;
 //template for item tag
 
 #[tauri::command]
-pub async fn add_item_tag(item_id:i32, tag_id:i32) -> Result<(), ItemDBError> {
-  let db = get_db_conn().await?;
+pub async fn add_item_tag(db_name: String, item_id:i32, tag_id:i32) -> Result<(), ItemDBError> {
+  let db = get_db_conn(&db_name).await?;
   let mut item_tag = item_tag::ActiveModel{..Default::default()};
   item_tag.item_id = ActiveValue::set(item_id);
   item_tag.tag_id = ActiveValue::set(tag_id);
@@ -26,8 +26,8 @@ pub async fn add_item_tag(item_id:i32, tag_id:i32) -> Result<(), ItemDBError> {
 }
 
 #[tauri::command]
-pub async fn find_item_tags_by_item_id(id:i32) -> Result<String, ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn find_item_tags_by_item_id(db_name: String, id:i32) -> Result<String, ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let res: String;
     let mut item_tags: serde_json::Value;
 
@@ -38,8 +38,8 @@ pub async fn find_item_tags_by_item_id(id:i32) -> Result<String, ItemDBError>{
 }
 
 #[tauri::command]
-pub async fn find_item_tags_by_tag_id(id:i32) -> Result<String, ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn find_item_tags_by_tag_id(db_name: String, id:i32) -> Result<String, ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let res: String;
     let mut item_tags: serde_json::Value;
 
@@ -50,8 +50,8 @@ pub async fn find_item_tags_by_tag_id(id:i32) -> Result<String, ItemDBError>{
 }
 
 #[tauri::command]
-pub async fn delete_item_tag(item_id: i32, tag_id:i32) -> Result<(), ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn delete_item_tag(db_name: String, item_id: i32, tag_id:i32) -> Result<(), ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let item_tag = item_tag::Entity::find_by_id((item_id, tag_id)).one(&db).await?.unwrap();
     let res = item_tag.delete(&db).await?;
     Ok(())

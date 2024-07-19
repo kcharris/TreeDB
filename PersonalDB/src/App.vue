@@ -13,6 +13,7 @@ import { onMounted } from "vue";
     onMounted(()=> {
       getList()
     })
+    const db_name = ref("database")
     const path_stack = ref(Array())
     const path = computed(() => {
       let res_str = ""
@@ -60,18 +61,18 @@ import { onMounted } from "vue";
     async function addItem(item_object: Item){
       item_object.parent_id = curr_parent.value.id
       let str_object = JSON.stringify(item_object)
-      await invoke("add_item", {payload: str_object})
+      await invoke("add_item", {dbName: db_name.value, payload: str_object})
       getList()
     }
     async function deleteItem(item_object:Item){
-      await invoke("delete_item", {id: item_object.id})
+      await invoke("delete_item", {dbName: db_name.value, id: item_object.id})
       getList()
     }
     async function updateItem(item_object: Item){
       let str_object = JSON.stringify(item_object)
-      await invoke("update_item", {payload: str_object})
+      await invoke("update_item", {dbName: db_name.value, payload: str_object})
       if (item_object.id == curr_parent.value.id){
-        str_object = await invoke("get_item_by_id", {id: item_object.id})
+        str_object = await invoke("get_item_by_id", {dbName: db_name.value, id: item_object.id})
         curr_parent.value = JSON.parse(str_object)
       }
       else{
@@ -89,7 +90,7 @@ import { onMounted } from "vue";
 
     async function getList(){
       name_filter.value = ""
-      data_str.value = await invoke("find_items_by_parent_id", {id: curr_parent.value.id})
+      data_str.value = await invoke("find_items_by_parent_id", {dbName: db_name.value, id: curr_parent.value.id})
     }
     async function nextItem(item_object: Item){
       path_stack.value.push(JSON.parse(JSON.stringify(item_object)))

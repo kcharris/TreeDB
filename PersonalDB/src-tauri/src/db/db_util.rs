@@ -4,6 +4,7 @@ use std::path::Path;
 use std::time::Duration;
 use serde_json::json;
 use crate::errors::ItemDBError;
+use futures::executor::block_on;
 
 use async_std::prelude::*;
 use async_std::task;
@@ -16,21 +17,28 @@ use sea_orm_migration::MigrationStatus;
 
 
 // Check if a database file exists, and create one if it does not.
-pub fn init() {
-    if !db_file_exists() {
-        create_db_file();
+pub async fn init() -> Result<(), ItemDBError> {
+    let home_dir = dirs::home_dir().unwrap();
+    let paths = fs::read_dir(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/").unwrap();
+    let num_files = paths.count();
+    if num_files < 1{
+        create_db_file("default");
+        if let Err(err) = block_on(run_migrator("default")) {
+            panic!("{}", err);
+        }
     }
+    Ok(())
 }
 
 // Get a database connection using the apps default path
-pub async fn get_db_conn() -> Result<DatabaseConnection, DbErr> {
-    let db:DatabaseConnection = Database::connect("sqlite://".to_string() + &get_db_path().clone()).await?;
+pub async fn get_db_conn(db_name: &str) -> Result<DatabaseConnection, DbErr> {
+    let db:DatabaseConnection = Database::connect("sqlite://".to_string() + &get_db_path(db_name).clone()).await?;
     return Ok(db);
 }
 
 // create tables if they do not exist
-pub async fn run_migrator() -> Result<(), ItemDBError>{
-    let db = Database::connect("sqlite://".to_string() + &get_db_path().clone()).await?;
+pub async fn run_migrator(db_name: &str) -> Result<(), ItemDBError>{
+    let db = get_db_conn(db_name).await?;
     let schema_manager = SchemaManager::new(&db);
 
     // starts a fresh migration if one of the tables does not exist
@@ -45,8 +53,8 @@ pub async fn run_migrator() -> Result<(), ItemDBError>{
 }
 
 // Create the database file.
-fn create_db_file() {
-    let db_path = get_db_path();
+fn create_db_file(db_name: &str) {
+    let db_path = get_db_path(db_name);
     let db_dir = Path::new(&db_path).parent().unwrap();
 
     // If the parent directory does not exist, create it.
@@ -59,15 +67,15 @@ fn create_db_file() {
 }
 
 // Check whether the database file exists.
-pub fn db_file_exists() -> bool {
-    let db_path = get_db_path();
+pub fn db_file_exists(db_name: &str) -> bool {
+    let db_path = get_db_path(db_name);
     Path::new(&db_path).exists()
 }
 
 // Get the path where the database file should be located.
-pub fn get_db_path() -> String {
+pub fn get_db_path(db_name: &str) -> String {
     let home_dir = dirs::home_dir().unwrap();
-    home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/database.sqlite"
+    home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/" + &db_name + ".sqlite"
 }
 
 
@@ -75,42 +83,33 @@ pub fn get_db_path() -> String {
 mod tests {
     use super::*;
 
-    // Sets up a test database to avoid over-writing original
-    pub fn get_test_db_path() -> String {
+    // Sets up a test database to avoid over-writing original and get the connection
+    pub async fn get_test_db_conn() -> Result<DatabaseConnection, DbErr> {
         let home_dir = dirs::home_dir().unwrap();
         let db_path = home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/test_database.sqlite";
         if !Path::new(&db_path).exists(){
-            let db_dir = Path::new(&db_path).parent().unwrap();
-
-            // If the parent directory does not exist, create it.
-            if !db_dir.exists() {
-                fs::create_dir_all(db_dir).unwrap();
-            }
-
-            // Create the database file.
-            fs::File::create(db_path.clone()).unwrap();
+            create_db_file("test_database");
+            run_migrator("test_database").await;
         }
-        return db_path;
+        let db = get_db_conn("test_database").await?;
+
+        return Ok(db);
     }
 
-    #[async_std::test]
-    async fn test_migrations() -> Result<(), ItemDBError> {
-        let db = Database::connect("sqlite://".to_string() + &get_test_db_path().clone()).await?;
-        let schema_manager = SchemaManager::new(&db);
-
-        migrator::Migrator::fresh(&db).await?;
-
-        assert!(schema_manager.has_table("item").await?);
-        assert!(schema_manager.has_table("tag").await?);
-        assert!(schema_manager.has_table("item_tag").await?);
-
+    #[test]
+    fn db_util_test_setup() -> Result<(), ItemDBError>{
+        let home_dir = dirs::home_dir().unwrap();
+        let db_path = home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/test_database.sqlite";
+        if Path::new(&db_path).exists(){
+            fs::remove_file(&db_path);
+        }
         Ok(())
     }
 
     #[async_std::test]
     async fn test_insert_basic() -> Result<(), ItemDBError> {
-        task::sleep(Duration::from_millis(500)).await;
-        let db = Database::connect("sqlite://".to_string() + &get_test_db_path().clone()).await?;
+        task::sleep(Duration::from_millis(50)).await;
+        let db = get_test_db_conn().await?;
         for i in 0..=5 {
             let mut item = item::ActiveModel{..Default::default()};
             item.name = ActiveValue::Set(format!("itemy-{i}"));
@@ -134,10 +133,11 @@ mod tests {
         assert_eq!(res.last_insert_id, 7);
         Ok(())
     }
+
     #[async_std::test]
     async fn test_insert_junction() -> Result<(), ItemDBError> {
-        task::sleep(Duration::from_millis(1000)).await;
-        let db = Database::connect("sqlite://".to_string() + &get_test_db_path().clone()).await?;
+        task::sleep(Duration::from_millis(500)).await;
+        let db = get_test_db_conn().await?;
         for i in 1..=5{
             for j in 1..=5{
                 let mut item_tag = item_tag::ActiveModel::from_json(json!({

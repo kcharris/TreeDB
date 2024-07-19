@@ -42,8 +42,7 @@ fn main() {
     tauri::Builder::default()
         .invoke_handler(tauri::generate_handler![find_items_by_parent_id, get_item_by_id, add_item, delete_item, update_item, open_file_explorer])
         .setup(|_app|{
-            init();
-            if let Err(err) = block_on(run_migrator()) {
+            if let Err(err) = block_on(init()) {
                 panic!("{}", err);
             }
             Ok(())

@@ -12,8 +12,8 @@ use serde_json::json;
 
 
 #[tauri::command]
-pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<String, ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn find_items_by_parent_id(db_name: String, id: Option<i32>) -> Result<String, ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let res: String;
     let mut items: serde_json::Value;
     if id.is_none() {
@@ -28,8 +28,8 @@ pub async fn find_items_by_parent_id(id: Option<i32>) -> Result<String, ItemDBEr
 }
 
 #[tauri::command]
-pub async fn get_item_by_id(id: i32) -> Result<String, ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn get_item_by_id(db_name: String, id: i32) -> Result<String, ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let mut items: serde_json::Value;
     
     let res = item::Entity::find_by_id(id).into_json().one(&db).await?.expect("Item not found with id").to_string();
@@ -38,8 +38,8 @@ pub async fn get_item_by_id(id: i32) -> Result<String, ItemDBError>{
 }
 
 #[tauri::command]
-pub async fn add_item(payload: String) -> Result<Option<i32>, ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn add_item(db_name: String, payload: String) -> Result<Option<i32>, ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let json_item = serde_json::from_str(&payload).unwrap();
     let mut item = item::ActiveModel{..Default::default()};
     item.set_from_json(json_item)?;
@@ -49,16 +49,16 @@ pub async fn add_item(payload: String) -> Result<Option<i32>, ItemDBError>{
 }
 
 #[tauri::command]
-pub async fn delete_item(id: i32) -> Result<(), ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn delete_item(db_name: String, id: i32) -> Result<(), ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let item1 = item::Entity::find_by_id(id).one(&db).await?.unwrap();
     let res = item1.delete(&db).await?;
     Ok(())
 }
 
 #[tauri::command]
-pub async fn update_item(payload: String) -> Result<(), ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn update_item(db_name: String, payload: String) -> Result<(), ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let json_item: serde_json::Value = serde_json::from_str(&payload).unwrap();
     let mut item = item::ActiveModel{..Default::default()};
     item.set_from_json(json_item.clone())?;

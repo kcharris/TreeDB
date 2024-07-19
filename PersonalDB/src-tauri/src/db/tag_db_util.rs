@@ -11,8 +11,8 @@ use crate::db::db_util::*;
 use serde_json::json;
 
 #[tauri::command]
-pub async fn add_tag(name: String) -> Result<Option<i32>, ItemDBError> {
-  let db = get_db_conn().await?;
+pub async fn add_tag(db_name: String, name: String) -> Result<Option<i32>, ItemDBError> {
+  let db = get_db_conn(&db_name).await?;
   let mut tag = tag::ActiveModel{..Default::default()};
   tag.name = ActiveValue::set(name);
 
@@ -21,8 +21,8 @@ pub async fn add_tag(name: String) -> Result<Option<i32>, ItemDBError> {
 }
 
 #[tauri::command]
-pub async fn find_tags() -> Result<String, ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn find_tags(db_name: String) -> Result<String, ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let res: String;
     let mut tags: serde_json::Value;
 
@@ -33,8 +33,8 @@ pub async fn find_tags() -> Result<String, ItemDBError>{
 }
 
 #[tauri::command]
-pub async fn update_tag(payload: String) -> Result<(), ItemDBError>{
-  let db = get_db_conn().await?;
+pub async fn update_tag(db_name: String, payload: String) -> Result<(), ItemDBError>{
+  let db = get_db_conn(&db_name).await?;
   let json_item: serde_json::Value = serde_json::from_str(&payload).unwrap();
   let mut item = item::ActiveModel{..Default::default()};
   item.set_from_json(json_item.clone())?;
@@ -46,8 +46,8 @@ pub async fn update_tag(payload: String) -> Result<(), ItemDBError>{
 }
 
 #[tauri::command]
-pub async fn delete_tag(id: i32) -> Result<(), ItemDBError>{
-    let db = get_db_conn().await?;
+pub async fn delete_tag(db_name: String, id: i32) -> Result<(), ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let tag = item::Entity::find_by_id(id).one(&db).await?.unwrap();
     let res = tag.delete(&db).await?;
     Ok(())
