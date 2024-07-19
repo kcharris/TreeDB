@@ -5,6 +5,7 @@
     const props = defineProps(['parent'])
     const toggle = ref(false)
     const button_icon = computed(() => {return toggle.value == false ? "mdi-arrow-expand" : "mdi-close-circle-outline"})
+    // Throughout the app and this page, a ternary that checks for a property as a bool is used. This boolean conversion is comprehensive across: 0, "", null, undefined, etc.
     const description = "Description: " + (props.parent.description ? props.parent.description : "")
 
     function toggleTruncate(){
