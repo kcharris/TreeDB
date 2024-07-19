@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import {Item} from "../item-types";
 import { ref} from "vue";
 import { VDataTableVirtual, VBtn} from "vuetify/components";
 import DeleteItemPopup from "./DeleteItemPopup.vue";
@@ -7,27 +8,18 @@ import { invoke } from "@tauri-apps/api/tauri";
 
     const emit = defineEmits(["nextItem", "delete", "edit"])
     defineProps<{
-            dataList: any
+            dataList: [Item]
     }>()
-
-    function getName(item: any): string {
-        if (typeof item.item === "object"){
-            return item.item.name
-        }
-        else{
-            return "Error"
-        }
-    }
     
-    function editItem(item: any){
+    function editItem(item: Item){
         emit("edit", item)
     }
 
-    function deleteItem(item: any){
+    function deleteItem(item: Item){
         emit("delete", item)
     }
     
-    function updateData(item: any){
+    function updateData(item: Item){
         emit("nextItem", item)
     }
 
@@ -59,50 +51,51 @@ import { invoke } from "@tauri-apps/api/tauri";
         multi-sort
     >
     
-        <template v-slot:item.resource="item">
-            <v-btn class="text-none" 
-                v-if="!(item.item as any).resource_type && (item.item as any).resource_link"
+        <template v-slot:item.resource="{item}">
+            <v-btn class="text-none"
+
+                v-if="!item.resource_type && item.resource_link"
                 density="compact"
                 variant="text"
                 >
                 no target selected
             </v-btn>
             <v-btn class="text-none"
-                v-else-if="(item.item as any).resource && !(item.item as any).resource_link"
+                v-else-if="item.resource && !item.resource_link"
                 density="compact"
                 variant="text"
                 >
-                {{(item.item as any).resource}}
+                {{ item.resource }}
             </v-btn>
             <v-btn
                 class="text-none text-primary text-decoration-underline" 
                 density="compact"
-                v-else-if="(item.item as any).resource_type=='web'"
-                :href="(item.item as any).resource_link"
+                v-else-if="item.resource_type=='web'"
+                :href="item.resource_link"
                 target="_blank"
                 variant="text"
                 >
-                {{ !(item.item as any).resource ? "link" : (item.item as any).resource}}
+                {{ (item.resource ? item.resource : "link")}}
             </v-btn>
             <v-btn
                 class= "text-none text-primary text-decoration-underline"
                 density="compact"
-                v-else-if="(item.item as any).resource_type=='dir'"
-                @click="openDir((item.item as any).resource_link)"
+                v-else-if="item.resource_type=='dir'"
+                @click="openDir( item.resource_link as string )"
                 variant="text"
                 >
-                {{ !(item.item as any).resource ? "link" : (item.item as any).resource}}
+                {{ (item.resource ? item.resource : "link")}}
             </v-btn>
         </template>
-        <template v-slot:item.est_time="item">
-            <p>{{ (item.item as any).est_time ? (item.item as any).est_time + " hrs" : "-- hrs" }}</p>
+        <template v-slot:item.est_time="{item}">
+            <p>{{ (item.est_time ? item.est_time + " hrs" : "-- hrs") }}</p>
         </template>
-        <template v-slot:item.name="item">
-            <v-btn max-width="350" density="comfortable" @click="updateData(item.item)" class="w-100 text-none text-truncate">{{ getName(item) }}</v-btn>
+        <template v-slot:item.name="{item}">
+            <v-btn max-width="350" density="comfortable" @click="updateData(item)" class="w-100 text-none text-truncate">{{ (item.name ? item.name : "")}}</v-btn>
         </template>
-        <template v-slot:item.completed="item">
-            <v-icon v-if="(item.item as any).completed==false">mdi-checkbox-blank-outline</v-icon>
-            <v-icon color="primary" v-else-if="(item.item as any).completed==true">mdi-checkbox-marked</v-icon>
+        <template v-slot:item.completed="{item}">
+            <v-icon v-if="item.completed==false">mdi-checkbox-blank-outline</v-icon>
+            <v-icon color="primary" v-else-if="item.completed==true">mdi-checkbox-marked</v-icon>
         </template>
         <template v-slot:item.edit="{item}">
             <v-icon @click="editItem(item)">mdi-pencil</v-icon>

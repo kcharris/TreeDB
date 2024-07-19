@@ -1,5 +1,6 @@
 <script setup lang="ts">
 
+import {Item} from "./item-types";
 import CreateAndEditPopup from "./components/CreateAndEditPopup.vue";
 import FullDetails from "./components/FullDetails.vue"
 // import LeftNavBar from "./components/LeftNavBar.vue";
@@ -21,19 +22,8 @@ import { onMounted } from "vue";
       }
       return "HOME:/" + res_str
     })
-    const default_item = {
+    const default_item: Item = {
       name: "default",
-      id: NaN,
-      parent_id: NaN,
-      priority: NaN,
-      est_time: NaN,
-      resource: "",
-      resource_link: "",
-      start_date: "",
-      end_date: "",
-      availability: "",
-      completed: false,
-      description: "This is an example of the fully available items details. This item serves as a categorical item that will contain other items.",
     }
     const curr_parent = ref(default_item)
     const data_str = ref("")
@@ -48,7 +38,7 @@ import { onMounted } from "vue";
     const item_to_edit = ref({})
     const edit_dialog_bool = ref(false)
     const page = ref(0)
-    const can_edit = computed(() => Number.isNaN(curr_parent.value.id))
+    const can_edit = computed(() => !(curr_parent.value.id))
 
     function containsSubsequence(s:string, sub:string){
       if (s.length < sub.length){
@@ -67,17 +57,17 @@ import { onMounted } from "vue";
       }
       return false
     }
-    async function addItem(item_object: any){
+    async function addItem(item_object: Item){
       item_object.parent_id = curr_parent.value.id
       let str_object = JSON.stringify(item_object)
       await invoke("add_item", {payload: str_object})
       getList()
     }
-    async function deleteItem(item_object:any){
+    async function deleteItem(item_object:Item){
       await invoke("delete_item", {id: item_object.id})
       getList()
     }
-    async function updateItem(item_object: any){
+    async function updateItem(item_object: Item){
       let str_object = JSON.stringify(item_object)
       await invoke("update_item", {payload: str_object})
       if (item_object.id == curr_parent.value.id){
@@ -89,7 +79,7 @@ import { onMounted } from "vue";
       }
     }
 
-    function getEditItemPopup(item_object: any){
+    function getEditItemPopup(item_object: Item){
       item_to_edit.value = item_object
       edit_dialog_bool.value = true
     }
@@ -101,7 +91,7 @@ import { onMounted } from "vue";
       name_filter.value = ""
       data_str.value = await invoke("find_items_by_parent_id", {id: curr_parent.value.id})
     }
-    async function nextItem(item_object: any){
+    async function nextItem(item_object: Item){
       path_stack.value.push(JSON.parse(JSON.stringify(item_object)))
       curr_parent.value = item_object
       getList()
@@ -141,7 +131,7 @@ import { onMounted } from "vue";
 
     
     <template v-if="page == 0">
-      <template v-if="!Number.isNaN(curr_parent.id)">
+      <template v-if="curr_parent.id != undefined">
         <FullDetails :parent = "curr_parent"/>
       </template>
       <template v-else>
@@ -179,3 +169,4 @@ import { onMounted } from "vue";
   
 </template>
 
+./item-types

@@ -5,7 +5,8 @@ The create function has a btn for the UI.
 The edit function only has a dialog and relies on separate UI such as an edit button or edit icon to function.
 -->
 <script setup lang="ts">
-import {ref} from "vue";
+import {Item} from "../item-types";
+import {ref, Ref} from "vue";
 import CalendarField from "./CalendarField.vue";
 import ResourcePopup from "./ResourcePopup.vue";
 import { computed } from "vue";
@@ -22,20 +23,10 @@ import { watch } from "vue";
     })
     
 
-    const values = ref({
-      id: NaN,
+    const values: Ref<Item> = ref({
       name: "",
-      parent_id: NaN,
       priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
-      est_time: "",
-      resource: "",
-      resource_link: "",
-      resource_type: "",
-      start_date: "",
-      end_date: "",
-      availability: "",
       completed: false,
-      description: "",
     })
 
     watch(dialog, (val) => {
@@ -61,16 +52,16 @@ import { watch } from "vue";
                 field.value.priority = ""
 
                 values.value.name = ""
-                values.value.parent_id = NaN
-                values.value.est_time = ""
-                values.value.resource = ""
-                values.value.resource_type = ""
-                values.value.resource_link = ""
-                values.value.start_date = ""
-                values.value.end_date = ""
-                values.value.availability = ""
+                values.value.parent_id = undefined
+                values.value.est_time = undefined
+                values.value.resource = undefined
+                values.value.resource_type = undefined
+                values.value.resource_link = undefined
+                values.value.start_date = undefined
+                values.value.end_date = undefined
+                values.value.availability = undefined
                 values.value.completed = false
-                values.value.description = ""
+                values.value.description = undefined
             }
         }
       
@@ -78,12 +69,21 @@ import { watch } from "vue";
 
     const rules = ref({
       isSmallInt: (value: string) => {
-        if ((!isNaN(parseInt(value, 10)) && parseInt(value) >= 0 && parseInt(value) <= 100) || value == "") return true
-        else return `Must be an integer within 0-100`
+        if ((!isNaN(parseInt(value, 10)) && parseInt(value) > 0 && parseInt(value) <= 100) || value == "" && parseInt(value) != 0) return true
+        else return `Must be an integer within 1-100`
       },
       required: (value: string) => {
         if (value) return true
         else return "Required"
+      },
+      validDecimal: (value: string) => {
+        let pattern = /(^\d+$)|(^\d*[.]\d+$)/g
+        if(pattern.test(value) || !value){
+          return true
+        }
+        else{
+          return "Not valid"
+        }
       }
     })
 
@@ -162,6 +162,7 @@ import { watch } from "vue";
                   label="Est Time"
                   suffix="hrs"
                   maxlength="8"
+                  :rules="[rules.validDecimal]"
                 ></v-text-field>
               </v-col>
   
