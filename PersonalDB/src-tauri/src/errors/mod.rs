@@ -1,5 +1,6 @@
 use thiserror::Error;
 use sea_orm::DbErr;
+use serde_json::Error;
 
 // Handles database errors
 #[derive(Debug, thiserror::Error)]
@@ -9,7 +10,9 @@ Io(#[from] std::io::Error),
 #[error("Error accessing or modifying database")]
 DbErr(#[from] sea_orm::DbErr),
 #[error("Error trying from integer")]
-TryFromIntError(#[from] std::num::TryFromIntError)
+TryFromIntError(#[from] std::num::TryFromIntError),
+#[error("Error managing serde_json")]
+Error(#[from] serde_json::Error)
 }
 
 // we must manually implement serde::Serialize

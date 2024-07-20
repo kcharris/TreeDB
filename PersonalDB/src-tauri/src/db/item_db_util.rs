@@ -74,7 +74,7 @@ mod tests {
     use super::*;
 
     // test with "$ cargo test -- --test-threads=1 ", this is because of issues with async functions sharing resources
-    // Sets up a test database to avoid over-writing original and get the connection
+    // Sets up a test database to avoid over-writing original
     pub async fn setup() -> Result<(), ItemDBError> {
         delete_db_file("test_database");
         create_db_file("test_database");
@@ -99,7 +99,6 @@ mod tests {
 
         // test get
         let payload = get_item_by_id(db_name.clone(), 1).await?;
-        println!("{payload}");
         let json_item = serde_json::from_str(&payload).unwrap();
 
         let mut item = item::ActiveModel{..Default::default()};
