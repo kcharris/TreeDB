@@ -13,13 +13,13 @@ use serde_json::json;
 use serde::{Deserialize, Serialize};
 
 #[tauri::command]
-pub async fn add_tag(db_name: String, name: String) -> Result<Option<i32>, ItemDBError> {
+pub async fn add_tag(db_name: String, name: String) -> Result<i32, ItemDBError> {
   let db = get_db_conn(&db_name).await?;
   let mut tag = tag::ActiveModel{..Default::default()};
   tag.name = ActiveValue::set(name);
 
   let res = tag::Entity::insert(tag).exec(&db).await?;
-  Ok(Some(res.last_insert_id))
+  Ok(res.last_insert_id)
 }
 
 #[tauri::command]
@@ -88,8 +88,8 @@ mod tests {
         let res = add_tag(db_name.clone(), name1).await?;
         let res2 = add_tag(db_name.clone(), name2).await?;
 
-        assert_eq!(res, Some(1), "tag insert failed");
-        assert_eq!(res2, Some(2), "tag insert failed");
+        assert_eq!(res, 1, "tag insert failed");
+        assert_eq!(res2, 2, "tag insert failed");
         
     
         // test get
