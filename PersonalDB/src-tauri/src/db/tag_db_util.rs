@@ -1,10 +1,5 @@
-
-
-
 use std::result::Result;
 use crate::errors::ItemDBError;
-
-
 use crate::entities::*;
 use sea_orm_migration::prelude::*;
 use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, ModelTrait};
@@ -59,6 +54,7 @@ pub async fn delete_tag(db_name: String, id: i32) -> Result<u64, ItemDBError>{
 #[cfg(test)]
 mod tests {
     use super::*;
+    use serde::{Serialize, Deserialize};
 
     #[derive(Serialize, Deserialize)]
     struct Tag {
@@ -69,9 +65,9 @@ mod tests {
     // test with "$ cargo test -- --test-threads=1 ", this is because of issues with async functions sharing resources
     // Sets up a test database to avoid over-writing original
     pub async fn setup() -> Result<(), ItemDBError> {
-        delete_db_file("test_database");
-        create_db_file("test_database");
-        run_migrator("test_database").await?;
+        delete_db_file("test_database".to_owned());
+        create_db_file("test_database".to_owned());
+        run_migrator("test_database".to_owned()).await?;
 
         return Ok(());
     }

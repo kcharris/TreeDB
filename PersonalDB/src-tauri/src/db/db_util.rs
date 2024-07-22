@@ -115,13 +115,20 @@ pub fn delete_db_file(db_name: String) {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::entities::item;
+    use crate::entities::tag;
+    use crate::entities::item_tag;
+    use sea_orm::ActiveValue;
+    use sea_orm::{EntityTrait, ActiveModelTrait};
+
+
 
     // test with "$ cargo test -- --test-threads=1 ", this is because of issues with async functions sharing resources
     // Sets up a test database to avoid over-writing original and get the connection
     pub async fn setup() -> Result<(), ItemDBError> {
-        delete_db_file("test_database");
-        create_db_file("test_database");
-        run_migrator("test_database").await?;
+        delete_db_file("test_database".to_string());
+        create_db_file("test_database".to_string());
+        run_migrator("test_database".to_string()).await?;
 
         return Ok(());
     }

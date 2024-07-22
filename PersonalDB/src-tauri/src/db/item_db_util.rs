@@ -81,9 +81,9 @@ mod tests {
     // test with "$ cargo test -- --test-threads=1 ", this is because of issues with async functions sharing resources
     // Sets up a test database to avoid over-writing original
     pub async fn setup() -> Result<(), ItemDBError> {
-        delete_db_file("test_database");
-        create_db_file("test_database");
-        run_migrator("test_database").await?;
+        delete_db_file("test_database".to_string());
+        create_db_file("test_database".to_string());
+        run_migrator("test_database".to_string()).await?;
 
         return Ok(());
     }

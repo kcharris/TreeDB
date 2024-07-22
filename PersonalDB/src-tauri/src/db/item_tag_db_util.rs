@@ -5,9 +5,6 @@ use sea_orm::{ActiveValue, EntityTrait, ModelTrait};
 use crate::db::db_util::*;
 
 
-
-
-
 #[tauri::command]
 pub async fn add_item_tag(db_name: String, item_id:i32, tag_id:i32) -> Result<(i32, i32), ItemDBError> {
   let db = get_db_conn(&db_name).await?;
@@ -50,13 +47,15 @@ pub async fn delete_item_tag(db_name: String, item_id: i32, tag_id:i32) -> Resul
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::db::tag_db_util::add_tag;
+    use crate::add_item;
 
     // test with "$ cargo test -- --test-threads=1 ", this is because of issues with async functions sharing resources
     // Sets up a test database to avoid over-writing original
     pub async fn setup() -> Result<(), ItemDBError> {
-        delete_db_file("test_database");
-        create_db_file("test_database");
-        run_migrator("test_database").await?;
+        delete_db_file("test_database".to_owned());
+        create_db_file("test_database".to_owned());
+        run_migrator("test_database".to_owned()).await?;
 
         return Ok(());
     }
