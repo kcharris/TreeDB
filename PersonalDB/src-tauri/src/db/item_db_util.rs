@@ -69,6 +69,17 @@ pub async fn update_item(db_name: String, payload: String) -> Result<(), ItemDBE
     Ok(())
 }
 
+#[tauri::command]
+pub async fn update_item_parent(db_name:String, item_id: i32, new_parent_id: i32) -> Result<(), ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
+    let mut item:item::ActiveModel = item::Entity::find_by_id(item_id).one(&db).await?.expect("Item not found with id").into();
+    item.parent_id = sea_orm::ActiveValue::set(Some(new_parent_id));
+
+    let _res = item.save(&db).await?;
+    Ok(())
+}
+
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -87,6 +98,7 @@ mod tests {
     pub async fn test_async_item() -> Result<(), ItemDBError> {
         setup().await?;
         let db_name = "test_database".to_owned();
+        let db = get_db_conn(&db_name).await?;
 
         // test insert
         let json_str = r#"{
@@ -122,13 +134,31 @@ mod tests {
         item.set_from_json(json_item)?;
 
         assert_eq!(item.name, sea_orm::ActiveValue::Set("updated1".to_owned()), "item update failed");
-        
+
+
+        // test update parent id
+        let json_str = r#"{
+            "name": "tester"
+        }"#.to_owned();
+        add_item(db_name.clone(), json_str.clone()).await?;
+        add_item(db_name.clone(), json_str.clone()).await?;
+        add_item(db_name.clone(), json_str.clone()).await?;        
+        update_item_parent(db_name.clone(), 1, 2).await?;
+        update_item_parent(db_name.clone(), 1, 3).await?;
+
+        let item:item::Model = item::Entity::find_by_id(1).one(&db).await?.expect("Item not found with id");
+
+        assert_eq!(item.parent_id, Some(3), "Update to parent id failed");
+
 
         // test delete
         let db_name = "test_database".to_owned();
         let res = delete_item(db_name, 1).await?;
 
         assert_eq!(res, 1, "delete failed");
+
+
         Ok(())
+
     }
 }
