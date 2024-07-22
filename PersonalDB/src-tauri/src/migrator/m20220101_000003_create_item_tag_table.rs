@@ -1,6 +1,5 @@
 use sea_orm_migration::prelude::*;
-use crate::migrator::m20220101_000002_create_tag_table::Tag;
-use crate::migrator::m20220101_000001_create_item_table::Item;
+
 
 #[derive(DeriveMigrationName)]
 pub struct Migration;

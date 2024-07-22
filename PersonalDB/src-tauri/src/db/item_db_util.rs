@@ -1,21 +1,15 @@
-use std::env::Args;
-use std::fs;
-use std::path::Path;
 use crate::errors::ItemDBError;
-
-use crate::migrator;
 use crate::entities::*;
 use sea_orm_migration::prelude::*;
-use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter, ModelTrait, ColumnTrait, DatabaseConnection, Database, InsertResult, DeleteResult};
+use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter, ModelTrait, ColumnTrait};
 use crate::db::db_util::*;
-use serde_json::json;
 
 
 #[tauri::command]
 pub async fn find_items_by_parent_id(db_name: String, id: Option<i32>) -> Result<String, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
-    let res: String;
-    let mut items: serde_json::Value;
+    let _res: String;
+    let items: serde_json::Value;
     if id.is_none() {
       items = sea_orm::JsonValue::Array(item::Entity::find().filter(Expr::col(item::Column::ParentId).is_null()).into_json().all(&db).await?);
     }
@@ -30,7 +24,7 @@ pub async fn find_items_by_parent_id(db_name: String, id: Option<i32>) -> Result
 #[tauri::command]
 pub async fn get_item_by_id(db_name: String, id: i32) -> Result<String, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
-    let mut items: serde_json::Value;
+    let mut _items: serde_json::Value;
     
     let res = item::Entity::find_by_id(id).into_json().one(&db).await?.expect("Item not found with id").to_string();
     

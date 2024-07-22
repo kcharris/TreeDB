@@ -1,8 +1,6 @@
 use sea_orm::entity::prelude::*;
 use crate::entities::item_tag::serde::Serialize;
 use crate::entities::item_tag::serde::Deserialize;
-use crate::entities::item;
-use crate::entities::tag;
 use serde;
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]

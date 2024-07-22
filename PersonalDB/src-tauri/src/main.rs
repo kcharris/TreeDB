@@ -8,10 +8,7 @@ pub mod errors;
 
 use futures::executor::block_on;
 use crate::db::db_util::*;
-use crate::db::tag_db_util::*;
-use crate::db::item_tag_db_util::*;
 use crate::db::item_db_util::*;
-
 use std::process::Command;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command

@@ -1,16 +1,16 @@
-use std::env::Args;
-use std::fs;
-use std::path::Path;
+
+
+
 use std::result::Result;
 use crate::errors::ItemDBError;
 
-use crate::migrator;
+
 use crate::entities::*;
 use sea_orm_migration::prelude::*;
-use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter, ModelTrait, ColumnTrait, DatabaseConnection, Database, InsertResult};
+use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, ModelTrait};
 use crate::db::db_util::*;
-use serde_json::json;
-use serde::{Deserialize, Serialize};
+
+
 
 #[tauri::command]
 pub async fn add_tag(db_name: String, name: String) -> Result<i32, ItemDBError> {
@@ -25,8 +25,8 @@ pub async fn add_tag(db_name: String, name: String) -> Result<i32, ItemDBError> 
 #[tauri::command]
 pub async fn get_tags(db_name: String) -> Result<String, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
-    let res: String;
-    let mut tags: serde_json::Value;
+    let _res: String;
+    let tags: serde_json::Value;
 
     tags = sea_orm::JsonValue::Array(tag::Entity::find().into_json().all(&db).await?);
     

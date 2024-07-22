@@ -1,19 +1,10 @@
 // code used from https://blog.moonguard.dev/how-to-use-local-sqlite-database-with-tauri
 use std::fs;
 use std::path::Path;
-use std::time::Duration;
-use serde_json::json;
 use crate::errors::ItemDBError;
-use futures::executor::block_on;
-
-use async_std::prelude::*;
-use async_std::task;
-use crate::entities::*;
-
 use crate::migrator;
-use sea_orm::{Database, DatabaseConnection, DbErr, ActiveValue, ActiveModelTrait, EntityTrait};
+use sea_orm::{Database, DatabaseConnection, DbErr};
 use sea_orm_migration::prelude::*;
-use sea_orm_migration::MigrationStatus;
 
 
 // Check if a database file exists, and create one if it does not.
@@ -23,7 +14,7 @@ pub async fn init() -> Result<(), ItemDBError> {
     let num_files = paths.count();
     if num_files < 1{
         create_db_file("default");
-        run_migrator("default").await;
+        run_migrator("default").await?;
     }
     Ok(())
 }
