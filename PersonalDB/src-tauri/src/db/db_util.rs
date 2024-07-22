@@ -1,22 +1,58 @@
 // code used from https://blog.moonguard.dev/how-to-use-local-sqlite-database-with-tauri
 use std::fs;
+use std::io::prelude::*;
 use std::path::Path;
 use crate::errors::ItemDBError;
 use crate::migrator;
 use sea_orm::{Database, DatabaseConnection, DbErr};
 use sea_orm_migration::prelude::*;
+use serde_json::json;
 
 
 // Check if a database file exists, and create one if it does not.
 pub async fn init() -> Result<(), ItemDBError> {
-    let home_dir = dirs::home_dir().unwrap();
-    let paths = fs::read_dir(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/").unwrap();
-    let num_files = paths.count();
-    if num_files < 1{
-        create_db_file("default");
-        run_migrator("default").await?;
+    db_name_init();
+    let db_name = get_db_name();
+    assert_eq!(db_name, "default");
+    if !db_file_exists(db_name.clone()){
+        update_db_name_file(db_name.clone());
+        create_db_file(db_name.clone());
+        run_migrator(db_name.clone()).await?;
     }
+    db_name_init();
+
     Ok(())
+}
+
+// check whether the db_name json file exists, and creates it if not
+pub fn db_name_init(){
+    let home_dir = dirs::home_dir().unwrap();
+    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/db_name.json";
+    let path = Path::new(&binding);
+    if !path.exists(){
+        fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").unwrap();
+    }
+    update_db_name_file("default".to_string());
+}
+
+// Updates the filename stored in db_name.json to the given string
+pub fn update_db_name_file(db_name: String){
+    let home_dir = dirs::home_dir().unwrap();
+    let json = json!({
+        "name": db_name
+    });
+    fs::write(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json", json.to_string()).expect("Failed to write to file in update_db_name_file");
+}
+
+// Get's the current db's name being used for the item list from the db_name.json file
+pub fn get_db_name() -> String {
+    let home_dir = dirs::home_dir().unwrap();
+    let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").expect("Unable to open file from get_db_name");
+    let mut contents = String::new();
+    let _ = file.read_to_string(&mut contents);
+    let file_json:serde_json::Value = serde_json::from_str(&contents).unwrap();
+
+    return file_json["name"].as_str().unwrap().to_string();
 }
 
 // Get a database connection using the apps default path
@@ -26,8 +62,8 @@ pub async fn get_db_conn(db_name: &str) -> Result<DatabaseConnection, DbErr> {
 }
 
 // create tables if they do not exist
-pub async fn run_migrator(db_name: &str) -> Result<(), ItemDBError>{
-    let db = get_db_conn(db_name).await?;
+pub async fn run_migrator(db_name: String) -> Result<(), ItemDBError>{
+    let db = get_db_conn(&db_name).await?;
     let schema_manager = SchemaManager::new(&db);
 
     // starts a fresh migration if one of the tables does not exist
@@ -42,8 +78,8 @@ pub async fn run_migrator(db_name: &str) -> Result<(), ItemDBError>{
 }
 
 // Create the database file.
-pub fn create_db_file(db_name: &str) {
-    let db_path = get_db_path(db_name);
+pub fn create_db_file(db_name: String) {
+    let db_path = get_db_path(&db_name);
     let db_dir = Path::new(&db_path).parent().unwrap();
 
     // If the parent directory does not exist, create it.
@@ -56,8 +92,8 @@ pub fn create_db_file(db_name: &str) {
 }
 
 // Check whether the database file exists.
-pub fn db_file_exists(db_name: &str) -> bool {
-    let db_path = get_db_path(db_name);
+pub fn db_file_exists(db_name: String) -> bool {
+    let db_path = get_db_path(&db_name);
     Path::new(&db_path).exists()
 }
 
@@ -67,9 +103,9 @@ pub fn get_db_path(db_name: &str) -> String {
     home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/" + &db_name + ".sqlite"
 }
 
-pub fn delete_db_file(db_name: &str) {
-    if db_file_exists(db_name) {
-        let db_path = get_db_path(db_name);
+pub fn delete_db_file(db_name: String) {
+    if db_file_exists(db_name.clone()) {
+        let db_path = get_db_path(&db_name);
         let db_path = Path::new(&db_path);
         let _ = fs::remove_file(db_path).unwrap();
     }
