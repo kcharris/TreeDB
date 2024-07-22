@@ -32,3 +32,14 @@ impl ActiveModelBehavior for ActiveModel {
     
 }
 
+impl Related<super::tag::Entity> for Entity {
+    
+    fn to() -> RelationDef {
+        super::item_tag::Relation::Tag.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        
+        Some(super::item_tag::Relation::Item.def().rev())
+    }
+}

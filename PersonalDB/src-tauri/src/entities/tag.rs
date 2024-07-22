@@ -20,3 +20,15 @@ pub enum Relation {
 impl ActiveModelBehavior for ActiveModel {
     
 }
+
+impl Related<super::item::Entity> for Entity {
+    
+    fn to() -> RelationDef {
+        super::item_tag::Relation::Item.def()
+    }
+
+    fn via() -> Option<RelationDef> {
+        
+        Some(super::item_tag::Relation::Tag.def().rev())
+    }
+}

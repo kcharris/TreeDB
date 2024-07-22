@@ -1,6 +1,8 @@
 use sea_orm::entity::prelude::*;
 use crate::entities::item_tag::serde::Serialize;
 use crate::entities::item_tag::serde::Deserialize;
+use crate::entities::item;
+use crate::entities::tag;
 use serde;
 
 #[derive(Clone, Debug, PartialEq, Eq, DeriveEntityModel, Serialize, Deserialize)]
@@ -14,6 +16,18 @@ pub struct Model {
 
 #[derive(Copy, Clone, Debug, EnumIter, DeriveRelation)]
 pub enum Relation {
+    #[sea_orm(
+        belongs_to = "super::item::Entity",
+        from = "Column::ItemId",
+        to = "super::item::Column::Id"
+    )]
+    Item,
+    #[sea_orm(
+        belongs_to = "super::tag::Entity",
+        from = "Column::TagId",
+        to = "super::tag::Column::Id"
+    )]
+    Tag,
 }
 
 
