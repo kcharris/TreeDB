@@ -87,8 +87,10 @@ pub fn create_db_file(db_name: String) {
         fs::create_dir_all(db_dir).unwrap();
     }
 
-    // Create the database file.
-    fs::File::create(db_path).unwrap();
+    // Create the database file if it does not already exist.
+    if !(Path::new(&db_path)).exists(){
+        fs::File::create(db_path).unwrap();
+    }
 }
 
 // Check whether the database file exists.
