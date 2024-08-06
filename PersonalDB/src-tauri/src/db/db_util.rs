@@ -111,6 +111,17 @@ pub fn delete_db_file(db_name: String) {
     }
 }
 
+// Clones the db with the given name, the new db will have the clone name
+pub async fn clone_db_file(db_name: String, clone_name: String) -> Result<(), ItemDBError>{
+    if !db_file_exists(clone_name.clone()){
+        create_db_file(clone_name.clone());
+        let db_path = get_db_path(&db_name);
+        let clone_path = get_db_path(&clone_name);
+        fs::copy(db_path, clone_path)?;
+    }
+    Ok(())
+}
+
 
 #[cfg(test)]
 mod tests {
