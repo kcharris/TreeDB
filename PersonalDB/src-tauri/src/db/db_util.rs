@@ -105,6 +105,7 @@ pub fn get_db_path(db_name: &str) -> String {
     home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/" + &db_name + ".sqlite"
 }
 
+// Deletes the sql file with the given name if it exists
 pub fn delete_db_file(db_name: String) {
     if db_file_exists(db_name.clone()) {
         let db_path = get_db_path(&db_name);
