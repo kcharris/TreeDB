@@ -1,8 +1,9 @@
 <script setup lang="ts">
 
-import LeftNavBar from "./components/list-page/LeftNavBar.vue";
+import LeftNavBar from "./components/LeftNavBar.vue";
 import ListPage from "./components/list-page/ListPage.vue"
 import SettingsPage from "./components/settings-page/SettingsPage.vue"
+import DBManagerPage from "./components/db-manager-page/DBManagerPage.vue"
 import {ref, onMounted} from "vue"
   onMounted(() => {
     // set db_name to the name in the text file.
@@ -34,6 +35,9 @@ import {ref, onMounted} from "vue"
       <ListPage v-model="db_name" @send-path="setPath"/>
     </template>
     <template v-if="page == 1">
+      <DBManagerPage/>
+    </template>
+    <template v-if="page == 2">
       <SettingsPage/>
     </template>
     </v-main>
