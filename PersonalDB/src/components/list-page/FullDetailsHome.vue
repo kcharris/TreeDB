@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import default_background from "../assets/forest.jpg"
+import default_background from "../../assets/forest.jpg"
 import { VImg } from "vuetify/components";
 </script>
 

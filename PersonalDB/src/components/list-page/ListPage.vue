@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-import {Item} from "../item-types";
+import {Item} from "../../item-types";
 import CreateAndEditPopup from "./CreateAndEditPopup.vue";
 import FullDetails from "./FullDetails.vue"
 import MainList from "./MainList.vue";

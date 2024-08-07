@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-import LeftNavBar from "./components/LeftNavBar.vue";
-import ListPage from "./components/ListPage.vue"
-import SettingsPage from "./components/SettingsPage.vue"
+import LeftNavBar from "./components/list-page/LeftNavBar.vue";
+import ListPage from "./components/list-page/ListPage.vue"
+import SettingsPage from "./components/settings-page/SettingsPage.vue"
 import {ref, onMounted} from "vue"
   onMounted(() => {
     // set db_name to the name in the text file.

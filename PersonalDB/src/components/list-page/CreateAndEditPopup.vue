@@ -5,7 +5,7 @@ The create function has a btn for the UI.
 The edit function only has a dialog and relies on separate UI such as an edit button or edit icon to function.
 -->
 <script setup lang="ts">
-import {Item} from "../item-types";
+import {Item} from "../../item-types";
 import {ref, Ref} from "vue";
 import CalendarField from "./CalendarField.vue";
 import ResourcePopup from "./ResourcePopup.vue";

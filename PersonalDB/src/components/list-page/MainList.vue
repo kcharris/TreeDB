@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {Item} from "../item-types";
+import {Item} from "../../item-types";
 import { ref} from "vue";
 import { VDataTableVirtual, VBtn} from "vuetify/components";
 import DeleteItemPopup from "./DeleteItemPopup.vue";
