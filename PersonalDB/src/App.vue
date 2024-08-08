@@ -35,7 +35,7 @@ import {ref, onMounted} from "vue"
       <ListPage v-model="db_name" @send-path="setPath"/>
     </template>
     <template v-if="page == 1">
-      <DBManagerPage/>
+      <DBManagerPage v-model="db_name"/>
     </template>
     <template v-if="page == 2">
       <SettingsPage/>
