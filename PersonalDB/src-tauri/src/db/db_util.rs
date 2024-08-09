@@ -7,6 +7,7 @@ use crate::migrator;
 use sea_orm::{Database, DatabaseConnection, DbErr};
 use sea_orm_migration::prelude::*;
 use serde_json::json;
+use regex::Regex;
 
 
 // Check if a database file exists, and create one if it does not.
@@ -79,7 +80,8 @@ pub async fn run_migrator(db_name: String) -> Result<(), ItemDBError>{
 }
 
 // Create the database file.
-pub fn create_db_file(db_name: String) {
+#[tauri::command]
+pub async fn create_db_file(db_name: String) {
     let db_path = get_db_path(&db_name);
     let db_dir = Path::new(&db_path).parent().unwrap();
 
@@ -91,6 +93,7 @@ pub fn create_db_file(db_name: String) {
     // Create the database file if it does not already exist.
     if !(Path::new(&db_path)).exists(){
         fs::File::create(db_path).unwrap();
+        let _ = run_migrator(db_name).await;
     }
 }
 
@@ -107,6 +110,7 @@ pub fn get_db_path(db_name: &str) -> String {
 }
 
 // Deletes the sql file with the given name if it exists
+#[tauri::command]
 pub fn delete_db_file(db_name: String) {
     if db_file_exists(db_name.clone()) {
         let db_path = get_db_path(&db_name);
@@ -116,6 +120,7 @@ pub fn delete_db_file(db_name: String) {
 }
 
 // Clones the db with the given name, the new db will have the clone name
+#[tauri::command]
 pub async fn clone_db_file(db_name: String, clone_name: String) -> Result<(), ItemDBError>{
     if !db_file_exists(clone_name.clone()){
         create_db_file(clone_name.clone());
@@ -124,6 +129,29 @@ pub async fn clone_db_file(db_name: String, clone_name: String) -> Result<(), It
         fs::copy(db_path, clone_path)?;
     }
     Ok(())
+}
+
+// Returns a vector list of all the filenames within the /.config/PersonalDB/ directory
+#[tauri::command]
+pub fn get_db_filenames()-> Vec<String>{
+    let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/";
+    let paths = fs::read_dir(&curr_dir).unwrap();
+    let mut filenames:Vec<String> = vec![];
+    let re = Regex::new(r"([^\\/]+)\.sqlite$").unwrap(); //(?:/|\\)
+
+    for path in paths{
+        let path_str = path.unwrap().path().display().to_string();
+
+        let cap = re.captures(&path_str);
+        if cap.is_some(){
+            let filename = cap.unwrap().get(1);
+            if filename.is_some(){
+                filenames.push(filename.unwrap().as_str().to_owned());
+            }
+        }
+        
+    }
+    return filenames;
 }
 
 
