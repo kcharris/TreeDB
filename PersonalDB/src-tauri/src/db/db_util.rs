@@ -123,7 +123,7 @@ pub fn delete_db_file(db_name: String) {
 #[tauri::command]
 pub async fn clone_db_file(db_name: String, clone_name: String) -> Result<(), ItemDBError>{
     if !db_file_exists(clone_name.clone()){
-        create_db_file(clone_name.clone());
+        create_db_file(clone_name.clone()).await;
         let db_path = get_db_path(&db_name);
         let clone_path = get_db_path(&clone_name);
         fs::copy(db_path, clone_path)?;
@@ -132,12 +132,13 @@ pub async fn clone_db_file(db_name: String, clone_name: String) -> Result<(), It
 }
 
 // Returns a vector list of all the filenames within the /.config/PersonalDB/ directory
+// This function has only been tested on windows.
 #[tauri::command]
 pub fn get_db_filenames()-> Vec<String>{
     let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/";
     let paths = fs::read_dir(&curr_dir).unwrap();
     let mut filenames:Vec<String> = vec![];
-    let re = Regex::new(r"([^\\/]+)\.sqlite$").unwrap(); //(?:/|\\)
+    let re = Regex::new(r"([^\\/]+)\.sqlite$").unwrap();
 
     for path in paths{
         let path_str = path.unwrap().path().display().to_string();
