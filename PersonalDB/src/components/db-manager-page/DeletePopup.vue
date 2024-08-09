@@ -29,6 +29,7 @@ import { ref, watch} from "vue";
         >
         <v-card >
             <v-card-title>Database Deletion</v-card-title>
+            <v-card-subtitle>Currently selected DB: {{ props.db_name }}</v-card-subtitle>
             <v-card-text>Are you sure you want to delete this database? Enter it's name to verify before deletion.</v-card-text>
             <v-card-item>
                 <v-text-field v-model="delete_verification"></v-text-field>
