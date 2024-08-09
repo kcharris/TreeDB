@@ -1,19 +1,57 @@
 <script setup lang="ts">
     import { VTable, VBtn, VSheet} from "vuetify/components";
-    import { ref} from "vue";
+    import { ref, onMounted} from "vue";
+    import { invoke } from "@tauri-apps/api/tauri";
+    import BackupResorePopup from "./BackupRestorePopup.vue"
+    import CreatePopup from "./CreatePopup.vue"
+    import CopyPopup from "./CopyPopup.vue"
+    import RenamePopup from "./RenamePopup.vue"
+    import DeletePopup from "./DeletePopup.vue"
+
+    onMounted(()=>{
+        refresh_db_filenames();
+    })
 
     const db_name = defineModel()
-    const db_names = ref(['default', 'placeholder'])
+    const db_names = ref<string[]>([])
+
+    async function refresh_db_filenames(){
+        let filenames: string[] = await invoke("get_db_filenames")
+        db_names.value = filenames
+    }
 
     function setDBName(name: string){
         db_name.value = name;
     }
+    
+    async function createDB(name: string){
+        await invoke("create_db_file", {dbName: name});
+        refresh_db_filenames();
+    }
+
+    // function renameDB(name: string){
+    //     // add invode here
+    // }
+
+    async function deleteDB(name: string){
+        await invoke("delete_db_file", {dbName: name})
+        refresh_db_filenames();
+    }
+
+    // function copyDB(name: string, new_name: string){
+    //     // add invoke here
+    // }
 
 </script>
 
 
-<template>
+<template>    
     <p>{{ db_name }}</p>
+    <v-toolbar color="blue-grey-lighten-5" density="compact">
+    <v-spacer/>
+    <CreatePopup @create="createDB"></CreatePopup>
+    </v-toolbar>
+
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
         <v-table class="w-75 fill-height overflow-x-auto mx-auto">
             <thead>
@@ -44,22 +82,22 @@
                     :key="name"
                 >
                     <td>
-                        <v-btn @click="setDBName(name)" :color="name == db_name ? 'primary' : 'grey'">{{ name }}</v-btn>
+                        <v-btn class="text-none" @click="setDBName(name)" :color="name == db_name ? 'primary' : 'grey'">{{ name }}</v-btn>
                     </td>
                     <td>
-                        <v-btn color="warning" icon="mdi-database-cog"></v-btn>
+                        <BackupResorePopup :db_name="name"></BackupResorePopup>
                     </td>
                     <td>
-                        <v-btn color="info" icon="mdi-database-plus"></v-btn>
+                        <CopyPopup :db_name="name"></CopyPopup>
                     </td>
                     <td>
-                        <v-btn color="indigo-lighten-1" icon="mdi-square-edit-outline"></v-btn>
+                        <RenamePopup :db_name="name"></RenamePopup>
                     </td>
                     <!-- <td>
                         <v-btn color="lime-darken-3" icon="mdi-database-export"></v-btn>
                     </td> -->
                     <td>
-                        <v-btn color="red-darken-4" icon="mdi-delete"></v-btn>
+                        <DeletePopup :db_name="name" @delete="deleteDB"></DeletePopup>
                     </td>
                 </tr>
             </tbody>
