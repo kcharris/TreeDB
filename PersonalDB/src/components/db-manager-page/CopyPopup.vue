@@ -1,13 +1,21 @@
 <script setup lang="ts">
-import { ref} from "vue";
+import { ref, watch} from "vue";
 
-    const emit = defineEmits(["delete"])
+    const emit = defineEmits(["copy"])
+    const props = defineProps(['db_name'])
     const dialog = ref(false)
+    const new_db_name = ref("")
 
-    function emitDelete(){
-        emit("delete")
+    function emitCopy(){
+        emit("copy", {dbName: props.db_name, cloneName: new_db_name.value})
         dialog.value = false
     }
+
+    watch(dialog, ()=>{
+        if (dialog){
+            new_db_name.value = props.db_name + "Copy"
+        }
+    })
 </script>
 
 <template>
@@ -18,19 +26,25 @@ import { ref} from "vue";
         max-width="500"
         >
         <v-card>
-            <template v-slot:actions>
-            <p>Are you sure you want to delete?</p>
-            <v-btn
-            class="ms-auto"
-            text="Yes"
-            @click="emitDelete"
-            ></v-btn>
-            <v-btn
-                class="ms-auto"
-                text="Back"
-                @click="dialog=false"
-            ></v-btn>
-        </template>  
+            <v-card-title>Database Cloning</v-card-title>
+            <v-card-text>Enter a different name for the copy of the database. If a database shares the name of an existing DB, nothing will happen.</v-card-text>
+            <v-card-item>
+                <v-text-field v-model="new_db_name"/>
+            </v-card-item>
+            
+            <v-card-actions>
+                <v-btn
+                class="bg-primary"
+                text="Create"
+                @click="emitCopy"
+                ></v-btn>
+                <v-btn
+                    class="bg-grey"
+                    text="Cancel"
+                    @click="dialog=false"
+                ></v-btn>
+            </v-card-actions>
+            
         </v-card>
             
     </v-dialog>

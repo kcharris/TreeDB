@@ -38,9 +38,10 @@
         refresh_db_filenames();
     }
 
-    // function copyDB(name: string, new_name: string){
-    //     // add invoke here
-    // }
+    async function copyDB(payload: any){
+        await invoke("clone_db_file", payload);
+        refresh_db_filenames();
+    }
 
 </script>
 
@@ -88,7 +89,7 @@
                         <BackupResorePopup :db_name="name"></BackupResorePopup>
                     </td>
                     <td>
-                        <CopyPopup :db_name="name"></CopyPopup>
+                        <CopyPopup :db_name="name" @copy="copyDB"></CopyPopup>
                     </td>
                     <td>
                         <RenamePopup :db_name="name"></RenamePopup>
