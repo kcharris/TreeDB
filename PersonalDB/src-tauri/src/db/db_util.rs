@@ -15,7 +15,7 @@ pub async fn init() -> Result<(), ItemDBError> {
     let db_name = get_db_name();
     assert_eq!(db_name, "default");
     if !db_file_exists(db_name.clone()){
-        update_db_name_file(db_name.clone());
+        update_db_filename(db_name.clone());
         create_db_file(db_name.clone());
         run_migrator(db_name.clone()).await?;
     }
@@ -32,11 +32,12 @@ pub fn db_name_init(){
     if !path.exists(){
         fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").unwrap();
     }
-    update_db_name_file("default".to_string());
+    update_db_filename("default".to_string());
 }
 
 // Updates the filename stored in db_name.json to the given string
-pub fn update_db_name_file(db_name: String){
+#[tauri::command]
+pub fn update_db_filename(db_name: String){
     let home_dir = dirs::home_dir().unwrap();
     let json = json!({
         "name": db_name
