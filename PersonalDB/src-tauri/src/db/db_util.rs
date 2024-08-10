@@ -154,6 +154,18 @@ pub fn get_db_filenames()-> Vec<String>{
     return filenames;
 }
 
+/// Renames a database with the given name to the new name, if exists a database with the new name, nothing happens.
+#[tauri::command]
+pub fn rename_db(db_name: String, new_name: String){
+    if !(db_name == new_name){
+        let old_db_path_str = get_db_path(&db_name);
+        let new_db_path_str = get_db_path(&new_name);
+        let from = Path::new(&old_db_path_str);
+        let to = Path::new(&new_db_path_str);
+        let _ = fs::rename(from, to);
+    }
+}
+
 
 #[cfg(test)]
 mod tests {
