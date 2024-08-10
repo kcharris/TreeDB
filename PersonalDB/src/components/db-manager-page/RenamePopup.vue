@@ -7,8 +7,10 @@ import { ref, watch} from "vue";
     const new_name = ref("")
 
     function emitRename(){
-        emit("rename", {dbName: props.db_name, newName: new_name.value})
-        dialog.value = false
+        if (new_name.value != ""){
+            emit("rename", {dbName: props.db_name, newName: new_name.value})
+            dialog.value = false
+        }
     }
 
     watch(dialog, ()=>{
@@ -16,6 +18,7 @@ import { ref, watch} from "vue";
             new_name.value = ""
         }
     })
+    
 </script>
 
 <template>

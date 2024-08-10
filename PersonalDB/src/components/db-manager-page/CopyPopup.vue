@@ -7,8 +7,10 @@ import { ref, watch} from "vue";
     const new_db_name = ref("")
 
     function emitCopy(){
-        emit("copy", {dbName: props.db_name, cloneName: new_db_name.value})
-        dialog.value = false
+        if (new_db_name.value != ""){
+            emit("copy", {dbName: props.db_name, cloneName: new_db_name.value})
+            dialog.value = false
+        }
     }
 
     watch(dialog, ()=>{

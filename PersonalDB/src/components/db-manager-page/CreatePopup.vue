@@ -6,8 +6,10 @@ import { ref, watch} from "vue";
     const new_db_name = ref("")
 
     function emitCreate(){
-        emit("create", new_db_name.value)
-        dialog.value = false
+        if (new_db_name.value != ""){
+            emit("create", new_db_name.value)
+            dialog.value = false
+        }
     }
 
     watch(dialog, ()=>{
