@@ -18,11 +18,11 @@ import { ref, watch} from "vue";
             new_name.value = ""
         }
     })
-    
+
 </script>
 
 <template>
-    <v-btn @click="dialog=true" color="info" icon="mdi-database-plus"></v-btn>
+    <v-btn @click="dialog=true" color="indigo-lighten-1" icon="mdi-square-edit-outline"></v-btn>
 
     <v-dialog
         v-model="dialog"
