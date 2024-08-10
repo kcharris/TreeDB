@@ -29,9 +29,10 @@
         refresh_db_filenames();
     }
 
-    // function renameDB(name: string){
-    //     // add invode here
-    // }
+    function renameDB(payload: any){
+        invoke("rename_db", payload)
+        refresh_db_filenames();
+    }
 
     async function deleteDB(name: string){
         await invoke("delete_db_file", {dbName: name})
@@ -92,7 +93,7 @@
                         <CopyPopup :db_name="name" @copy="copyDB"></CopyPopup>
                     </td>
                     <td>
-                        <RenamePopup :db_name="name"></RenamePopup>
+                        <RenamePopup :db_name="name" @rename="renameDB"></RenamePopup>
                     </td>
                     <!-- <td>
                         <v-btn color="lime-darken-3" icon="mdi-database-export"></v-btn>

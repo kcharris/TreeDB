@@ -1,36 +1,50 @@
 <script setup lang="ts">
-import { ref} from "vue";
+import { ref, watch} from "vue";
 
-    const emit = defineEmits(["delete"])
+    const emit = defineEmits(["rename"])
+    const props = defineProps(['db_name'])
     const dialog = ref(false)
+    const new_name = ref("")
 
-    function emitDelete(){
-        emit("delete")
+    function emitRename(){
+        emit("rename", {dbName: props.db_name, newName: new_name.value})
         dialog.value = false
     }
+
+    watch(dialog, ()=>{
+        if (dialog){
+            new_name.value = ""
+        }
+    })
 </script>
 
 <template>
-    <v-btn @click="dialog=true" color="indigo-lighten-1" icon="mdi-square-edit-outline"></v-btn>
+    <v-btn @click="dialog=true" color="info" icon="mdi-database-plus"></v-btn>
 
     <v-dialog
         v-model="dialog"
         max-width="500"
         >
         <v-card>
-            <template v-slot:actions>
-            <p>Are you sure you want to delete?</p>
-            <v-btn
-            class="ms-auto"
-            text="Yes"
-            @click="emitDelete"
-            ></v-btn>
-            <v-btn
-                class="ms-auto"
-                text="Back"
-                @click="dialog=false"
-            ></v-btn>
-        </template>  
+            <v-card-title>Database Cloning</v-card-title>
+            <v-card-text>Enter a different name for the database. If the new name shares the name of an existing DB, nothing will happen.</v-card-text>
+            <v-card-item>
+                <v-text-field v-model="new_name"/>
+            </v-card-item>
+            
+            <v-card-actions>
+                <v-btn
+                class="bg-primary"
+                text="Rename"
+                @click="emitRename"
+                ></v-btn>
+                <v-btn
+                    class="bg-grey"
+                    text="Cancel"
+                    @click="dialog=false"
+                ></v-btn>
+            </v-card-actions>
+            
         </v-card>
             
     </v-dialog>
