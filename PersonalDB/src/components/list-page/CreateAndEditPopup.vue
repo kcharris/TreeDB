@@ -242,9 +242,7 @@ import { watch } from "vue";
               variant="tonal"
               type="submit"
             ></v-btn>
-            
-            <v-spacer></v-spacer>
-  
+              
             <v-btn
               class="bg-grey"
               text="Discard"

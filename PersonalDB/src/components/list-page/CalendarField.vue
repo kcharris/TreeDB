@@ -39,19 +39,21 @@ import {ref} from "vue";
             max-width="500"
             >
             <v-card>
-                <v-layout class="d-flex flex-column">
+                <v-card-item>
                     <v-date-picker class="mx-auto" v-model="cal_date"></v-date-picker>
-                        <v-btn
-                        class="mx-auto mb-5 bg-primary"
-                        text="Ok"
-                        @click="emitDate"
-                        ></v-btn>
-                        <v-btn
-                        class="mx-auto mb-5 bg-grey"
-                        text="Discard"
-                        @click="dialog=false"
-                        ></v-btn>
-                </v-layout>
+                </v-card-item>
+                <v-card-actions>
+                    <v-btn
+                    class="bg-primary"
+                    text="Ok"
+                    @click="emitDate"
+                    ></v-btn>
+                    <v-btn
+                    class="bg-grey"
+                    text="Discard"
+                    @click="dialog=false"
+                    ></v-btn>
+                </v-card-actions>
             </v-card>
              
         </v-dialog>
