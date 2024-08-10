@@ -10,14 +10,14 @@ use serde_json::json;
 use regex::Regex;
 
 
-// Check if a database file exists, and create one if it does not.
+/// Check if a database file exists, and create one if it does not.
 pub async fn init() -> Result<(), ItemDBError> {
     db_name_init();
     let db_name = get_db_name();
     assert_eq!(db_name, "default");
     if !db_file_exists(db_name.clone()){
-        update_db_filename(db_name.clone());
-        create_db_file(db_name.clone());
+        update_on_start_db(db_name.clone());
+        create_db_file(db_name.clone()).await;
         run_migrator(db_name.clone()).await?;
     }
     db_name_init();
@@ -25,7 +25,7 @@ pub async fn init() -> Result<(), ItemDBError> {
     Ok(())
 }
 
-// check whether the db_name json file exists, and creates it if not
+/// check whether the db_name json file exists, and creates it if not
 pub fn db_name_init(){
     let home_dir = dirs::home_dir().unwrap();
     let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/db_name.json";
@@ -33,12 +33,12 @@ pub fn db_name_init(){
     if !path.exists(){
         fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").unwrap();
     }
-    update_db_filename("default".to_string());
+    update_on_start_db("default".to_string());
 }
 
-// Updates the filename stored in db_name.json to the given string
+/// Updates the filename stored in db_name.json to the given string
 #[tauri::command]
-pub fn update_db_filename(db_name: String){
+pub fn update_on_start_db(db_name: String){
     let home_dir = dirs::home_dir().unwrap();
     let json = json!({
         "name": db_name
@@ -46,7 +46,7 @@ pub fn update_db_filename(db_name: String){
     fs::write(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json", json.to_string()).expect("Failed to write to file in update_db_name_file");
 }
 
-// Get's the current db's name being used for the item list from the db_name.json file
+/// Get's the current db's name being used for the item list from the db_name.json file
 pub fn get_db_name() -> String {
     let home_dir = dirs::home_dir().unwrap();
     let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").expect("Unable to open file from get_db_name");
@@ -57,13 +57,13 @@ pub fn get_db_name() -> String {
     return file_json["name"].as_str().unwrap().to_string();
 }
 
-// Get a database connection using the apps default path
+/// Get a database connection using the apps default path
 pub async fn get_db_conn(db_name: &str) -> Result<DatabaseConnection, DbErr> {
     let db:DatabaseConnection = Database::connect("sqlite://".to_string() + &get_db_path(db_name).clone()).await?;
     return Ok(db);
 }
 
-// create tables if they do not exist
+/// create tables if they do not exist
 pub async fn run_migrator(db_name: String) -> Result<(), ItemDBError>{
     let db = get_db_conn(&db_name).await?;
     let schema_manager = SchemaManager::new(&db);
@@ -79,7 +79,7 @@ pub async fn run_migrator(db_name: String) -> Result<(), ItemDBError>{
     Ok(())
 }
 
-// Create the database file.
+/// Create the database file.
 #[tauri::command]
 pub async fn create_db_file(db_name: String) {
     let db_path = get_db_path(&db_name);
@@ -97,19 +97,19 @@ pub async fn create_db_file(db_name: String) {
     }
 }
 
-// Check whether the database file exists.
+/// Check whether the database file exists.
 pub fn db_file_exists(db_name: String) -> bool {
     let db_path = get_db_path(&db_name);
     Path::new(&db_path).exists()
 }
 
-// Get the path where the database file should be located.
+/// Get the path as a string where the database file should be located.
 pub fn get_db_path(db_name: &str) -> String {
     let home_dir = dirs::home_dir().unwrap();
     home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/" + &db_name + ".sqlite"
 }
 
-// Deletes the sql file with the given name if it exists
+/// Deletes the sql file with the given name if it exists
 #[tauri::command]
 pub fn delete_db_file(db_name: String) {
     if db_file_exists(db_name.clone()) {
@@ -119,7 +119,7 @@ pub fn delete_db_file(db_name: String) {
     }
 }
 
-// Clones the db with the given name, the new db will have the clone name
+/// Clones the db with the given name, the new db will have the clone name
 #[tauri::command]
 pub async fn clone_db_file(db_name: String, clone_name: String) -> Result<(), ItemDBError>{
     if !db_file_exists(clone_name.clone()){
@@ -131,7 +131,7 @@ pub async fn clone_db_file(db_name: String, clone_name: String) -> Result<(), It
     Ok(())
 }
 
-// Returns a vector list of all the filenames within the /.config/PersonalDB/ directory
+/// Returns a vector list of all the filenames within the /.config/PersonalDB/ directory
 // This function has only been tested on windows.
 #[tauri::command]
 pub fn get_db_filenames()-> Vec<String>{
@@ -150,7 +150,6 @@ pub fn get_db_filenames()-> Vec<String>{
                 filenames.push(filename.unwrap().as_str().to_owned());
             }
         }
-        
     }
     return filenames;
 }

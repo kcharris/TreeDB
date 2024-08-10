@@ -37,7 +37,7 @@ fn open_file_explorer(dir_address: &str) {
 
 fn main() {
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![find_items_by_parent_id, get_item_by_id, add_item, delete_item, update_item, open_file_explorer, update_db_filename, create_db_file, delete_db_file, clone_db_file, get_db_filenames])
+        .invoke_handler(tauri::generate_handler![find_items_by_parent_id, get_item_by_id, add_item, delete_item, update_item, open_file_explorer, update_on_start_db, create_db_file, delete_db_file, clone_db_file, get_db_filenames])
         .setup(|_app|{
             if let Err(err) = block_on(init()) {
                 panic!("{}", err);
