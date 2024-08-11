@@ -65,7 +65,10 @@
     </v-toolbar>
 
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
-        <v-table class="w-66 fill-height overflow-x-auto mx-auto">
+        <v-card v-if="db_names.length == 0" class="w-50 h-50 mx-auto mt-10">
+            <v-card-title>No databases found</v-card-title>
+        </v-card>
+        <v-table v-else class="w-66 fill-height overflow-x-auto mx-auto">
             <thead>
                 <tr>
                     <th >
