@@ -2,13 +2,13 @@
 import { ref, watch} from "vue";
 
     const emit = defineEmits(["delete"])
-    const props = defineProps(['db_name'])
+    const props = defineProps(['backup_name'])
     const dialog = ref(false)
     const delete_verification = ref("")
 
     function emitDelete(){
-        if (delete_verification.value == props.db_name){
-            emit("delete", props.db_name)
+        if (delete_verification.value == 'y'){
+            emit("delete", props.backup_name)
             dialog.value = false
         }
     }
@@ -29,8 +29,8 @@ import { ref, watch} from "vue";
         >
         <v-card >
             <v-card-title>Database Deletion</v-card-title>
-            <v-card-subtitle>{{ props.db_name }}</v-card-subtitle>
-            <v-card-text>Are you sure you want to delete this database? Enter it's name to verify before deletion.</v-card-text>
+            <v-card-subtitle>{{ props.backup_name }}</v-card-subtitle>
+            <v-card-text>Are you sure you want to delete this database? Enter 'y' to verify before deletion.</v-card-text>
             <v-card-item>
                 <v-text-field v-model="delete_verification"></v-text-field>
             </v-card-item>

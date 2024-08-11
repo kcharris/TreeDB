@@ -8,7 +8,6 @@ use sea_orm::{Database, DatabaseConnection, DbErr};
 use sea_orm_migration::prelude::*;
 use serde_json::json;
 use regex::Regex;
-use chrono::Local;
 
 
 /// Makes sure required app files exist, if not creates them.
@@ -181,46 +180,48 @@ pub fn rename_db(db_name: String, new_name: String){
 /// Returns a string path to a backup database file, the db file may not exist.
 pub fn get_backup_db_path(db_name: &str)-> String{
     // get the directory path as a string to backups folder
-    let backup_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/backups";
+    let backup_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/backups/";
     return backup_dir + db_name + ".sqlite";
 }
 
 /// Creates a backup of the given filename in the backups folder. The file generated has the date created appended to it as an identifier
 #[tauri::command]
-pub async fn backup_db(db_name: String){
-    // get the the time now to use as identifier
-    let date = Local::now();
-    let date_str = date.format("%Y%m%d-%H%M%S").to_string();
-
-    // build the backups filename
-    let backup_filename:String = db_name.clone() + &date_str + ".sqlite";
-
+pub async fn backup_db(db_name: String, backup_name: String)-> bool{
     // check if the path exists to the file and if not, then create a file and then a clone using the db_name and backup_filename
-    let backup_path_str = get_backup_db_path(&backup_filename);
+    let backup_path_str = get_backup_db_path(&backup_name);
     let backup_path = Path::new(&backup_path_str);
+    let mut res = false;
     if !backup_path.exists(){
+        res = true;
         let db_path_str = get_db_path(&db_name);
         let db_path = Path::new(&db_path_str);
         fs::File::create(backup_path_str.clone()).unwrap();
         let _ = fs::copy(db_path, backup_path);
     }
+    return res;
 }
 
 #[tauri::command]
-pub fn restore_db(db_name: String, backup_name: String){
-    let db_path_str = get_db_path(&db_name);
+pub fn restore_db(backup_name: String, new_name: String) -> bool{
+    let db_path_str = get_db_path(&new_name);
     let db_path = Path::new(&db_path_str);
+    let mut res = false;
+    if !db_path.exists(){
+        res = true;
+        fs::File::create(db_path_str.clone()).unwrap();
+        let backup_path_str = get_backup_db_path(&backup_name);
+        let backup_path = Path::new(&backup_path_str);
 
-    let backup_path_str = get_backup_db_path(&backup_name);
-    let backup_path = Path::new(&backup_path_str);
-
-    let _ = fs::copy(backup_path, db_path);
+        let _ = fs::copy(backup_path, db_path);
+    }
+    return res;
+    
 }
 
 /// Gets the filenames of all backup files
 #[tauri::command]
 pub fn get_backup_filenames()-> Vec<String>{
-    let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/backups";
+    let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/backups/";
     let paths = fs::read_dir(&curr_dir).unwrap();
     let mut filenames:Vec<String> = vec![];
     let re = Regex::new(r"([^\\/]+)\.sqlite$").unwrap();
@@ -239,6 +240,27 @@ pub fn get_backup_filenames()-> Vec<String>{
     return filenames;
 }
 
+/// Renames a database with the given name to the new name, if exists a database with the new name, nothing happens.
+#[tauri::command]
+pub fn rename_backup(backup_name: String, new_name: String){
+    if !(backup_name == new_name){
+        let old_db_path_str = get_backup_db_path(&backup_name);
+        let new_db_path_str = get_backup_db_path(&new_name);
+        let from = Path::new(&old_db_path_str);
+        let to = Path::new(&new_db_path_str);
+        let _ = fs::rename(from, to);
+    }
+}
+
+/// Deletes the sql file with the given name if it exists
+#[tauri::command]
+pub fn delete_backup_file(backup_name: String) {
+    let backup_path = get_backup_db_path(&backup_name);
+    let backup_path = Path::new(&backup_path);
+    if (backup_path.exists()) {
+        let _ = fs::remove_file(backup_path).unwrap();
+    }
+}
 
 
 

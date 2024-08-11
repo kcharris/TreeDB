@@ -2,13 +2,13 @@
 import { ref, watch} from "vue";
 
     const emit = defineEmits(["rename"])
-    const props = defineProps(['db_name'])
+    const props = defineProps(['backup_name'])
     const dialog = ref(false)
     const new_name = ref("")
 
     function emitRename(){
         if (new_name.value != ""){
-            emit("rename", {dbName: props.db_name, newName: new_name.value})
+            emit("rename", {backupName: props.backup_name, newName: new_name.value})
             dialog.value = false
         }
     }
@@ -29,8 +29,9 @@ import { ref, watch} from "vue";
         max-width="500"
         >
         <v-card>
-            <v-card-title>Rename Database</v-card-title>
-            <v-card-text>Enter a different name for the database. If the new name shares the name of an existing DB, nothing will happen.</v-card-text>
+            <v-card-title>Rename Backup</v-card-title>
+            <v-card-subtitle >{{ props.backup_name }}</v-card-subtitle>
+            <v-card-text>Enter a different name for the backup. If the new name shares the name of an existing backup, nothing will happen.</v-card-text>
             <v-card-item>
                 <v-text-field v-model="new_name"/>
             </v-card-item>

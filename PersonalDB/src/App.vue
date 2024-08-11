@@ -4,6 +4,7 @@ import LeftNavBar from "./components/LeftNavBar.vue";
 import ListPage from "./components/list-page/ListPage.vue"
 import SettingsPage from "./components/settings-page/SettingsPage.vue"
 import DBManagerPage from "./components/db-manager-page/DBManagerPage.vue"
+import BackupManagerPage from "./components/backup-manager-page/BackupManagerPage.vue"
 import {ref, onMounted} from "vue"
   onMounted(() => {
     // set db_name to the name in the text file.
@@ -38,6 +39,9 @@ import {ref, onMounted} from "vue"
       <DBManagerPage v-model="db_name"/>
     </template>
     <template v-if="page == 2">
+      <BackupManagerPage/>
+    </template>
+    <template v-if="page == 3">
       <SettingsPage/>
     </template>
     </v-main>

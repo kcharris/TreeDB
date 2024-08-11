@@ -2,11 +2,12 @@
     import { VTable, VBtn, VSheet} from "vuetify/components";
     import { ref, onMounted} from "vue";
     import { invoke } from "@tauri-apps/api/tauri";
-    import BackupResorePopup from "./BackupRestorePopup.vue"
+    import BackupPopup from "./BackupPopup.vue"
     import CreatePopup from "./CreatePopup.vue"
     import CopyPopup from "./CopyPopup.vue"
     import RenamePopup from "./RenamePopup.vue"
     import DeletePopup from "./DeletePopup.vue"
+    import SuccessPopup from "./SuccessPopup.vue"
 
     onMounted(()=>{
         refresh_db_filenames();
@@ -14,6 +15,7 @@
 
     const db_name = defineModel()
     const db_names = ref<string[]>([])
+    const success_dialog = ref(false)
 
     async function refresh_db_filenames(){
         let filenames: string[] = await invoke("get_db_filenames")
@@ -44,25 +46,33 @@
         refresh_db_filenames();
     }
 
+    async function backupDB(payload: any){
+        let res = await invoke("backup_db", payload)
+        if (res === true){
+            success_dialog.value = true
+        }
+    }
+
 </script>
 
 
 <template>    
     <p>{{ db_name }}</p>
+    <SuccessPopup v-model="success_dialog"></SuccessPopup>
     <v-toolbar color="blue-grey-lighten-5" density="compact">
     <v-spacer/>
     <CreatePopup @create="createDB"></CreatePopup>
     </v-toolbar>
 
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
-        <v-table class="w-75 fill-height overflow-x-auto mx-auto">
+        <v-table class="w-66 fill-height overflow-x-auto mx-auto">
             <thead>
                 <tr>
                     <th >
                         DB Select
                     </th>
                     <th >
-                        Backup/Restore
+                        Backup DB
                     </th>
                     <th >
                         Copy
@@ -87,7 +97,7 @@
                         <v-btn class="text-none" @click="setDBName(name)" :color="name == db_name ? 'primary' : 'grey'">{{ name }}</v-btn>
                     </td>
                     <td>
-                        <BackupResorePopup :db_name="name"></BackupResorePopup>
+                        <BackupPopup :db_name="name" @backup="backupDB"></BackupPopup>
                     </td>
                     <td>
                         <CopyPopup :db_name="name" @copy="copyDB"></CopyPopup>
