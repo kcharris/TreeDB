@@ -8,32 +8,44 @@ use sea_orm::{Database, DatabaseConnection, DbErr};
 use sea_orm_migration::prelude::*;
 use serde_json::json;
 use regex::Regex;
+use chrono::Local;
 
 
-/// Check if a database file exists, and create one if it does not.
+/// Makes sure required app files exist, if not creates them.
 pub async fn init() -> Result<(), ItemDBError> {
-    db_name_init();
+    let home_dir = dirs::home_dir().unwrap();
+    
+    // make sure there is a main folder for the app
+    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/";
+    let path = Path::new(&binding);
+    if !path.exists(){
+        let _ = fs::create_dir(path);
+    }
+
+    // make sure the app contains a file with the default database name
+    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/db_name.json";
+    let path = Path::new(&binding);
+    if !path.exists(){
+        fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").unwrap();
+        update_on_start_db("default".to_string());
+    }
+
+    // make sure there is a folder for backups
+    let backup_binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/backups";
+    let path = Path::new(&backup_binding);
+    if !path.exists(){
+        let _ = fs::create_dir(path);
+    }
+
+    // Makes sure the database file in db_name.json exists, if not creates one. The very first db will have the name 'default', as shown above.
     let db_name = get_db_name();
-    assert_eq!(db_name, "default");
     if !db_file_exists(db_name.clone()){
         update_on_start_db(db_name.clone());
         create_db_file(db_name.clone()).await;
         run_migrator(db_name.clone()).await?;
     }
-    db_name_init();
 
     Ok(())
-}
-
-/// check whether the db_name json file exists, and creates it if not
-pub fn db_name_init(){
-    let home_dir = dirs::home_dir().unwrap();
-    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/db_name.json";
-    let path = Path::new(&binding);
-    if !path.exists(){
-        fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").unwrap();
-    }
-    update_on_start_db("default".to_string());
 }
 
 /// Updates the filename stored in db_name.json to the given string
@@ -166,6 +178,69 @@ pub fn rename_db(db_name: String, new_name: String){
     }
 }
 
+/// Returns a string path to a backup database file, the db file may not exist.
+pub fn get_backup_db_path(db_name: &str)-> String{
+    // get the directory path as a string to backups folder
+    let backup_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/backups";
+    return backup_dir + db_name + ".sqlite";
+}
+
+/// Creates a backup of the given filename in the backups folder. The file generated has the date created appended to it as an identifier
+#[tauri::command]
+pub async fn backup_db(db_name: String){
+    // get the the time now to use as identifier
+    let date = Local::now();
+    let date_str = date.format("%Y%m%d-%H%M%S").to_string();
+
+    // build the backups filename
+    let backup_filename:String = db_name.clone() + &date_str + ".sqlite";
+
+    // check if the path exists to the file and if not, then create a file and then a clone using the db_name and backup_filename
+    let backup_path_str = get_backup_db_path(&backup_filename);
+    let backup_path = Path::new(&backup_path_str);
+    if !backup_path.exists(){
+        let db_path_str = get_db_path(&db_name);
+        let db_path = Path::new(&db_path_str);
+        fs::File::create(backup_path_str.clone()).unwrap();
+        let _ = fs::copy(db_path, backup_path);
+    }
+}
+
+#[tauri::command]
+pub fn restore_db(db_name: String, backup_name: String){
+    let db_path_str = get_db_path(&db_name);
+    let db_path = Path::new(&db_path_str);
+
+    let backup_path_str = get_backup_db_path(&backup_name);
+    let backup_path = Path::new(&backup_path_str);
+
+    let _ = fs::copy(backup_path, db_path);
+}
+
+/// Gets the filenames of all backup files
+#[tauri::command]
+pub fn get_backup_filenames()-> Vec<String>{
+    let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/backups";
+    let paths = fs::read_dir(&curr_dir).unwrap();
+    let mut filenames:Vec<String> = vec![];
+    let re = Regex::new(r"([^\\/]+)\.sqlite$").unwrap();
+
+    for path in paths{
+        let path_str = path.unwrap().path().display().to_string();
+
+        let cap = re.captures(&path_str);
+        if cap.is_some(){
+            let filename = cap.unwrap().get(1);
+            if filename.is_some(){
+                filenames.push(filename.unwrap().as_str().to_owned());
+            }
+        }
+    }
+    return filenames;
+}
+
+
+
 
 #[cfg(test)]
 mod tests {
@@ -176,13 +251,11 @@ mod tests {
     use sea_orm::ActiveValue;
     use sea_orm::{EntityTrait, ActiveModelTrait};
 
-
-
     // test with "$ cargo test -- --test-threads=1 ", this is because of issues with async functions sharing resources
     // Sets up a test database to avoid over-writing original and get the connection
     pub async fn setup() -> Result<(), ItemDBError> {
         delete_db_file("test_database".to_string());
-        create_db_file("test_database".to_string());
+        create_db_file("test_database".to_string()).await;
         run_migrator("test_database".to_string()).await?;
 
         return Ok(());
@@ -196,7 +269,7 @@ mod tests {
         for i in 0..=5 {
             let mut item = item::ActiveModel{..Default::default()};
             item.name = ActiveValue::Set(format!("itemy-{i}"));
-            let res = item::Entity::insert(item).exec(&db).await?;
+            let _res = item::Entity::insert(item).exec(&db).await?;
         }
         let mut item = item::ActiveModel{..Default::default()};
         item.name = ActiveValue::Set(format!("itemy-55"));
@@ -207,7 +280,7 @@ mod tests {
         for i in 0..=5 {
             let mut tag = tag::ActiveModel{..Default::default()};
             tag.name = ActiveValue::Set(format!("taggy-{i}"));
-            let res = tag::Entity::insert(tag).exec(&db).await?;
+            let _res = tag::Entity::insert(tag).exec(&db).await?;
         }
         let mut tag = tag::ActiveModel{..Default::default()};
         tag.name = ActiveValue::Set(format!("taggy-77"));
@@ -219,14 +292,14 @@ mod tests {
         // test junction
         for i in 1..=5{
             for j in 1..=5{
-                let mut item_tag = item_tag::ActiveModel::from_json(json!({
+                let item_tag = item_tag::ActiveModel::from_json(json!({
                     "item_id": i,
                     "tag_id": j
                 }))?;
-                let res = item_tag::Entity::insert(item_tag).exec(&db).await?;
+                let _res = item_tag::Entity::insert(item_tag).exec(&db).await?;
             }
         }
-        let mut item_tag = item_tag::ActiveModel::from_json(json!({
+        let item_tag = item_tag::ActiveModel::from_json(json!({
             "item_id": 6,
             "tag_id": 6
         }))?;

@@ -24,6 +24,7 @@ futures = "0.3.28"
 thiserror = "1.0.58"
 async-std = { version = "1.12.0", features= ["attributes"] }
 regex = "1.10.6"
+chrono = "0.4.38"
 
 [features]
 # this feature is used for production builds or when `devPath` points to the filesystem
