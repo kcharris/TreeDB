@@ -39,10 +39,10 @@
 
 
 <template>    
-    <p>backups</p>
     <BackupSuccessPopup v-model="success_dialog"></BackupSuccessPopup>
     <v-toolbar color="blue-grey-lighten-5" density="compact">
-    <v-spacer/>
+        <p class="ml-5">Backup Management</p>
+        <v-spacer/>
     </v-toolbar>
 
     

@@ -57,11 +57,11 @@
 
 
 <template>    
-    <p>{{ db_name }}</p>
     <SuccessPopup v-model="success_dialog"></SuccessPopup>
     <v-toolbar color="blue-grey-lighten-5" density="compact">
-    <v-spacer/>
-    <CreatePopup @create="createDB"></CreatePopup>
+        <p class="ml-5">Database Management</p>
+        <v-spacer/>
+        <CreatePopup @create="createDB"></CreatePopup>
     </v-toolbar>
 
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
