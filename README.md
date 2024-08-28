@@ -5,7 +5,6 @@ This project is currently under development. If you want to work on it, follow t
 
 #### To-do
 * Settings Page
-* DB Management page
 * Tagging System
 
 ### Overview
@@ -21,6 +20,10 @@ This tool is best used in conjunction with a calendar, where items can be placed
 * Date fields use calendar dialog boxes.
 * The only required field is Name, and a few items are given a default to make item creation quicker.
 * Quickly create and edit items with easy to access dialog boxes.
+
+### Database Management
+* Allows the CRUD management of different databases so users can keep different lists
+* Allows users to backup databases where they can be managed on another page
 
 ### Data
 This tool generalizes items and their properties for management. Here are the properties of each item.
