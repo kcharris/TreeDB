@@ -91,7 +91,7 @@ import { invoke } from "@tauri-apps/api/tauri";
             <p>{{ (item.est_time ? item.est_time + " hrs" : "-- hrs") }}</p>
         </template>
         <template v-slot:item.name="{item}">
-            <v-btn max-width="350" density="comfortable" @click="updateData(item)" class="w-100 text-none text-truncate">{{ (item.name ? item.name : "")}}</v-btn>
+            <v-btn min-width="30dvh" max-width="40dvh" density="comfortable" @click="updateData(item)" class="text-none w-100 justify-start text-truncate">{{ (item.name ? item.name : "")}}</v-btn>
         </template>
         <template v-slot:item.completed="{item}">
             <v-icon v-if="item.completed==false">mdi-checkbox-blank-outline</v-icon>

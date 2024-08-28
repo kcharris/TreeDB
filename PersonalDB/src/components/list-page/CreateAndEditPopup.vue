@@ -130,7 +130,7 @@ import { watch } from "vue";
                   label="Name*"
                   v-model="values.name"
                   :rules="[rules.required]"
-                  maxlength="30"
+                  maxlength="45"
                   aria-autocomplete="none"
                 ></v-text-field>
               </v-col>
@@ -175,7 +175,7 @@ import { watch } from "vue";
                   v-model="values.resource"
                   append-inner-icon="mdi-link"
                   @click:append-inner="resource_dialog=true"
-                  maxlength="15"
+                  maxlength="20"
                   hint="If a link exists while this textfield is empty, it will default to 'link'"
                   persistent-hint
                   counter
