@@ -16,10 +16,11 @@ import {ref, onMounted} from "vue"
   const path = ref("HOME:/")
   
   function setPath(p: string){
-    path.value = p
+    path.value = "HOME:/" + p
   }
   function updatePage(pageNum: number){
     page.value = pageNum
+    setPath("")
   }
 </script>
 

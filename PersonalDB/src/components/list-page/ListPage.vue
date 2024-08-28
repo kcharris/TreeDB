@@ -19,7 +19,7 @@ import { invoke } from "@tauri-apps/api/tauri";
             let arr_map: string[] = ps.map((s) => s.name.replaceAll(" ", "-"))
             res_str = arr_map.join("/")
         }
-      let res = "HOME:/" + res_str
+      let res = res_str
         emits("sendPath", res)
     })
     const default_item: Item = {
