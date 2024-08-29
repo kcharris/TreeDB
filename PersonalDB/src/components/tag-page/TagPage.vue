@@ -14,7 +14,6 @@
     const db_name = defineModel()
     const tags = ref<Tag[]>([])
     const tag_names = ref<Set<string>>()
-    const selected = ref([])
 
     async function refresh_tags(){
         let tags_str:string = await invoke("get_tags", {dbName: db_name.value})
@@ -48,7 +47,6 @@
 <template>    
     <v-toolbar color="blue-grey-lighten-5" density="compact">
         <p class="ml-5">Tag Manager</p>
-        <p>{{ selected }}</p>
         <v-spacer/>
         <CreatePopup @create="createTag"></CreatePopup>
     </v-toolbar> 
@@ -57,12 +55,9 @@
         <v-card v-if="tags.length == 0" class="w-50 h-50 mx-auto mt-10">
             <v-card-title>No tags found</v-card-title>
         </v-card>
-        <v-table v-else class="w-66 fill-height overflow-x-auto mx-auto">
+        <v-table v-else class="w-50 fill-height overflow-x-auto mx-auto">
             <thead>
                 <tr>
-                    <th >
-                        Select
-                    </th>
                     <th >
                         Tag Name
                     </th>
@@ -80,12 +75,8 @@
                     :key="tag.name"
                 >
                     <td>
-                        <v-checkbox hide-details density="compact" v-model="selected" :value="tag.id"/>
-                    </td>
-                    <td>
                         <p>{{ tag.name }}</p>
                     </td>
-                    
                     <td>
                         <RenamePopup :tag="tag" @rename="renameTag"></RenamePopup>
                     </td>
