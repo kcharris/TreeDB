@@ -93,7 +93,7 @@
                     </td>
                     
                     <td>
-                        <DeletePopup :tag_id="tag.id" @delete="deleteTag"></DeletePopup>
+                        <DeletePopup :tag="tag" @delete="deleteTag"></DeletePopup>
                     </td>
                 </tr>
             </tbody>
