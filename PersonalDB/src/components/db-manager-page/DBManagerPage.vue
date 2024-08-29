@@ -59,13 +59,13 @@
 
 <template>    
     <SuccessPopup v-model="success_dialog"></SuccessPopup>
-    <v-toolbar color="blue-grey-lighten-5" density="compact">
-        <p class="ml-5">Database Management</p>
-        <v-spacer/>
-        <CreatePopup @create="createDB"></CreatePopup>
-    </v-toolbar>
 
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
+        <v-toolbar color="blue-grey-lighten-5 w-66 mx-auto" density="compact">
+            <p class="ml-5">Database Management</p>
+            <v-spacer/>
+            <CreatePopup @create="createDB"></CreatePopup>
+        </v-toolbar>
         <v-card v-if="db_names.length == 0" class="w-50 h-50 mx-auto mt-10">
             <v-card-title>No databases found</v-card-title>
         </v-card>

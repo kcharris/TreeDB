@@ -45,13 +45,12 @@
 
 
 <template>    
-    <v-toolbar color="blue-grey-lighten-5" density="compact">
-        <p class="ml-5">Tag Manager</p>
-        <v-spacer/>
-        <CreatePopup @create="createTag"></CreatePopup>
-    </v-toolbar> 
-
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
+        <v-toolbar color="blue-grey-lighten-5 w-50 mx-auto" density="compact">
+            <p class="ml-5">Tag Manager</p>
+            <v-spacer/>
+            <CreatePopup @create="createTag"></CreatePopup>
+        </v-toolbar> 
         <v-card v-if="tags?.length == 0" class="w-50 h-50 mx-auto mt-10">
             <v-card-title>No tags found</v-card-title>
         </v-card>

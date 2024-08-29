@@ -40,13 +40,11 @@
 
 <template>    
     <BackupSuccessPopup v-model="success_dialog"></BackupSuccessPopup>
-    <v-toolbar color="blue-grey-lighten-5" density="compact">
-        <p class="ml-5">Backup Management</p>
-        <v-spacer/>
-    </v-toolbar>
-
-    
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
+        <v-toolbar color="blue-grey-lighten-5 w-66 mx-auto" density="compact">
+            <p class="ml-5">Backup Management</p>
+            <v-spacer/>
+        </v-toolbar>
         <v-card v-if="backup_names.length == 0" class="w-50 h-50 mx-auto mt-10">
             <v-card-title>No Backups found</v-card-title>
         </v-card>
