@@ -5,13 +5,15 @@ import ListPage from "./components/list-page/ListPage.vue"
 import SettingsPage from "./components/settings-page/SettingsPage.vue"
 import DBManagerPage from "./components/db-manager-page/DBManagerPage.vue"
 import BackupManagerPage from "./components/backup-manager-page/BackupManagerPage.vue"
-import {ref, onMounted} from "vue"
-  onMounted(() => {
+import {ref, onBeforeMount} from "vue"
+import { invoke } from "@tauri-apps/api/tauri";
+  onBeforeMount(async () => {
     // set db_name to the name in the text file.
-    db_name.value = "default" // placeholder
+    db_name.value = await invoke("get_db_name")
+    page.value = 0
   })
 
-  const page = ref(0)
+  const page = ref(-1)
   const db_name = ref()
   const path = ref("HOME:/")
   

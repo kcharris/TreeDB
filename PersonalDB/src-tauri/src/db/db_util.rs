@@ -58,6 +58,7 @@ pub fn update_on_start_db(db_name: String){
 }
 
 /// Get's the current db's name being used for the item list from the db_name.json file
+#[tauri::command]
 pub fn get_db_name() -> String {
     let home_dir = dirs::home_dir().unwrap();
     let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").expect("Unable to open file from get_db_name");

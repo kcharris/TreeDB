@@ -22,8 +22,9 @@
         db_names.value = filenames
     }
 
-    function setDBName(name: string){
+    async function setDBName(name: string){
         db_name.value = name;
+        await invoke("update_on_start_db", {dbName: name})
     }
     
     async function createDB(name: string){
