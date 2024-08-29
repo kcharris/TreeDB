@@ -5,6 +5,7 @@ import ListPage from "./components/list-page/ListPage.vue"
 import SettingsPage from "./components/settings-page/SettingsPage.vue"
 import DBManagerPage from "./components/db-manager-page/DBManagerPage.vue"
 import BackupManagerPage from "./components/backup-manager-page/BackupManagerPage.vue"
+import TagPage from "./components/tag-page/TagPage.vue"
 import {ref, onBeforeMount} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
   onBeforeMount(async () => {
@@ -41,12 +42,15 @@ import { invoke } from "@tauri-apps/api/tauri";
       <ListPage v-model="db_name" @send-path="setPath"/>
     </template>
     <template v-if="page == 1">
-      <DBManagerPage v-model="db_name"/>
+      <TagPage v-model="db_name"/>
     </template>
     <template v-if="page == 2">
-      <BackupManagerPage/>
+      <DBManagerPage v-model="db_name"/>
     </template>
     <template v-if="page == 3">
+      <BackupManagerPage/>
+    </template>
+    <template v-if="page == 4">
       <SettingsPage/>
     </template>
     </v-main>
