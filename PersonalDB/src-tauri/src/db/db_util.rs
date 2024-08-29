@@ -21,7 +21,7 @@ pub async fn init() -> Result<(), ItemDBError> {
         let _ = fs::create_dir(path);
     }
 
-    // make sure the app contains a file with the default database name
+    // make sure the app contains a json file to store the default database name
     let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/db_name.json";
     let path = Path::new(&binding);
     if !path.exists(){
@@ -37,7 +37,11 @@ pub async fn init() -> Result<(), ItemDBError> {
     }
 
     // Makes sure the database file in db_name.json exists, if not creates one. The very first db will have the name 'default', as shown above.
-    let db_name = get_db_name();
+    let mut db_name = get_db_name();
+    if db_name == ""{
+        db_name = "default".to_string();
+        update_on_start_db(db_name.clone());
+    }
     if !db_file_exists(db_name.clone()){
         update_on_start_db(db_name.clone());
         create_db_file(db_name.clone()).await;
