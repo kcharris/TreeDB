@@ -1,5 +1,5 @@
 <script setup lang="ts">
-    import { VTable, VBtn, VSheet} from "vuetify/components";
+    import { VTable, VSheet} from "vuetify/components";
     import { ref, onMounted} from "vue";
     import { invoke } from "@tauri-apps/api/tauri";
     import CreatePopup from "./CreatePopup.vue"
@@ -15,7 +15,6 @@
     const tags = ref<Tag[]>([])
     const tag_names = ref<Set<string>>()
     const selected = ref([])
-    const success_dialog = ref(false)
 
     async function refresh_tags(){
         let tags_str:string = await invoke("get_tags", {dbName: db_name.value})
@@ -47,7 +46,6 @@
 
 
 <template>    
-    <SuccessPopup v-model="success_dialog"></SuccessPopup>
     <v-toolbar color="blue-grey-lighten-5" density="compact">
         <p class="ml-5">Tag Manager</p>
         <p>{{ selected }}</p>
