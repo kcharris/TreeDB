@@ -166,7 +166,7 @@ import { invoke } from "@tauri-apps/api/tauri";
         single-line
         clearable
     ></v-text-field>
-    <v-select max-width="250px" density="comfortable" v-model="tags_selected" :items="tag_names" class="ml-5 mt-5" label="Tag Filter" multiple>
+    <v-select max-width="250px" density="comfortable" v-model="tags_selected" :items="tag_names" class="ml-5 mt-5" label="Filter by Tag" multiple>
       <template v-slot:selection="{ item, index }">
         <v-chip v-if="index < 1">
           <span>{{ item.title}}</span>
