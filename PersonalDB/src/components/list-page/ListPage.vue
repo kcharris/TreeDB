@@ -1,16 +1,18 @@
 <script setup lang="ts">
 
-import {Item} from "../../item-types";
+import {Item, Tag} from "../../item-types";
 import CreateAndEditPopup from "./CreateAndEditPopup.vue";
 import FullDetails from "./FullDetails.vue"
 import MainList from "./MainList.vue";
 import FullDetailsHome from "./FullDetailsHome.vue"
 import {ref, computed, watch, onMounted} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
+
     onMounted(()=> {
       getList()
     })
     const emits = defineEmits(["sendPath"])
+    const props = defineProps(["tags"])
     const db_name = defineModel()
     const path_stack = ref(Array())
     watch(path_stack.value, (ps)=> {
@@ -38,6 +40,8 @@ import { invoke } from "@tauri-apps/api/tauri";
     const item_to_edit = ref({})
     const edit_dialog_bool = ref(false)
     const can_edit = computed(() => !(curr_parent.value.id))
+    const tags_selected = ref([])
+    const tag_names = computed<string[]>(()=> props.tags.map((t: Tag)=>{return t.name}))
 
     function containsSubsequence(s:string, sub:string){
       if (s.length < sub.length){
@@ -138,6 +142,19 @@ import { invoke } from "@tauri-apps/api/tauri";
         single-line
         clearable
     ></v-text-field>
+    <v-select max-width="250px" density="comfortable" v-model="tags_selected" :items="tag_names" class="ml-5 mt-5" label="Tag Filter" multiple>
+      <template v-slot:selection="{ item, index }">
+        <v-chip v-if="index < 1">
+          <span>{{ item.title}}</span>
+        </v-chip>
+        <span
+          v-if="index===1"
+          class="text-grey text-caption align-self-center"
+        >
+          (+{{ tags_selected.length - 2 }} others)
+        </span>
+      </template>
+    </v-select>
     <v-spacer/>
     <v-btn :disabled="can_edit" @click="editCurrent" class="bg-primary mr-2">Edit</v-btn>
     <CreateAndEditPopup @send-values="addItem"/>

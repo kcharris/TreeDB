@@ -8,14 +8,19 @@ import BackupManagerPage from "./components/backup-manager-page/BackupManagerPag
 import TagPage from "./components/tag-page/TagPage.vue"
 import {ref, onBeforeMount} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
+import { Tag } from "./item-types.ts"
+
   onBeforeMount(async () => {
     // set db_name to the name in the text file.
     db_name.value = await invoke("get_db_name")
+    let tags_str:string = await invoke("get_tags", {dbName: db_name.value})
+    tags.value = tags_str == "" ? [] : JSON.parse(tags_str)
     page.value = 0
   })
 
   const page = ref(-1)
   const db_name = ref()
+  const tags = ref<Tag[]>([])
   const path = ref("HOME:/")
   
   function setPath(p: string){
@@ -39,10 +44,10 @@ import { invoke } from "@tauri-apps/api/tauri";
 
   <v-main fluid class="d-flex flex-column">
     <template v-if="page == 0">
-      <ListPage v-model="db_name" @send-path="setPath"/>
+      <ListPage v-model="db_name" :tags="tags" @send-path="setPath"/>
     </template>
     <template v-if="page == 1">
-      <TagPage v-model="db_name"/>
+      <TagPage v-model:db-name="db_name" v-model:tags="tags"/>
     </template>
     <template v-if="page == 2">
       <DBManagerPage v-model="db_name"/>

@@ -11,14 +11,14 @@
         refresh_tags();
     })
 
-    const db_name = defineModel()
-    const tags = ref<Tag[]>([])
+    const db_name = defineModel("dbName")
+    const tags = defineModel<Tag[]>("tags")
     const tag_names = ref<Set<string>>()
 
     async function refresh_tags(){
         let tags_str:string = await invoke("get_tags", {dbName: db_name.value})
         tags.value = tags_str == "" ? [] : JSON.parse(tags_str)
-        tag_names.value = new Set(tags.value.map((t)=> {return t.name.toLocaleLowerCase()}))
+        tag_names.value = new Set(tags.value?.map((t)=> {return t.name.toLocaleLowerCase()}))
     }
 
     async function createTag(name: string){
@@ -52,7 +52,7 @@
     </v-toolbar> 
 
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
-        <v-card v-if="tags.length == 0" class="w-50 h-50 mx-auto mt-10">
+        <v-card v-if="tags?.length == 0" class="w-50 h-50 mx-auto mt-10">
             <v-card-title>No tags found</v-card-title>
         </v-card>
         <v-table v-else class="w-50 fill-height overflow-x-auto mx-auto">
