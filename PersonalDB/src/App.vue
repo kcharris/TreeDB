@@ -2,7 +2,7 @@
 
 import LeftNavBar from "./components/LeftNavBar.vue";
 import ListPage from "./components/list-page/ListPage.vue"
-import SettingsPage from "./components/settings-page/SettingsPage.vue"
+// import SettingsPage from "./components/settings-page/SettingsPage.vue"
 import DBManagerPage from "./components/db-manager-page/DBManagerPage.vue"
 import BackupManagerPage from "./components/backup-manager-page/BackupManagerPage.vue"
 import TagPage from "./components/tag-page/TagPage.vue"
@@ -50,9 +50,9 @@ import { invoke } from "@tauri-apps/api/tauri";
     <template v-if="page == 3">
       <BackupManagerPage/>
     </template>
-    <template v-if="page == 4">
+    <!-- <template v-if="page == 4">
       <SettingsPage/>
-    </template>
+    </template> -->
     </v-main>
   </v-app>
   
