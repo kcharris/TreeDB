@@ -19,8 +19,10 @@ import {ref, onMounted} from "vue"
     path.value = "HOME:/" + p
   }
   function updatePage(pageNum: number){
-    page.value = pageNum
-    setPath("")
+    if(page.value != pageNum){
+      page.value = pageNum
+      setPath("")
+    }
   }
 </script>
 
