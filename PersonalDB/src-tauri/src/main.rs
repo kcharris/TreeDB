@@ -9,6 +9,8 @@ pub mod errors;
 use futures::executor::block_on;
 use crate::db::db_util::*;
 use crate::db::item_db_util::*;
+use crate::db::tag_db_util::*;
+use crate::db::item_tag_db_util::*;
 use std::process::Command;
 
 // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
@@ -40,7 +42,8 @@ fn main() {
         .invoke_handler(tauri::generate_handler![find_items_by_parent_id, get_item_by_id, add_item, delete_item,
             update_item, open_file_explorer, update_on_start_db, create_db_file,
             delete_db_file, clone_db_file, get_db_filenames, rename_db,
-            backup_db, restore_db, get_backup_filenames, rename_backup, delete_backup_file])
+            backup_db, restore_db, get_backup_filenames, rename_backup, delete_backup_file, get_tags, update_tag,
+            delete_tag, add_tag, add_item_tag, get_tags_by_item_id, get_items_by_tag_id, delete_item_tag])
         .setup(|_app|{
             if let Err(err) = block_on(init()) {
                 panic!("{}", err);
