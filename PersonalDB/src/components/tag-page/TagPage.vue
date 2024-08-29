@@ -13,22 +13,29 @@
 
     const db_name = defineModel()
     const tags = ref<Tag[]>([])
+    const tag_names = ref<Set<string>>()
     const selected = ref([])
     const success_dialog = ref(false)
 
     async function refresh_tags(){
         let tags_str:string = await invoke("get_tags", {dbName: db_name.value})
         tags.value = tags_str == "" ? [] : JSON.parse(tags_str)
+        tag_names.value = new Set(tags.value.map((t)=> {return t.name.toLocaleLowerCase()}))
     }
 
     async function createTag(name: string){
-        await invoke("add_tag", {dbName: db_name.value, name: name});
-        refresh_tags();
+        if (!tag_names.value?.has(name.toLocaleLowerCase())){
+            await invoke("add_tag", {dbName: db_name.value, name: name});
+            refresh_tags();
+        }
     }
 
-    function renameTag(payload: any){
-        invoke("rename_tag", {dbName: db_name.value, payload: payload})
-        refresh_tags();
+    async function renameTag(tag: Tag){
+        if (!tag_names.value?.has(tag.name.toLocaleLowerCase())){
+            let payload = JSON.stringify(tag)
+            await invoke("update_tag", {dbName: db_name.value, payload: payload})
+            refresh_tags();
+        } 
     }
 
     async function deleteTag(id: Number){

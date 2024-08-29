@@ -1,21 +1,23 @@
 <script setup lang="ts">
 import { ref, watch} from "vue";
+import {Tag} from "../../item-types"
 
     const emit = defineEmits(["rename"])
-    const props = defineProps(['db_name'])
+    const props = defineProps(['tag'])
     const dialog = ref(false)
-    const new_name = ref("")
+    const updated_tag = ref<Tag>({name:"", id: -1})
 
     function emitRename(){
-        if (new_name.value != ""){
-            emit("rename", {dbName: props.db_name, newName: new_name.value})
+        if (updated_tag.value.name != ""){
+            emit("rename", updated_tag.value)
             dialog.value = false
         }
     }
 
     watch(dialog, ()=>{
         if (dialog){
-            new_name.value = ""
+            updated_tag.value.id = props.tag.id
+            updated_tag.value.name = ""
         }
     })
 
@@ -29,10 +31,10 @@ import { ref, watch} from "vue";
         max-width="500"
         >
         <v-card>
-            <v-card-title>Rename Database</v-card-title>
-            <v-card-text>Enter a different name for the database. If the new name shares the name of an existing DB, nothing will happen.</v-card-text>
+            <v-card-title>Rename Tag</v-card-title>
+            <v-card-text>Enter a different name for the Tag. If the new name shares the name of an existing Tag, nothing will happen.</v-card-text>
             <v-card-item>
-                <v-text-field v-model="new_name"/>
+                <v-text-field v-model="updated_tag.name"/>
             </v-card-item>
             
             <v-card-actions>
