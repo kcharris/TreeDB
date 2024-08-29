@@ -75,7 +75,7 @@
                     :key="tag.name"
                 >
                     <td>
-                        <v-checkbox v-model="selected" :value="tag.id"></v-checkbox>
+                        <v-checkbox hide-details density="compact" v-model="selected" :value="tag.id"/>
                     </td>
                     <td>
                         <p>{{ tag.name }}</p>
