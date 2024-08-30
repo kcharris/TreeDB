@@ -26,6 +26,7 @@ import { Tag } from "./item-types.ts"
   function setPath(p: string){
     path.value = "HOME:/" + p
   }
+  
   function updatePage(pageNum: number){
     if(page.value != pageNum){
       page.value = pageNum

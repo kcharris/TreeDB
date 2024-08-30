@@ -15,7 +15,7 @@ import { invoke } from "@tauri-apps/api/tauri";
     const props = defineProps(["tags"])
     const db_name = defineModel()
     const path_stack = ref<Item[]>([])
-    watch(path_stack.value, (ps)=> {
+    watch(path_stack, (ps)=> {
         let res_str = ""
         if (path_stack.value.length > 0 ){
             let arr_map: string[] = ps.map((s) => s.name.replaceAll(" ", "-"))
@@ -23,7 +23,7 @@ import { invoke } from "@tauri-apps/api/tauri";
         }
       let res = res_str
         emits("sendPath", res)
-    })
+    }, {deep: true})
     const default_item: Item = {
       name: "default",
       id: undefined
