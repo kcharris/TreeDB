@@ -28,7 +28,7 @@ import { invoke } from "@tauri-apps/api/tauri";
       name: "default",
       id: undefined
     }
-    const curr_parent = ref(default_item)
+    const curr_parent = ref<Item>(default_item)
     const data_str = ref("")
     const name_filter = ref("")
     const data_list = computed<Item[]>(() => {
@@ -105,9 +105,6 @@ import { invoke } from "@tauri-apps/api/tauri";
         await getList()
       }
     }
-
-    // bug not updating when current parent is the taget
-    // bug #2 shows error when updating or trying to update fields
     async function updateItemTags(item: Item, item_tags: Number[]){
       // remove a tag if it exists in previous memory but not in item_tags
       let item_tag_set = new Set(item_tags)
@@ -161,11 +158,17 @@ import { invoke } from "@tauri-apps/api/tauri";
         let tag_set:Set<Number> = new Set(tags.map((t:Tag) => t.id))
         data_map.set(item.name, tag_set)
       })
+      if (curr_parent.value.id != undefined){
+        let tags_str:string = await invoke("get_tags_by_item_id", {dbName:db_name.value, id: curr_parent.value.id})
+        let tags = tags_str == "" ? [] : JSON.parse(tags_str)
+        let tag_set:Set<Number> = new Set(tags.map((t:Tag) => t.id))
+        data_map.set(curr_parent.value.name, tag_set)
+      }
       return data_map
     }
 
     async function nextItem(item_object: Item){
-      path_stack.value.push(JSON.parse(JSON.stringify(item_object)))
+      path_stack.value.push(item_object)
       curr_parent.value = item_object
       await getList()
     }

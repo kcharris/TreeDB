@@ -144,7 +144,6 @@ import { watch } from "vue";
           prepend-icon="mdi-plus-circle"
           title="Add Item"
         >
-        <v-card-text>{{ tags_selected }}</v-card-text>
           <v-card-text>
             <v-row dense>
               <v-col
