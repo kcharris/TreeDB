@@ -8,7 +8,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 
     const emit = defineEmits(["nextItem", "delete", "edit"])
     defineProps<{
-            dataList: [Item]
+            dataList: Item[]
     }>()
     
     function editItem(item: Item){

@@ -8,8 +8,8 @@ import FullDetailsHome from "./FullDetailsHome.vue"
 import {ref, computed, watch, onMounted} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
 
-    onMounted(()=> {
-      getList()
+    onMounted(async ()=> {
+      await getList()
     })
     const emits = defineEmits(["sendPath"])
     const props = defineProps(["tags"])
@@ -26,24 +26,30 @@ import { invoke } from "@tauri-apps/api/tauri";
     })
     const default_item: Item = {
       name: "default",
+      id: undefined
     }
     const curr_parent = ref(default_item)
     const data_str = ref("")
     const name_filter = ref("")
-    const data_list = computed(() => {
+    const data_list = computed<Item[]>(() => {
       let res = data_str.value == "" ? [] : JSON.parse(data_str.value)
       if (name_filter.value){
         res = res.filter((obj:any) => containsSubsequence(obj.name.toLowerCase(), name_filter.value.toLowerCase()))
       }
 
       if (tags_selected.value.length > 0){
-        let tag_name_set = new Set(tag_names.value)
-        res = res.filter((obj:Item) => {item_tag_map.value?.get(obj.name)?.isSupersetOf(tag_name_set)})
+        let item_tags: Set<Number> = new Set()
+        let tag_set:Set<string> = new Set(tags_selected.value)
+        props.tags.forEach((t:Tag)=>{
+          if (tag_set.has(t.name)){
+            item_tags.add(Number(t.id))
+          }
+        })
+        res = res.filter((obj:Item) => {item_tag_map.value?.get(obj.name)?.isSupersetOf.bind(tag_set)})
       }
-
       return res
     })
-    const item_to_edit = ref({})
+    const item_to_edit = ref<Item>(default_item)
     const edit_dialog_bool = ref(false)
     const can_edit = computed(() => !(curr_parent.value.id))
     const tags_selected = ref([])
@@ -68,28 +74,52 @@ import { invoke } from "@tauri-apps/api/tauri";
       return false
     }
 
-    async function addItem(item_object: Item){
-      item_object.parent_id = curr_parent.value.id
+    async function addItem(payload:{item_object: Item, item_tags: Number[]}){
+      let item_object = payload.item_object
+      let item_tags = payload.item_tags
+      if (curr_parent.value.id != undefined){
+        item_object.parent_id = curr_parent.value.id
+      }
       let str_object = JSON.stringify(item_object)
-      await invoke("add_item", {dbName: db_name.value, payload: str_object})
-      getList()
+      item_object.id = await invoke("add_item", {dbName: db_name.value, payload: str_object})
+      await updateItemTags(item_object, item_tags)
+      await getList()
     }
 
     async function deleteItem(item_object:Item){
       await invoke("delete_item", {dbName: db_name.value, id: item_object.id})
-      getList()
+      await getList()
     }
 
-    async function updateItem(item_object: Item){
+    async function updateItem(payload:{item_object:Item, item_tags:Number[]}){
+      let item_object = payload.item_object
+      let item_tags = payload.item_tags
       let str_object = JSON.stringify(item_object)
       await invoke("update_item", {dbName: db_name.value, payload: str_object})
+      await updateItemTags(item_object, item_tags)
       if (item_object.id == curr_parent.value.id){
         str_object = await invoke("get_item_by_id", {dbName: db_name.value, id: item_object.id})
         curr_parent.value = JSON.parse(str_object)
       }
       else{
-        getList()
+        await getList()
       }
+    }
+
+    async function updateItemTags(item: Item, item_tags: Number[]){
+      // remove a tag if it exists in previous memory but not in item_tags
+      let item_tag_set = new Set(item_tags)
+      let previous_item_tag_set = new Set(item_tag_map.value?.get(item.name))
+      let to_remove = previous_item_tag_set.difference(item_tag_set)
+      // add a tag if it does not exist in previous memory and does exist in item_tags
+      let to_add = item_tags.filter((t:Number) => {return !item_tag_map.value?.get(item.name)?.has(t)})
+
+      to_remove?.forEach(async (id:Number)=>{
+        await invoke('delete_item_tag', {dbName: db_name.value, itemId: item.id, tagId: id})
+      })
+      to_add?.forEach(async (id:Number)=>{
+        await invoke('add_item_tag', {dbName: db_name.value, itemId: item.id, tagId: id})
+      })
     }
 
     function getEditItemPopup(item_object: Item){
@@ -108,8 +138,8 @@ import { invoke } from "@tauri-apps/api/tauri";
 
     async function getItemTags(){
       let data_map = new Map<string, Set<Number>>()
-      data_list.value.array.foreach(async (item:Item) => {
-        let tags_str:string = await invoke("get_tag_by_item_id", {id: item.id})
+      data_list.value.forEach(async (item:Item) => {
+        let tags_str:string = await invoke("get_tags_by_item_id", {dbName:db_name.value, id: item.id})
         let tags = tags_str == "" ? [] : JSON.parse(tags_str)
         let tag_set:Set<Number> = new Set(tags.map((t:Tag) => t.id))
         data_map.set(item.name, tag_set)
@@ -120,7 +150,7 @@ import { invoke } from "@tauri-apps/api/tauri";
     async function nextItem(item_object: Item){
       path_stack.value.push(JSON.parse(JSON.stringify(item_object)))
       curr_parent.value = item_object
-      getList()
+      await getList()
     }
 
     async function navBack(){
@@ -132,19 +162,25 @@ import { invoke } from "@tauri-apps/api/tauri";
           else{
             curr_parent.value = default_item
           }
-          getList()
+          await getList()
         }
     }
     async function navHome(){
       path_stack.value = []
       curr_parent.value = default_item
-      getList()
+      await getList()
     }
     
 </script>
 
 <template>
-    <CreateAndEditPopup v-model = "edit_dialog_bool" :item_to_edit = "item_to_edit" @send-values="updateItem"/>
+    <CreateAndEditPopup
+      v-model="edit_dialog_bool"
+      :item_to_edit="item_to_edit"
+      :tag_names="tag_names" :tags="props.tags"
+      :tags_selected="item_tag_map?.get(item_to_edit?.name as string)"
+      @send-values="updateItem"
+    />
     <template v-if="curr_parent.id != undefined">
     <FullDetails :parent = "curr_parent"/>
     </template>
@@ -175,13 +211,13 @@ import { invoke } from "@tauri-apps/api/tauri";
           v-if="index===1"
           class="text-grey text-caption align-self-center"
         >
-          (+{{ tags_selected.length - 2 }} others)
+          (+{{ tags_selected.length - 1}} others)
         </span>
       </template>
     </v-select>
     <v-spacer/>
     <v-btn :disabled="can_edit" @click="editCurrent" class="bg-primary mr-2">Edit</v-btn>
-    <CreateAndEditPopup @send-values="addItem"/>
+    <CreateAndEditPopup :tag_names="tag_names" :tags="props.tags" @send-values="addItem"/>
     </v-toolbar>
     <MainList :data-list="data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
 </template>

@@ -5,7 +5,7 @@ The create function has a btn for the UI.
 The edit function only has a dialog and relies on separate UI such as an edit button or edit icon to function.
 -->
 <script setup lang="ts">
-import {Item} from "../../item-types";
+import {Item, Tag} from "../../item-types";
 import {ref, Ref} from "vue";
 import CalendarField from "./CalendarField.vue";
 import ResourcePopup from "./ResourcePopup.vue";
@@ -13,7 +13,10 @@ import { computed } from "vue";
 import { SubmitEventPromise } from "vuetify";
 import { watch } from "vue";
     const props = defineProps([
-      'item_to_edit'
+      'item_to_edit',
+      'tag_names',
+      'tags',
+      'tags_selected'
     ])
     const dialog = defineModel({type: Boolean})
     const resource_dialog = ref(false)
@@ -21,8 +24,8 @@ import { watch } from "vue";
     const field = ref({
       priority: "",
     })
+    const tags_selected = ref<string[]>([])
     
-
     const values: Ref<Item> = ref({
       name: "",
       priority: computed(()=> {return field.value.priority == "" ? 100 : parseInt(field.value.priority)}),
@@ -32,6 +35,13 @@ import { watch } from "vue";
     watch(dialog, (val) => {
         if (val == true){
             if(props.item_to_edit != undefined){
+
+                tags_selected.value = []
+                props.tags.forEach((t:Tag)=>{
+                  if ((props.tags_selected as Set<Number>)?.has(Number(t.id))){
+                    tags_selected.value.push(t.name)
+                  }
+                })
                 
                 field.value.priority = props.item_to_edit.priority
 
@@ -49,6 +59,9 @@ import { watch } from "vue";
                 values.value.description = props.item_to_edit.description
             }
             else{
+                //item_tags.value = []
+                tags_selected.value = []
+
                 field.value.priority = ""
 
                 values.value.name = ""
@@ -89,8 +102,19 @@ import { watch } from "vue";
 
     async function submit(event: SubmitEventPromise){
       const result: any = await event
+      let item_tags: Number[] = []
+      let tag_set:Set<string> = new Set(tags_selected.value)
+      props.tags.forEach((t:Tag)=>{
+        if (tag_set.has(t.name)){
+          item_tags.push(Number(t.id))
+        }
+      })
       if(result.valid){
-        emit("sendValues", values.value)
+        let payload = {
+          item_object: values.value,
+          item_tags: item_tags
+        }
+        emit("sendValues", payload)
         dialog.value=false
       }
     }
@@ -119,6 +143,7 @@ import { watch } from "vue";
           prepend-icon="mdi-plus-circle"
           title="Add Item"
         >
+        <v-card-text>{{ tags_selected }}</v-card-text>
           <v-card-text>
             <v-row dense>
               <v-col
@@ -217,6 +242,30 @@ import { watch } from "vue";
                   label="Completed?"
                 ></v-checkbox-btn>
               </v-col>
+
+              <v-col
+                cols="12"
+                sm="4"
+              >
+                <v-select
+                  v-model="tags_selected"
+                  :items="props.tag_names"
+                  label="Select Tags"
+                  multiple
+                >
+                  <template v-slot:selection="{ item, index }">
+                    <v-chip v-if="index < 1">
+                      <span>{{item.title}}</span>
+                    </v-chip>
+                    <span
+                      v-if="index===1"
+                      class="text-grey text-caption align-self-center"
+                    >
+                      (+{{ tags_selected.length - 1 }} others)
+                    </span>
+                  </template>
+                </v-select>
+              </v-col>
   
               <v-col
                 cols="12"
@@ -247,7 +296,7 @@ import { watch } from "vue";
               class="bg-grey"
               text="Discard"
               variant="plain"
-              @click= "dialog = false"
+              @click= "dialog=false"
             ></v-btn>
             
             <!-- <v-btn
