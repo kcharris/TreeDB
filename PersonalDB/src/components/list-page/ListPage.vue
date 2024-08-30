@@ -14,7 +14,7 @@ import { invoke } from "@tauri-apps/api/tauri";
     const emits = defineEmits(["sendPath"])
     const props = defineProps(["tags"])
     const db_name = defineModel()
-    const path_stack = ref(Array())
+    const path_stack = ref<Item[]>([])
     watch(path_stack.value, (ps)=> {
         let res_str = ""
         if (path_stack.value.length > 0 ){
@@ -36,7 +36,6 @@ import { invoke } from "@tauri-apps/api/tauri";
       if (name_filter.value){
         res = res.filter((obj:any) => containsSubsequence(obj.name.toLowerCase(), name_filter.value.toLowerCase()))
       }
-
       if (tags_selected.value.length > 0){
         let item_tags: Set<Number> = new Set()
         let tag_set:Set<string> = new Set(tags_selected.value)
@@ -45,16 +44,17 @@ import { invoke } from "@tauri-apps/api/tauri";
             item_tags.add(Number(t.id))
           }
         })
-        res = res.filter((obj:Item) => {item_tag_map.value?.get(obj.name)?.isSupersetOf.bind(tag_set)})
+        res = res.filter((obj:Item) => {return (new Set(item_tag_map.value?.get(obj.name))).isSupersetOf(item_tags) == true})
       }
       return res
     })
     const item_to_edit = ref<Item>(default_item)
     const edit_dialog_bool = ref(false)
     const can_edit = computed(() => !(curr_parent.value.id))
-    const tags_selected = ref([])
+    const tags_selected = ref<string[]>([])
     const tag_names = computed<string[]>(()=> props.tags.map((t: Tag)=>{return t.name}))
     const item_tag_map = ref<Map<string, Set<Number>>>()
+    const tags_owned = ref<Set<Number>>(new Set())
 
     function containsSubsequence(s:string, sub:string){
       if (s.length < sub.length){
@@ -106,6 +106,8 @@ import { invoke } from "@tauri-apps/api/tauri";
       }
     }
 
+    // bug not updating when current parent is the taget
+    // bug #2 shows error when updating or trying to update fields
     async function updateItemTags(item: Item, item_tags: Number[]){
       // remove a tag if it exists in previous memory but not in item_tags
       let item_tag_set = new Set(item_tags)
@@ -122,12 +124,27 @@ import { invoke } from "@tauri-apps/api/tauri";
       })
     }
 
-    function getEditItemPopup(item_object: Item){
+    async function getTagsSelected(){
+      let res:Set<Number> = new Set()
+      if (item_to_edit.value.id != curr_parent.value.id){
+        res = item_tag_map.value?.get(item_to_edit.value?.name as string) ?? new Set()
+      }
+      else{
+        let res_str:string = await invoke("get_tags_by_item_id", {dbName: db_name.value, id: item_to_edit.value.id})
+        let res_tags = JSON.parse(res_str)
+        res = res_tags.map((t:Tag)=> {return t.id})
+      }
+      return res
+    }
+
+    async function getEditItemPopup(item_object: Item){
       item_to_edit.value = item_object
+      tags_owned.value = await getTagsSelected()
       edit_dialog_bool.value = true
     }
-    function editCurrent(){
-      getEditItemPopup(curr_parent.value)
+
+    async function editCurrent(){
+      await getEditItemPopup(curr_parent.value)
     }
 
     async function getList(){
@@ -177,8 +194,9 @@ import { invoke } from "@tauri-apps/api/tauri";
     <CreateAndEditPopup
       v-model="edit_dialog_bool"
       :item_to_edit="item_to_edit"
-      :tag_names="tag_names" :tags="props.tags"
-      :tags_selected="item_tag_map?.get(item_to_edit?.name as string)"
+      :tag_names="tag_names"
+      :tags="props.tags"
+      :tags_owned="tags_owned"
       @send-values="updateItem"
     />
     <template v-if="curr_parent.id != undefined">

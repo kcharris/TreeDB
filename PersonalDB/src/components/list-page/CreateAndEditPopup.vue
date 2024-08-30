@@ -16,7 +16,7 @@ import { watch } from "vue";
       'item_to_edit',
       'tag_names',
       'tags',
-      'tags_selected'
+      'tags_owned'
     ])
     const dialog = defineModel({type: Boolean})
     const resource_dialog = ref(false)
@@ -37,8 +37,9 @@ import { watch } from "vue";
             if(props.item_to_edit != undefined){
 
                 tags_selected.value = []
+                let tags_owned = new Set(props.tags_owned)
                 props.tags.forEach((t:Tag)=>{
-                  if ((props.tags_selected as Set<Number>)?.has(Number(t.id))){
+                  if (tags_owned.has(Number(t.id))){
                     tags_selected.value.push(t.name)
                   }
                 })
