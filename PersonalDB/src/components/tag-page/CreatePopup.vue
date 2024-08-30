@@ -30,7 +30,7 @@ import { ref, watch} from "vue";
             <v-card-title>Tag Creation</v-card-title>
             <v-card-text>Enter a name for the tag to create. If a tag shares the name of an existing tag, nothing will happen.</v-card-text>
             <v-card-item>
-                <v-text-field v-model="new_tag_name"/>
+                <v-text-field maxlength="30" v-model="new_tag_name"/>
             </v-card-item>
             
             <v-card-actions>
