@@ -9,12 +9,13 @@ import {ref, computed, watch, onMounted} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
 
     onMounted(async ()=> {
+      curr_parent.value = path_stack.value.length == 0 ? default_item : path_stack.value[path_stack.value.length-1]
       await getList()
     })
     const emits = defineEmits(["sendPath"])
     const props = defineProps(["tags"])
-    const db_name = defineModel()
-    const path_stack = ref<Item[]>([])
+    const db_name = defineModel("dbName", {required:true})
+    const path_stack = defineModel<Item[]>("pathStack", {required: true})
     watch(path_stack, (ps)=> {
         let res_str = ""
         if (path_stack.value.length > 0 ){
@@ -203,10 +204,10 @@ import { invoke } from "@tauri-apps/api/tauri";
       @send-values="updateItem"
     />
     <template v-if="curr_parent.id != undefined">
-    <FullDetails :parent = "curr_parent"/>
+      <FullDetails :parent = "curr_parent"/>
     </template>
     <template v-else>
-    <FullDetailsHome />
+      <FullDetailsHome />
     </template>
 
     <v-toolbar color="blue-grey-lighten-5" density="compact">

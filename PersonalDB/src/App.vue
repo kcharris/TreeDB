@@ -6,9 +6,9 @@ import ListPage from "./components/list-page/ListPage.vue"
 import DBManagerPage from "./components/db-manager-page/DBManagerPage.vue"
 import BackupManagerPage from "./components/backup-manager-page/BackupManagerPage.vue"
 import TagPage from "./components/tag-page/TagPage.vue"
-import {ref, onBeforeMount} from "vue"
+import {ref, onBeforeMount, watch} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
-import { Tag } from "./item-types.ts"
+import {Item, Tag } from "./item-types.ts"
 
   onBeforeMount(async () => {
     // set db_name to the name in the text file.
@@ -22,6 +22,12 @@ import { Tag } from "./item-types.ts"
   const db_name = ref()
   const tags = ref<Tag[]>([])
   const path = ref("HOME:/")
+  const path_stack = ref<Item[]>([])
+
+  watch(db_name, () => {
+    path_stack.value = []
+    path.value = "HOME:/"
+  })
   
   function setPath(p: string){
     path.value = "HOME:/" + p
@@ -30,7 +36,6 @@ import { Tag } from "./item-types.ts"
   function updatePage(pageNum: number){
     if(page.value != pageNum){
       page.value = pageNum
-      setPath("")
     }
   }
 </script>
@@ -45,7 +50,7 @@ import { Tag } from "./item-types.ts"
 
   <v-main fluid class="d-flex flex-column">
     <template v-if="page == 0">
-      <ListPage v-model="db_name" :tags="tags" @send-path="setPath"/>
+      <ListPage v-model:db-name="db_name" v-model:path-stack="path_stack" :tags="tags" @send-path="setPath"/>
     </template>
     <template v-if="page == 1">
       <TagPage v-model:db-name="db_name" v-model:tags="tags"/>
