@@ -56,6 +56,7 @@ import { invoke } from "@tauri-apps/api/tauri";
     const tag_names = computed<string[]>(()=> props.tags.map((t: Tag)=>{return t.name}))
     const item_tag_map = ref<Map<string, Set<Number>>>()
     const tags_owned = ref<Set<Number>>(new Set())
+    const is_loading = ref(false)
 
     function containsSubsequence(s:string, sub:string){
       if (s.length < sub.length){
@@ -147,8 +148,10 @@ import { invoke } from "@tauri-apps/api/tauri";
 
     async function getList(){
       name_filter.value = ""
+      is_loading.value = true
       data_str.value = await invoke("find_items_by_parent_id", {dbName: db_name.value, id: curr_parent.value.id})
       item_tag_map.value = await getItemTags()
+      is_loading.value = false
     }
 
     async function getItemTags(){
@@ -241,5 +244,5 @@ import { invoke } from "@tauri-apps/api/tauri";
     <v-btn :disabled="can_edit" @click="editCurrent" class="bg-primary mr-2">Edit</v-btn>
     <CreateAndEditPopup :tag_names="tag_names" :tags="props.tags" @send-values="addItem"/>
     </v-toolbar>
-    <MainList :data-list="data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
+    <MainList :is-loading="is_loading" :data-list="data_list" @edit="getEditItemPopup"  @next-item="nextItem" @delete="deleteItem"/>
 </template>

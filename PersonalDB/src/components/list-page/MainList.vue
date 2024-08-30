@@ -9,6 +9,7 @@ import { invoke } from "@tauri-apps/api/tauri";
     const emit = defineEmits(["nextItem", "delete", "edit"])
     defineProps<{
             dataList: Item[]
+            isLoading: boolean
     }>()
     
     function editItem(item: Item){
@@ -44,6 +45,7 @@ import { invoke } from "@tauri-apps/api/tauri";
     <v-data-table-virtual
         :headers = "headers"
         :items ="dataList"
+        :loading = "isLoading"
         density="compact"
         class="fill-height overflow-x-auto"
         height="60dvh"
