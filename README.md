@@ -1,12 +1,6 @@
 ## Personal Database for Desktop
 A pre-release version can be found on the right under releases.  
 
-This project is currently under development. If you want to work on it, follow the Tauri installation guide [here](https://tauri.app/v1/guides/getting-started/prerequisites) and then start the application using commands on this development page [here](https://tauri.app/v1/guides/development/development-cycle).
-
-#### To-do
-* Settings Page
-* Tagging System
-
 ### Overview
 This is a tool to manage user created nested lists of items, that can be kept track of over time, that don't want to be forgotten. A few examples include: movies, books, music, games, art projects, chores around the house, and cooking ideas. Tens to hundreds of things in each category can build up over time and become hard to manage. This tools aims to make their management easier and more efficient.  
 
@@ -16,9 +10,9 @@ This tool is best used in conjunction with a calendar, where items can be placed
 
 ### Ease of Use
 * Quick Search within every layer by typing in the search bar. Items are filtered on input using subsequences.
+* A Tag management system that allows items to be filtered by Tag.
 * Multi-sort by data headers. Data headers can be given priority in the sort process by clicking between them.
-* Date fields use calendar dialog boxes.
-* The only required field is Name, and a few items are given a default to make item creation quicker.
+* Calendar dialog boxes.
 * Quickly create and edit items with easy to access dialog boxes.
 
 ### Database Management
@@ -26,11 +20,11 @@ This tool is best used in conjunction with a calendar, where items can be placed
 * Allows users to backup databases where they can be managed on another page
 
 ### Data
-This tool generalizes items and their properties for management. Here are the properties of each item.
+This tool generalizes items and their properties for management. Here are the properties of each item. Tag and ItemTag tables also exist for database management.
 
 | | | | |
 | --- | --- | --- | --- |
-| Name    | Parent | Priority | Estimated Time |
+| Name | Parent | Priority | Estimated Time |
 | Start Date | End Date | Resource | Availability |
 | Completed | Description | Resource Type | Resource Link |
 
