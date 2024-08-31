@@ -241,12 +241,12 @@ import { invoke } from "@tauri-apps/api/tauri";
         v-model="name_filter"
         max-width="275"
         maxlength="40"
-        placeholder="Search"
+        label="Search by name"
         outlined
         single-line
         clearable
     ></v-text-field>
-    <v-select max-width="250px" density="comfortable" v-model="tags_selected" :items="tag_names" class="ml-5 mt-5" label="Filter by Tag" multiple>
+    <v-select max-width="250px" density="comfortable" v-model="tags_selected" :items="tag_names" class="ml-5 mt-5" label="Filter by tag" multiple>
       <template v-slot:selection="{ item, index }">
         <v-chip v-if="index < 1">
           <span>{{ item.title}}</span>

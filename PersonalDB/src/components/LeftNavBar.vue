@@ -11,9 +11,9 @@
         <v-divider></v-divider>
         <v-list-item prepend-icon="mdi-tag" @click="changePage(1)" title="Tags"></v-list-item>
         <v-divider></v-divider>
-        <v-list-item prepend-icon="mdi-database" @click="changePage(2)" title="DB Manager"></v-list-item>
+        <v-list-item prepend-icon="mdi-database" @click="changePage(2)" title="Database Manager"></v-list-item>
         <v-divider></v-divider>
-        <v-list-item prepend-icon="mdi-backup-restore" @click="changePage(3)" title="Backups"></v-list-item>
+        <v-list-item prepend-icon="mdi-backup-restore" @click="changePage(3)" title="Backup Manager"></v-list-item>
         <!-- <v-divider></v-divider>
         <v-list-item @click="changePage(4)" title="Settings"></v-list-item> -->
     </v-navigation-drawer>

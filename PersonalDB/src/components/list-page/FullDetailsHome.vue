@@ -19,7 +19,7 @@ import { VImg } from "vuetify/components";
                     ></v-progress-circular>
                 </div>
             </template>
-            <v-card-title class="text-white text-h1 text-center">PersonalDB</v-card-title>
+            <v-card-title class="text-white text-h1 text-center">Tree DB</v-card-title>
         </v-img>
     </v-card>
 </template>
