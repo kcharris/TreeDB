@@ -24,9 +24,11 @@ import {Item, Tag } from "./item-types.ts"
   const path = ref("HOME:/")
   const path_stack = ref<Item[]>([])
 
-  watch(db_name, () => {
+  watch(db_name, async () => {
     path_stack.value = []
     path.value = "HOME:/"
+    let tags_str:string = await invoke("get_tags", {dbName: db_name.value})
+    tags.value = tags_str == "" ? [] : JSON.parse(tags_str)
   })
   
   function setPath(p: string){
