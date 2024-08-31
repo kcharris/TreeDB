@@ -46,46 +46,48 @@
 
 <template>    
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
-        <v-toolbar color="blue-grey-lighten-5 w-50 mx-auto" density="compact">
-            <p class="ml-5">Tag Manager</p>
-            <v-spacer/>
-            <CreatePopup @create="createTag"></CreatePopup>
-        </v-toolbar> 
-        <v-card v-if="tags?.length == 0" class="w-50 h-50 mx-auto mt-10">
-            <v-card-title>No tags found</v-card-title>
-        </v-card>
-        <v-table v-else class="w-50 fill-height overflow-x-auto mx-auto">
-            <thead>
-                <tr>
-                    <th >
-                        Tag Name
-                    </th>
-                    <th >
-                        Rename
-                    </th>
-                    <th >
-                        Delete
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    v-for="tag in tags"
-                    :key="tag.name"
-                >
-                    <td>
-                        <p>{{ tag.name }}</p>
-                    </td>
-                    <td>
-                        <RenamePopup :tag="tag" @rename="renameTag"></RenamePopup>
-                    </td>
-                    
-                    <td>
-                        <DeletePopup :tag="tag" @delete="deleteTag"></DeletePopup>
-                    </td>
-                </tr>
-            </tbody>
-        </v-table>
+        <v-container>
+            <v-toolbar color="blue-grey-lighten-5 w-50 mx-auto" density="compact">
+                <p class="ml-5">Tag Manager</p>
+                <v-spacer/>
+                <CreatePopup @create="createTag"></CreatePopup>
+            </v-toolbar> 
+            <v-card v-if="tags?.length == 0" class="w-50 h-50 mx-auto mt-10">
+                <v-card-title>No tags found</v-card-title>
+            </v-card>
+            <v-table height="85dvh" v-else class="w-50 overflow-x-auto mx-auto">
+                <thead>
+                    <tr>
+                        <th >
+                            Tag Name
+                        </th>
+                        <th >
+                            Rename
+                        </th>
+                        <th >
+                            Delete
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="tag in tags"
+                        :key="tag.name"
+                    >
+                        <td>
+                            <p>{{ tag.name }}</p>
+                        </td>
+                        <td>
+                            <RenamePopup :tag="tag" @rename="renameTag"></RenamePopup>
+                        </td>
+                        
+                        <td>
+                            <DeletePopup :tag="tag" @delete="deleteTag"></DeletePopup>
+                        </td>
+                    </tr>
+                </tbody>
+            </v-table>
+        </v-container>
     </v-sheet>
 </template>
 

@@ -41,50 +41,52 @@
 <template>    
     <BackupSuccessPopup v-model="success_dialog"></BackupSuccessPopup>
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
-        <v-toolbar color="blue-grey-lighten-5 w-66 mx-auto" density="compact">
-            <p class="ml-5">Backup Management</p>
-            <v-spacer/>
-        </v-toolbar>
-        <v-card v-if="backup_names.length == 0" class="w-50 h-50 mx-auto mt-10">
-            <v-card-title>No Backups found</v-card-title>
-        </v-card>
-        <v-data-table v-else class="w-66 fill-height overflow-x-auto mx-auto">
-            <thead>
-                <tr>
-                    <th >
-                        Backup Name
-                    </th>
-                    <th >
-                        Restore
-                    </th>
-                    <th >
-                        Rename
-                    </th>
-                    <th >
-                        Delete
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    v-for="name in backup_names"
-                    :key="name"
-                >
-                    <td>
-                        {{ name }}
-                    </td>
-                    <td>
-                        <BackupResorePopup :backup_name="name" @restore="restoreDB"></BackupResorePopup>
-                    </td>
-                    <td>
-                        <BackupRenamePopup :backup_name="name" @rename="renameDB"></BackupRenamePopup>
-                    </td>
-                    <td>
-                        <BackupDeletePopup :backup_name="name" @delete="deleteDB"></BackupDeletePopup>
-                    </td>
-                </tr>
-            </tbody>
-        </v-data-table>
+        <v-container>
+            <v-toolbar color="blue-grey-lighten-5 w-66 mx-auto" density="compact">
+                <p class="ml-5">Backup Management</p>
+                <v-spacer/>
+            </v-toolbar>
+            <v-card v-if="backup_names.length == 0" class="w-50 h-50 mx-auto mt-10">
+                <v-card-title>No Backups found</v-card-title>
+            </v-card>
+            <v-data-table hide-default-footer height="85dvh" v-else class="w-66 overflow-x-auto mx-auto">
+                <thead>
+                    <tr>
+                        <th >
+                            Backup Name
+                        </th>
+                        <th >
+                            Restore
+                        </th>
+                        <th >
+                            Rename
+                        </th>
+                        <th >
+                            Delete
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="name in backup_names"
+                        :key="name"
+                    >
+                        <td>
+                            {{ name }}
+                        </td>
+                        <td>
+                            <BackupResorePopup :backup_name="name" @restore="restoreDB"></BackupResorePopup>
+                        </td>
+                        <td>
+                            <BackupRenamePopup :backup_name="name" @rename="renameDB"></BackupRenamePopup>
+                        </td>
+                        <td>
+                            <BackupDeletePopup :backup_name="name" @delete="deleteDB"></BackupDeletePopup>
+                        </td>
+                    </tr>
+                </tbody>
+            </v-data-table>
+        </v-container>
     </v-sheet>
 </template>
 

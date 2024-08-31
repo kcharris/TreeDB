@@ -61,63 +61,65 @@
     <SuccessPopup v-model="success_dialog"></SuccessPopup>
 
     <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
-        <v-toolbar color="blue-grey-lighten-5 w-66 mx-auto" density="compact">
-            <p class="ml-5">Database Management</p>
-            <v-spacer/>
-            <CreatePopup @create="createDB"></CreatePopup>
-        </v-toolbar>
-        <v-card v-if="db_names.length == 0" class="w-50 h-50 mx-auto mt-10">
-            <v-card-title>No databases found</v-card-title>
-        </v-card>
-        <v-table v-else class="w-66 fill-height overflow-x-auto mx-auto">
-            <thead>
-                <tr>
-                    <th >
-                        DB Select
-                    </th>
-                    <th >
-                        Backup DB
-                    </th>
-                    <th >
-                        Copy
-                    </th>
-                    <th >
-                        Rename
-                    </th>
-                    <!-- <th >
-                        CSV Export
-                    </th> -->
-                    <th >
-                        Delete
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr
-                    v-for="name in db_names"
-                    :key="name"
-                >
-                    <td>
-                        <v-btn class="text-none" @click="setDBName(name)" :color="name == db_name ? 'primary' : 'grey'">{{ name }}</v-btn>
-                    </td>
-                    <td>
-                        <BackupPopup :db_name="name" @backup="backupDB"></BackupPopup>
-                    </td>
-                    <td>
-                        <CopyPopup :db_name="name" @copy="copyDB"></CopyPopup>
-                    </td>
-                    <td>
-                        <RenamePopup :db_name="name" @rename="renameDB"></RenamePopup>
-                    </td>
-                    <!-- <td>
-                        <v-btn color="lime-darken-3" icon="mdi-database-export"></v-btn>
-                    </td> -->
-                    <td>
-                        <DeletePopup :db_name="name" @delete="deleteDB"></DeletePopup>
-                    </td>
-                </tr>
-            </tbody>
-        </v-table>
+        <v-container>
+            <v-toolbar color="blue-grey-lighten-5 w-66 mx-auto" density="compact">
+                <p class="ml-5">Database Management</p>
+                <v-spacer/>
+                <CreatePopup @create="createDB"></CreatePopup>
+            </v-toolbar>
+            <v-card v-if="db_names.length == 0" class="w-50 h-50 mx-auto mt-10">
+                <v-card-title>No databases found</v-card-title>
+            </v-card>
+            <v-table height="85dvh" v-else class="w-66 overflow-x-auto mx-auto">
+                <thead>
+                    <tr>
+                        <th >
+                            DB Select
+                        </th>
+                        <th >
+                            Backup DB
+                        </th>
+                        <th >
+                            Copy
+                        </th>
+                        <th >
+                            Rename
+                        </th>
+                        <!-- <th >
+                            CSV Export
+                        </th> -->
+                        <th >
+                            Delete
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="name in db_names"
+                        :key="name"
+                    >
+                        <td>
+                            <v-btn class="text-none" @click="setDBName(name)" :color="name == db_name ? 'primary' : 'grey'">{{ name }}</v-btn>
+                        </td>
+                        <td>
+                            <BackupPopup :db_name="name" @backup="backupDB"></BackupPopup>
+                        </td>
+                        <td>
+                            <CopyPopup :db_name="name" @copy="copyDB"></CopyPopup>
+                        </td>
+                        <td>
+                            <RenamePopup :db_name="name" @rename="renameDB"></RenamePopup>
+                        </td>
+                        <!-- <td>
+                            <v-btn color="lime-darken-3" icon="mdi-database-export"></v-btn>
+                        </td> -->
+                        <td>
+                            <DeletePopup :db_name="name" @delete="deleteDB"></DeletePopup>
+                        </td>
+                    </tr>
+                </tbody>
+            </v-table>
+        </v-container>
     </v-sheet>
 </template>
 
