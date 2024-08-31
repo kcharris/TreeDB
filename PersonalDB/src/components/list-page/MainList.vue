@@ -30,6 +30,7 @@ import { invoke } from "@tauri-apps/api/tauri";
             { title: 'EstTime', align: 'end', key: 'est_time' },
             { title: 'Resource', align: 'end', key: 'resource' },
             { title: 'StartDate', align: 'end', key: 'start_date' },
+            { title: 'EndDate', align: 'end', key: 'end_date' },
             { title: 'Available', align: 'end', key: 'availability' },
             { title: 'Completed', align: 'end', key:'completed'},
             { title: 'Edit', align: 'end', key: 'edit' },
@@ -55,7 +56,6 @@ import { invoke } from "@tauri-apps/api/tauri";
     
         <template v-slot:item.resource="{item}">
             <v-btn class="text-none"
-
                 v-if="!item.resource_type && item.resource_link"
                 density="compact"
                 variant="text"
