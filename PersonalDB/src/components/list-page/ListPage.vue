@@ -30,6 +30,7 @@ import { invoke } from "@tauri-apps/api/tauri";
       id: undefined
     }
     const curr_parent = ref<Item>(default_item)
+    
     const data_str = ref("")
     const name_filter = ref("")
     const data_list = computed<Item[]>(() => {
@@ -45,7 +46,7 @@ import { invoke } from "@tauri-apps/api/tauri";
             item_tags.add(Number(t.id))
           }
         })
-        res = res.filter((obj:Item) => {return (new Set(item_tag_map.value?.get(obj.name))).isSupersetOf(item_tags) == true})
+        res = res.filter((obj:Item) => {return (new Set(item_tag_map.value?.get(Number(obj.id)))).isSupersetOf(item_tags) == true})
       }
       return res
     })
@@ -54,7 +55,8 @@ import { invoke } from "@tauri-apps/api/tauri";
     const can_edit = computed(() => !(curr_parent.value.id))
     const tags_selected = ref<string[]>([])
     const tag_names = computed<string[]>(()=> props.tags.map((t: Tag)=>{return t.name}))
-    const item_tag_map = ref<Map<string, Set<Number>>>()
+    const item_tag_map = ref<Map<Number, Set<Number>>>()
+    const parent_tags = ref<string[]>([])
     const tags_owned = ref<Set<Number>>(new Set())
     const is_loading = ref(false)
 
@@ -102,6 +104,10 @@ import { invoke } from "@tauri-apps/api/tauri";
       if (item_object.id == curr_parent.value.id){
         str_object = await invoke("get_item_by_id", {dbName: db_name.value, id: item_object.id})
         curr_parent.value = JSON.parse(str_object)
+        setTimeout(async ()=> {
+          item_tag_map.value = await getItemTags()
+          setParentTags()
+        }, 500)
       }
       else{
         await getList()
@@ -110,10 +116,10 @@ import { invoke } from "@tauri-apps/api/tauri";
     async function updateItemTags(item: Item, item_tags: Number[]){
       // remove a tag if it exists in previous memory but not in item_tags
       let item_tag_set = new Set(item_tags)
-      let previous_item_tag_set = new Set(item_tag_map.value?.get(item.name))
+      let previous_item_tag_set = new Set(item_tag_map.value?.get(Number(item.id)))
       let to_remove = previous_item_tag_set.difference(item_tag_set)
       // add a tag if it does not exist in previous memory and does exist in item_tags
-      let to_add = item_tags.filter((t:Number) => {return !item_tag_map.value?.get(item.name)?.has(t)})
+      let to_add = item_tags.filter((t:Number) => {return !item_tag_map.value?.get(Number(item.id))?.has(t)})
 
       to_remove?.forEach(async (id:Number)=>{
         await invoke('delete_item_tag', {dbName: db_name.value, itemId: item.id, tagId: id})
@@ -126,7 +132,7 @@ import { invoke } from "@tauri-apps/api/tauri";
     async function getTagsSelected(){
       let res:Set<Number> = new Set()
       if (item_to_edit.value.id != curr_parent.value.id){
-        res = item_tag_map.value?.get(item_to_edit.value?.name as string) ?? new Set()
+        res = item_tag_map.value?.get(Number(item_to_edit.value?.id)) ?? new Set()
       }
       else{
         let res_str:string = await invoke("get_tags_by_item_id", {dbName: db_name.value, id: item_to_edit.value.id})
@@ -145,31 +151,44 @@ import { invoke } from "@tauri-apps/api/tauri";
     async function editCurrent(){
       await getEditItemPopup(curr_parent.value)
     }
+    function setParentTags(){
+      let tag_set = item_tag_map.value?.get(Number(curr_parent.value.id))
+      let res_tags:string[] = []
+      props.tags.forEach((t:Tag)=>{
+        if (tag_set?.has(Number(t.id)) == true){
+          res_tags.push(t.name)
+        }
+      })
+      parent_tags.value = res_tags
+    }
 
     async function getList(){
       name_filter.value = ""
       is_loading.value = true
       data_str.value = await invoke("find_items_by_parent_id", {dbName: db_name.value, id: curr_parent.value.id})
       item_tag_map.value = await getItemTags()
+      setParentTags()
       is_loading.value = false
     }
 
     async function getItemTags(){
-      let data_map = new Map<string, Set<Number>>()
+      let data_map = new Map<Number, Set<Number>>()
       data_list.value.forEach(async (item:Item) => {
         let tags_str:string = await invoke("get_tags_by_item_id", {dbName:db_name.value, id: item.id})
         let tags = tags_str == "" ? [] : JSON.parse(tags_str)
         let tag_set:Set<Number> = new Set(tags.map((t:Tag) => t.id))
-        data_map.set(item.name, tag_set)
+        data_map.set(Number(item.id), tag_set)
       })
       if (curr_parent.value.id != undefined){
         let tags_str:string = await invoke("get_tags_by_item_id", {dbName:db_name.value, id: curr_parent.value.id})
+        test.value = tags_str
         let tags = tags_str == "" ? [] : JSON.parse(tags_str)
         let tag_set:Set<Number> = new Set(tags.map((t:Tag) => t.id))
-        data_map.set(curr_parent.value.name, tag_set)
+        data_map.set(curr_parent.value.id, tag_set)
       }
       return data_map
     }
+    const test = ref()
 
     async function nextItem(item_object: Item){
       path_stack.value.push(item_object)
@@ -207,7 +226,7 @@ import { invoke } from "@tauri-apps/api/tauri";
       @send-values="updateItem"
     />
     <template v-if="curr_parent.id != undefined">
-      <FullDetails :parent = "curr_parent"/>
+      <FullDetails :parent_tags="parent_tags" :parent = "curr_parent"/>
     </template>
     <template v-else>
       <FullDetailsHome />

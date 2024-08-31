@@ -2,7 +2,7 @@
     import { ref, computed } from 'vue';
     import { invoke } from "@tauri-apps/api/tauri";
 
-    const props = defineProps(['parent'])
+    const props = defineProps(['parent', 'parent_tags'])
     const toggle = ref(false)
     const button_icon = computed(() => {return toggle.value == false ? "mdi-arrow-expand" : "mdi-close-circle-outline"})
     // Throughout the app and this page, a ternary that checks for a property as a bool is used. This boolean conversion is comprehensive across: 0, "", null, undefined, etc.
@@ -39,9 +39,9 @@
                     <v-btn v-else-if="parent?.resource_type=='dir'" class="text-truncate text-none text-primary text-decoration-underline" density="compact" @click="openDir" variant="text">
                         {{ (parent.resource_link ? parent.resource_link : "")}}
                     </v-btn>
-                    <v-btn v-else-if="parent?.resource_type == undefined" class="text-truncate text-none" density="compact">
+                    <p v-else-if="parent?.resource_type == undefined" class="text-truncate">
                         {{ (parent.resource_link ? parent.resource_link : "")}}
-                    </v-btn>
+                    </p>
                 </p>
             </div>
         </div>
@@ -49,7 +49,8 @@
         <div class="text-md">{{ "Available: "+ (parent.availability ? parent.availability : "")}}</div>
         <div class="d-flex">
             <div class="text-md mr-16">{{ "Start Time: "+ (parent.start_date ? parent.start_date : "")  }}</div>
-            <div class="text-md">{{"End Time: "+ (parent.end_date ? parent.end_date : "")}}</div>
+            <div class="text-md mr-16">{{"End Time: "+ (parent.end_date ? parent.end_date : "")}}</div>
+            <div class="text-md">{{ "Tags Used: " + (parent_tags ? parent_tags.join(", ") : "") }}</div>
         </div>
         <div>
             <v-textarea
