@@ -1,4 +1,4 @@
-## Personal Database for Desktop
+## Tree DB for Desktop
 A release version can be found [here](https://github.com/kcharris/PersonalDatabaseDesktop/releases/tag/1.0.0), or on the right under releases.  
 
 ### Overview
