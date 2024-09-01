@@ -8,6 +8,16 @@ General categories can be broken down until items are actionable. An example of 
 
 This tool is best used in conjunction with a calendar, where items can be placed for use.  
 
+### Application screenshots
+<p float="left" align="center">
+  <img src="AppImages/MainPageView.jpg" name="MainPage" width="49%">
+  <img src="AppImages/FunView.jpg" name="FunPage" width="49%">
+  <img src="AppImages/EditView.jpg" name="EditPage" width="49%">
+  <img src="AppImages/TagPageView.jpg" name="TagPage" width="49%">
+  <img src="AppImages/DBPageView.jpg" name="DBPage" width="49%">
+  <img src="AppImages/BackupPageView.jpg" name="BackupPage" width="49%">
+</p>
+
 ### Ease of Use
 * Quick Search within every layer by typing in the search bar. Items are filtered on input using subsequences.
 * A Tag management system that allows items to be filtered by Tag.
