@@ -13,7 +13,7 @@
         refresh_db_filenames();
     })
 
-    const db_name = defineModel()
+    const db_name = defineModel<string>()
     const db_names = ref<string[]>([])
     const success_dialog = ref(false)
 
@@ -39,6 +39,10 @@
 
     async function deleteDB(name: string){
         await invoke("delete_db_file", {dbName: name})
+        if (db_name.value == name){
+            await invoke("update_on_start_db", {dbName: ""})
+            db_name.value = ""
+        }
         refresh_db_filenames();
     }
 

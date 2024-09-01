@@ -28,7 +28,10 @@ import {Item, Tag } from "./item-types.ts"
   watch(db_name, async () => {
     path_stack.value = []
     path.value = "HOME:/"
-    let tags_str:string = await invoke("get_tags", {dbName: db_name.value})
+    let tags_str = ""
+    if (db_name.value != ""){
+      tags_str = await invoke("get_tags", {dbName: db_name.value})
+    }
     tags.value = tags_str == "" ? [] : JSON.parse(tags_str)
   })
   
