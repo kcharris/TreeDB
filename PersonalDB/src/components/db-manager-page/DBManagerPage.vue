@@ -67,7 +67,7 @@
                 <v-spacer/>
                 <CreatePopup @create="createDB"></CreatePopup>
             </v-toolbar>
-            <v-card v-if="db_names.length == 0" class="w-50 h-50 mx-auto mt-10">
+            <v-card v-if="db_names.length == 0" class="w-66 mx-auto" height="85dvh">
                 <v-card-title>No databases found</v-card-title>
             </v-card>
             <v-table height="85dvh" v-else class="w-66 overflow-x-auto mx-auto">

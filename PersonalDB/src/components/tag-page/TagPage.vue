@@ -52,7 +52,7 @@
                 <v-spacer/>
                 <CreatePopup @create="createTag"></CreatePopup>
             </v-toolbar> 
-            <v-card v-if="tags?.length == 0" class="w-50 h-50 mx-auto mt-10">
+            <v-card v-if="tags?.length == 0" class="w-50 mx-auto" height="85dvh">
                 <v-card-title>No tags found</v-card-title>
             </v-card>
             <v-table height="85dvh" v-else class="w-50 overflow-x-auto mx-auto">

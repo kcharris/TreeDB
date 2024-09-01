@@ -46,7 +46,7 @@
                 <p class="ml-5">Backup Management</p>
                 <v-spacer/>
             </v-toolbar>
-            <v-card v-if="backup_names.length == 0" class="w-50 h-50 mx-auto mt-10">
+            <v-card v-if="backup_names.length == 0" class="w-66 mx-auto" height="85dvh">
                 <v-card-title>No Backups found</v-card-title>
             </v-card>
             <v-data-table hide-default-footer height="85dvh" v-else class="w-66 overflow-x-auto mx-auto">
