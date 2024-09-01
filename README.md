@@ -1,5 +1,5 @@
 ## Personal Database for Desktop
-A pre-release version can be found on the right under releases.  
+A release version can be found [here](https://github.com/kcharris/PersonalDatabaseDesktop/releases/tag/1.0.0), or on the right under releases.  
 
 ### Overview
 This is a tool to manage user created nested lists of items, that can be kept track of over time, that don't want to be forgotten. A few examples include: movies, books, music, games, art projects, chores around the house, and cooking ideas. Tens to hundreds of things in each category can build up over time and become hard to manage. This tools aims to make their management easier and more efficient.  
