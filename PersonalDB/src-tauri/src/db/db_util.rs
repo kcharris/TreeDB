@@ -287,7 +287,7 @@ pub fn rename_backup(backup_name: String, new_name: String){
 pub fn delete_backup_file(backup_name: String) {
     let backup_path = get_backup_db_path(&backup_name);
     let backup_path = Path::new(&backup_path);
-    if (backup_path.exists()) {
+    if backup_path.exists() {
         let _ = fs::remove_file(backup_path).unwrap();
     }
 }

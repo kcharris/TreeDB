@@ -1,8 +1,8 @@
-use crate::db::db_util::*;
+
 use crate::db::item_db_util::*;
 use crate::db::tag_db_util::*;
-use crate::db::item_tag_db_util::*;
-use sea_orm::{Database, DatabaseConnection, DbErr};
+
+
 use crate::errors::ItemDBError;
 
 // This file is for calling one function in db_util to populate a new default database with default values.
@@ -30,7 +30,7 @@ pub async fn set_default_values(db_name: String)-> Result<(), ItemDBError>{
         "name": "Cooking"
     }"#.to_string()).await?;
 
-    let misc_id = add_item(db_name.clone(), r#"{
+    let _misc_id = add_item(db_name.clone(), r#"{
         "name": "Misc"
     }"#.to_string()).await?;
 
@@ -87,7 +87,7 @@ pub async fn set_default_values(db_name: String)-> Result<(), ItemDBError>{
         "description": "Ranking for Juices that have been diluted with water. ~2oz juice to 14oz water"
     }}"#, cooking_id).to_string()).await?;
 
-    let recipe_id = add_item(db_name.clone(), format!(r#"{{
+    let _recipe_id = add_item(db_name.clone(), format!(r#"{{
         "name": "Recipes",
         "parent_id": {}
     }}"#, cooking_id).to_string()).await?;
