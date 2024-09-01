@@ -6,6 +6,7 @@ import ListPage from "./components/list-page/ListPage.vue"
 import DBManagerPage from "./components/db-manager-page/DBManagerPage.vue"
 import BackupManagerPage from "./components/backup-manager-page/BackupManagerPage.vue"
 import TagPage from "./components/tag-page/TagPage.vue"
+import HelpPage from "./components/help-page/HelpPage.vue"
 import {ref, onBeforeMount, watch} from "vue"
 import { invoke } from "@tauri-apps/api/tauri";
 import {Item, Tag } from "./item-types.ts"
@@ -63,9 +64,9 @@ import {Item, Tag } from "./item-types.ts"
     <template v-if="page == 3">
       <BackupManagerPage/>
     </template>
-    <!-- <template v-if="page == 4">
-      <SettingsPage/>
-    </template> -->
+    <template v-if="page == 4">
+      <HelpPage/>
+    </template>
     </v-main>
   </v-app>
   

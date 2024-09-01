@@ -14,7 +14,7 @@
         <v-list-item prepend-icon="mdi-database" @click="changePage(2)" title="Database Manager"></v-list-item>
         <v-divider></v-divider>
         <v-list-item prepend-icon="mdi-backup-restore" @click="changePage(3)" title="Backup Manager"></v-list-item>
-        <!-- <v-divider></v-divider>
-        <v-list-item @click="changePage(4)" title="Settings"></v-list-item> -->
+        <v-divider></v-divider>
+        <v-list-item prepend-icon="mdi-information-variant-box" @click="changePage(4)" title="Help and Info"></v-list-item>
     </v-navigation-drawer>
 </template>
