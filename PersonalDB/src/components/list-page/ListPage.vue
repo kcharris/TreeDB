@@ -38,9 +38,9 @@ import { invoke } from "@tauri-apps/api/tauri";
       if (name_filter.value){
         res = res.filter((obj:any) => containsSubsequence(obj.name.toLowerCase(), name_filter.value.toLowerCase()))
       }
-      if (tags_selected.value.length > 0){
+      if (tags_filter.value.length > 0){
         let item_tags: Set<Number> = new Set()
-        let tag_set:Set<string> = new Set(tags_selected.value)
+        let tag_set:Set<string> = new Set(tags_filter.value)
         props.tags.forEach((t:Tag)=>{
           if (tag_set.has(t.name)){
             item_tags.add(Number(t.id))
@@ -53,7 +53,7 @@ import { invoke } from "@tauri-apps/api/tauri";
     const item_to_edit = ref<Item>(default_item)
     const edit_dialog_bool = ref(false)
     const can_edit = computed(() => !(curr_parent.value.id))
-    const tags_selected = ref<string[]>([])
+    const tags_filter = ref<string[]>([])
     const tag_names = computed<string[]>(()=> props.tags.map((t: Tag)=>{return t.name}))
     const item_tag_map = ref<Map<Number, Set<Number>>>()
     const parent_tags = ref<string[]>([])
@@ -164,6 +164,7 @@ import { invoke } from "@tauri-apps/api/tauri";
 
     async function getList(){
       name_filter.value = ""
+      tags_filter.value = []
       is_loading.value = true
       data_str.value = await invoke("find_items_by_parent_id", {dbName: db_name.value, id: curr_parent.value.id})
       item_tag_map.value = await getItemTags()
@@ -244,7 +245,7 @@ import { invoke } from "@tauri-apps/api/tauri";
         single-line
         clearable
     ></v-text-field>
-    <v-select max-width="250px" density="comfortable" v-model="tags_selected" :items="tag_names" class="ml-5 mt-5" label="Filter by tag" multiple>
+    <v-select max-width="250px" density="comfortable" v-model="tags_filter" :items="tag_names" class="ml-5 mt-5" label="Filter by tag" multiple>
       <template v-slot:selection="{ item, index }">
         <v-chip v-if="index < 1">
           <span>{{ item.title}}</span>
@@ -253,7 +254,7 @@ import { invoke } from "@tauri-apps/api/tauri";
           v-if="index===1"
           class="text-grey text-caption align-self-center"
         >
-          (+{{ tags_selected.length - 1}} others)
+          (+{{ tags_filter.length - 1}} others)
         </span>
       </template>
     </v-select>

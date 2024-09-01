@@ -46,12 +46,13 @@
             </div>
         </div>
         <div class="text-md">{{"Est Time: " + (parent.est_time ? parent.est_time : "" )}} hrs</div>
-        <div class="text-md">{{ "Available: "+ (parent.availability ? parent.availability : "")}}</div>
         <div class="d-flex">
+            <div class="text-md mr-16">{{ "Available: "+ (parent.availability ? parent.availability : "")}}</div>
             <div class="text-md mr-16">{{ "Start Time: "+ (parent.start_date ? parent.start_date : "")  }}</div>
-            <div class="text-md mr-16">{{"End Time: "+ (parent.end_date ? parent.end_date : "")}}</div>
-            <div class="text-md">{{ "Tags Used: " + (parent_tags ? parent_tags.join(", ") : "") }}</div>
+            <div class="text-md">{{"End Time: "+ (parent.end_date ? parent.end_date : "")}}</div>
         </div>
+        <div class="text-md">{{ "Tags Used: " + (parent_tags ? parent_tags.join(", ") : "") }}</div>
+
         <div>
             <v-textarea
                 class="text-md"
