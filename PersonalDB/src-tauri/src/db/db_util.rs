@@ -6,6 +6,7 @@ use crate::errors::ItemDBError;
 use crate::migrator;
 use sea_orm::{Database, DatabaseConnection, DbErr};
 use sea_orm_migration::prelude::*;
+use crate::db::default_db_util::*;
 use serde_json::json;
 use regex::Regex;
 
@@ -29,6 +30,14 @@ pub async fn init() -> Result<(), ItemDBError> {
         update_on_start_db("default".to_string());
     }
 
+    // make sure the app contains a json file to store a first start value.
+    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/first_start.json";
+    let path = Path::new(&binding);
+    if !path.exists(){
+        fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/first_start.json").unwrap();
+        update_first_start(0);
+    }
+
     // make sure there is a folder for backups
     let backup_binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/backups";
     let path = Path::new(&backup_binding);
@@ -36,16 +45,14 @@ pub async fn init() -> Result<(), ItemDBError> {
         let _ = fs::create_dir(path);
     }
 
-    // Makes sure the database file in db_name.json exists, if not creates one. The very first db will have the name 'default', as shown above.
-    let mut db_name = get_db_name();
-    if db_name == ""{
-        db_name = "default".to_string();
-        update_on_start_db(db_name.clone());
-    }
-    if !db_file_exists(db_name.clone()){
+    // On first start create an Example DB file named Example
+    if get_first_start() == 0{
+        let db_name = "Example".to_string();
         update_on_start_db(db_name.clone());
         create_db_file(db_name.clone()).await;
         run_migrator(db_name.clone()).await?;
+        set_default_values(db_name.clone()).await?;
+        update_first_start(1);
     }
 
     Ok(())
@@ -71,6 +78,24 @@ pub fn get_db_name() -> String {
     let file_json:serde_json::Value = serde_json::from_str(&contents).unwrap();
 
     return file_json["name"].as_str().unwrap().to_string();
+}
+
+pub fn get_first_start()-> i64{
+    let home_dir = dirs::home_dir().unwrap();
+    let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/first_start.json").expect("Unable to open file from get_first_start");
+    let mut contents = String::new();
+    let _ = file.read_to_string(&mut contents);
+    let file_json:serde_json::Value = serde_json::from_str(&contents).unwrap();
+
+    return file_json["val"].as_i64().unwrap();
+}
+
+pub fn update_first_start(n: i32){
+    let home_dir = dirs::home_dir().unwrap();
+    let json = json!({
+        "val": n
+    });
+    fs::write(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/first_start.json", json.to_string()).expect("Failed to write to file in update_first_start");
 }
 
 /// Get a database connection using the apps default path

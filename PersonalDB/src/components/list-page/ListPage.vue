@@ -181,14 +181,12 @@ import { invoke } from "@tauri-apps/api/tauri";
       })
       if (curr_parent.value.id != undefined){
         let tags_str:string = await invoke("get_tags_by_item_id", {dbName:db_name.value, id: curr_parent.value.id})
-        test.value = tags_str
         let tags = tags_str == "" ? [] : JSON.parse(tags_str)
         let tag_set:Set<Number> = new Set(tags.map((t:Tag) => t.id))
         data_map.set(curr_parent.value.id, tag_set)
       }
       return data_map
     }
-    const test = ref()
 
     async function nextItem(item_object: Item){
       path_stack.value.push(item_object)
