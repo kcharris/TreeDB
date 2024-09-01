@@ -4,6 +4,7 @@ import { ref, watch} from "vue";
     const emit = defineEmits(["delete"])
     const dialog = ref(false)
     const delete_verification = ref("")
+    const props = defineProps(["name"])
 
     function emitDelete(){
         if (delete_verification.value == "y"){
@@ -31,6 +32,7 @@ import { ref, watch} from "vue";
         >
         <v-card >
             <v-card-title>Item Deletion</v-card-title>
+            <v-card-subtitle>{{ props.name }}</v-card-subtitle>
             <v-card-text>Are you sure you want to delete this item? All sub-items will also be deleted. Type 'y' into the field below to confirm deletion.</v-card-text>
             <v-card-item>
                 <v-text-field v-model="delete_verification" placeholder="Type y here to confirm"></v-text-field>

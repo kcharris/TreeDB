@@ -103,7 +103,7 @@ import { invoke } from "@tauri-apps/api/tauri";
             <v-icon @click="editItem(item)">mdi-pencil</v-icon>
         </template>
         <template v-slot:item.del="{item}">
-            <DeleteItemPopup @delete="() => deleteItem(item)"/>
+            <DeleteItemPopup :name="item.name" @delete="() => deleteItem(item)"/>
         </template>
     </v-data-table-virtual>
 </template>
