@@ -6,8 +6,8 @@
     "distDir": "../dist"
   },
   "package": {
-    "productName": "PersonalDB",
-    "version": "0.0.0"
+    "productName": "TreeDB",
+    "version": "1.0.0"
   },
   "tauri": {
     "allowlist": {
@@ -20,7 +20,7 @@
     "bundle": {
       "active": true,
       "targets": "msi",
-      "identifier": "PersonalDatabaseAplication74213",
+      "identifier": "TreeDB778942",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -37,7 +37,7 @@
         "fullscreen": false,
         "maximized": true,
         "resizable": true,
-        "title": "personaldb",
+        "title": "TreeDB",
         "width": 1900,
         "height": 1000
       }

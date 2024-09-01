@@ -3,6 +3,25 @@
 version = 3
 
 [[package]]
+name = "TreeDB"
+version = "1.0.0"
+dependencies = [
+ "async-std",
+ "chrono",
+ "dirs",
+ "futures",
+ "regex",
+ "sea-orm",
+ "sea-orm-migration",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "thiserror",
+ "time",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2720,25 +2739,6 @@ name = "percent-encoding"
 version = "2.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e3148f5046208a5d56bcfc03053e3ca6334e51da8dfb19b6cdc8b306fae3283e"
-
-[[package]]
-name = "personaldb"
-version = "0.0.0"
-dependencies = [
- "async-std",
- "chrono",
- "dirs",
- "futures",
- "regex",
- "sea-orm",
- "sea-orm-migration",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "thiserror",
- "time",
-]
 
 [[package]]
 name = "phf"

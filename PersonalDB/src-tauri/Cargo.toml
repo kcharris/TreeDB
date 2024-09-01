@@ -1,9 +1,9 @@
 [package]
-name = "personaldb"
-version = "0.0.0"
+name = "TreeDB"
+version = "1.0.0"
 description = "A Tauri App"
 authors = ["you"]
-license = ""
+license = "MIT"
 repository = ""
 edition = "2021"
 
