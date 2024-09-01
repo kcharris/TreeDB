@@ -16,30 +16,30 @@ pub async fn init() -> Result<(), ItemDBError> {
     let home_dir = dirs::home_dir().unwrap();
     
     // make sure there is a main folder for the app
-    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/";
+    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/TreeDB/";
     let path = Path::new(&binding);
     if !path.exists(){
         let _ = fs::create_dir(path);
     }
 
     // make sure the app contains a json file to store the default database name
-    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/db_name.json";
+    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/TreeDB/db_name.json";
     let path = Path::new(&binding);
     if !path.exists(){
-        fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").unwrap();
+        fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/db_name.json").unwrap();
         update_on_start_db("default".to_string());
     }
 
     // make sure the app contains a json file to store a first start value.
-    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/first_start.json";
+    let binding = home_dir.to_str().unwrap().to_owned() + "/.config/TreeDB/first_start.json";
     let path = Path::new(&binding);
     if !path.exists(){
-        fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/first_start.json").unwrap();
+        fs::File::create(home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/first_start.json").unwrap();
         update_first_start(0);
     }
 
     // make sure there is a folder for backups
-    let backup_binding = home_dir.to_str().unwrap().to_owned() + "/.config/PersonalDB/backups";
+    let backup_binding = home_dir.to_str().unwrap().to_owned() + "/.config/TreeDB/backups";
     let path = Path::new(&backup_binding);
     if !path.exists(){
         let _ = fs::create_dir(path);
@@ -65,14 +65,14 @@ pub fn update_on_start_db(db_name: String){
     let json = json!({
         "name": db_name
     });
-    fs::write(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json", json.to_string()).expect("Failed to write to file in update_db_name_file");
+    fs::write(home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/db_name.json", json.to_string()).expect("Failed to write to file in update_db_name_file");
 }
 
 /// Get's the current db's name being used for the item list from the db_name.json file
 #[tauri::command]
 pub fn get_db_name() -> String {
     let home_dir = dirs::home_dir().unwrap();
-    let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/db_name.json").expect("Unable to open file from get_db_name");
+    let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/db_name.json").expect("Unable to open file from get_db_name");
     let mut contents = String::new();
     let _ = file.read_to_string(&mut contents);
     let file_json:serde_json::Value = serde_json::from_str(&contents).unwrap();
@@ -82,7 +82,7 @@ pub fn get_db_name() -> String {
 
 pub fn get_first_start()-> i64{
     let home_dir = dirs::home_dir().unwrap();
-    let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/first_start.json").expect("Unable to open file from get_first_start");
+    let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/first_start.json").expect("Unable to open file from get_first_start");
     let mut contents = String::new();
     let _ = file.read_to_string(&mut contents);
     let file_json:serde_json::Value = serde_json::from_str(&contents).unwrap();
@@ -95,7 +95,7 @@ pub fn update_first_start(n: i32){
     let json = json!({
         "val": n
     });
-    fs::write(home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/first_start.json", json.to_string()).expect("Failed to write to file in update_first_start");
+    fs::write(home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/first_start.json", json.to_string()).expect("Failed to write to file in update_first_start");
 }
 
 /// Get a database connection using the apps default path
@@ -147,7 +147,7 @@ pub fn db_file_exists(db_name: String) -> bool {
 /// Get the path as a string where the database file should be located.
 pub fn get_db_path(db_name: &str) -> String {
     let home_dir = dirs::home_dir().unwrap();
-    home_dir.to_str().unwrap().to_string() + "/.config/PersonalDB/" + &db_name + ".sqlite"
+    home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/" + &db_name + ".sqlite"
 }
 
 /// Deletes the sql file with the given name if it exists
@@ -172,11 +172,11 @@ pub async fn clone_db_file(db_name: String, clone_name: String) -> Result<(), It
     Ok(())
 }
 
-/// Returns a vector list of all the filenames within the /.config/PersonalDB/ directory
+/// Returns a vector list of all the filenames within the /.config/TreeDB/ directory
 // This function has only been tested on windows.
 #[tauri::command]
 pub fn get_db_filenames()-> Vec<String>{
-    let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/";
+    let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/TreeDB/";
     let paths = fs::read_dir(&curr_dir).unwrap();
     let mut filenames:Vec<String> = vec![];
     let re = Regex::new(r"([^\\/]+)\.sqlite$").unwrap();
@@ -210,7 +210,7 @@ pub fn rename_db(db_name: String, new_name: String){
 /// Returns a string path to a backup database file, the db file may not exist.
 pub fn get_backup_db_path(db_name: &str)-> String{
     // get the directory path as a string to backups folder
-    let backup_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/backups/";
+    let backup_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/TreeDB/backups/";
     return backup_dir + db_name + ".sqlite";
 }
 
@@ -251,7 +251,7 @@ pub fn restore_db(backup_name: String, new_name: String) -> bool{
 /// Gets the filenames of all backup files
 #[tauri::command]
 pub fn get_backup_filenames()-> Vec<String>{
-    let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/PersonalDB/backups/";
+    let curr_dir = dirs::home_dir().unwrap().to_str().unwrap().to_string() + "/.config/TreeDB/backups/";
     let paths = fs::read_dir(&curr_dir).unwrap();
     let mut filenames:Vec<String> = vec![];
     let re = Regex::new(r"([^\\/]+)\.sqlite$").unwrap();

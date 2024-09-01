@@ -3,25 +3,6 @@
 version = 3
 
 [[package]]
-name = "TreeDB"
-version = "1.0.0"
-dependencies = [
- "async-std",
- "chrono",
- "dirs",
- "futures",
- "regex",
- "sea-orm",
- "sea-orm-migration",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "thiserror",
- "time",
-]
-
-[[package]]
 name = "addr2line"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4791,6 +4772,25 @@ dependencies = [
  "tracing",
  "tracing-core",
  "tracing-log",
+]
+
+[[package]]
+name = "tree_db"
+version = "1.0.0"
+dependencies = [
+ "async-std",
+ "chrono",
+ "dirs",
+ "futures",
+ "regex",
+ "sea-orm",
+ "sea-orm-migration",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "thiserror",
+ "time",
 ]
 
 [[package]]
