@@ -40,7 +40,7 @@
 
 <template>    
     <BackupSuccessPopup v-model="success_dialog"></BackupSuccessPopup>
-    <v-sheet color="teal-lighten-2" class="fill-height mx-auto w-100">
+    <v-sheet color="teal-lighten-4" class="fill-height mx-auto w-100">
         <v-container>
             <v-toolbar color="blue-grey-lighten-5 w-66 mx-auto" density="compact">
                 <p class="ml-5">Backup Management</p>
