@@ -1,14 +1,14 @@
-// Handles database errors
+/// Wraps necessary database errors into a single error
 #[derive(Debug, thiserror::Error)]
 pub enum ItemDBError {
-#[error(transparent)]
-Io(#[from] std::io::Error),
-#[error("Error accessing or modifying database")]
-DbErr(#[from] sea_orm::DbErr),
-#[error("Error trying from integer")]
-TryFromIntError(#[from] std::num::TryFromIntError),
-#[error("Error managing serde_json")]
-Error(#[from] serde_json::Error)
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+    #[error("Error accessing or modifying database")]
+    DbErr(#[from] sea_orm::DbErr),
+    #[error("Error trying from integer")]
+    TryFromIntError(#[from] std::num::TryFromIntError),
+    #[error("Error managing serde_json")]
+    Error(#[from] serde_json::Error)
 }
 
 // we must manually implement serde::Serialize

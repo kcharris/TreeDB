@@ -4,7 +4,7 @@ use sea_orm_migration::prelude::*;
 use sea_orm::{ActiveValue, EntityTrait, ModelTrait};
 use crate::db::db_util::*;
 
-
+/// Adds an item tag based on an item id and tag id
 #[tauri::command]
 pub async fn add_item_tag(db_name: String, item_id:i32, tag_id:i32) -> Result<(i32, i32), ItemDBError> {
   let db = get_db_conn(&db_name).await?;
@@ -16,6 +16,7 @@ pub async fn add_item_tag(db_name: String, item_id:i32, tag_id:i32) -> Result<(i
   Ok(res.last_insert_id)
 }
 
+/// Gets a JSON string containing a list of tags based on a item id
 #[tauri::command]
 pub async fn get_tags_by_item_id(db_name: String, id:i32) -> Result<String, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
@@ -25,6 +26,7 @@ pub async fn get_tags_by_item_id(db_name: String, id:i32) -> Result<String, Item
     Ok(tags.to_string())
 }
 
+/// Gets a JSON string containing a list of items based on a tag id
 #[tauri::command]
 pub async fn get_items_by_tag_id(db_name: String, id:i32) -> Result<String, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
@@ -34,6 +36,7 @@ pub async fn get_items_by_tag_id(db_name: String, id:i32) -> Result<String, Item
     Ok(items.to_string())
 }
 
+/// Deletes an item tag using its primary key
 #[tauri::command]
 pub async fn delete_item_tag(db_name: String, item_id: i32, tag_id:i32) -> Result<u64, ItemDBError>{
     let db = get_db_conn(&db_name).await?;

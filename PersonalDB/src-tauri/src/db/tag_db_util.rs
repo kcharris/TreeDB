@@ -6,7 +6,7 @@ use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, ModelTrait};
 use crate::db::db_util::*;
 
 
-
+/// Adds a tag to the db using only a name
 #[tauri::command]
 pub async fn add_tag(db_name: String, name: String) -> Result<i32, ItemDBError> {
   let db = get_db_conn(&db_name).await?;
@@ -17,6 +17,7 @@ pub async fn add_tag(db_name: String, name: String) -> Result<i32, ItemDBError> 
   Ok(res.last_insert_id)
 }
 
+/// Gets a JSON string containing a list of all tags
 #[tauri::command]
 pub async fn get_tags(db_name: String) -> Result<String, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
@@ -29,6 +30,7 @@ pub async fn get_tags(db_name: String) -> Result<String, ItemDBError>{
     Ok(res.to_string())
 }
 
+/// Updates a tag based on a Updated tag, a JSON string
 #[tauri::command]
 pub async fn update_tag(db_name: String, payload: String) -> Result<(), ItemDBError>{
   let db = get_db_conn(&db_name).await?;
@@ -42,6 +44,7 @@ pub async fn update_tag(db_name: String, payload: String) -> Result<(), ItemDBEr
   Ok(())
 }
 
+/// Deletes a tag based on its ID
 #[tauri::command]
 pub async fn delete_tag(db_name: String, id: i32) -> Result<u64, ItemDBError>{
     let db = get_db_conn(&db_name).await?;

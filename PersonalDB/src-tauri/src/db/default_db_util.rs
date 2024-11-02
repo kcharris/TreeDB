@@ -1,11 +1,11 @@
-
+// This file is for calling one function in db_util to populate a new default database with default values.
 use crate::db::item_db_util::*;
 use crate::db::tag_db_util::*;
 
 
 use crate::errors::ItemDBError;
 
-// This file is for calling one function in db_util to populate a new default database with default values.
+/// Creates a default database with default values
 pub async fn set_default_values(db_name: String)-> Result<(), ItemDBError>{
 
     let _ = add_tag(db_name.clone(), "Favorite".to_string()).await?;

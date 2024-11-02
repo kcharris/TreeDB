@@ -4,7 +4,7 @@ use sea_orm_migration::prelude::*;
 use sea_orm::{ActiveValue, ActiveModelTrait, EntityTrait, QueryFilter, ModelTrait, ColumnTrait};
 use crate::db::db_util::*;
 
-
+/// Finds item objects by a single parent and returns them as a String
 #[tauri::command]
 pub async fn find_items_by_parent_id(db_name: String, id: Option<i32>) -> Result<String, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
@@ -21,6 +21,7 @@ pub async fn find_items_by_parent_id(db_name: String, id: Option<i32>) -> Result
     Ok(res.to_string())
 }
 
+/// Get a JSON string of an item from the db by its ID
 #[tauri::command]
 pub async fn get_item_by_id(db_name: String, id: i32) -> Result<String, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
@@ -31,6 +32,7 @@ pub async fn get_item_by_id(db_name: String, id: i32) -> Result<String, ItemDBEr
     Ok(res)
 }
 
+/// Adds an item to the database
 #[tauri::command]
 pub async fn add_item(db_name: String, payload: String) -> Result<i32, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
@@ -42,6 +44,7 @@ pub async fn add_item(db_name: String, payload: String) -> Result<i32, ItemDBErr
     Ok(res.last_insert_id)
 }
 
+/// Deletes an item from the database based on its ID
 #[tauri::command]
 pub async fn delete_item(db_name: String, id: i32) -> Result<u64, ItemDBError>{
     let db = get_db_conn(&db_name).await?;
@@ -50,6 +53,7 @@ pub async fn delete_item(db_name: String, id: i32) -> Result<u64, ItemDBError>{
     Ok(res.rows_affected)
 }
 
+/// Updates an item based on an edited item, a JSON string.
 #[tauri::command]
 pub async fn update_item(db_name: String, payload: String) -> Result<(), ItemDBError>{
     let db = get_db_conn(&db_name).await?;
@@ -63,6 +67,7 @@ pub async fn update_item(db_name: String, payload: String) -> Result<(), ItemDBE
     Ok(())
 }
 
+/// Updates the parent of an item by changing its related ID
 #[tauri::command]
 pub async fn update_item_parent(db_name:String, item_id: i32, new_parent_id: i32) -> Result<(), ItemDBError>{
     let db = get_db_conn(&db_name).await?;

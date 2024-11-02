@@ -68,7 +68,7 @@ pub fn update_on_start_db(db_name: String){
     fs::write(home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/db_name.json", json.to_string()).expect("Failed to write to file in update_db_name_file");
 }
 
-/// Get's the current db's name being used for the item list from the db_name.json file
+/// Gets the current db's name being used for the item list from the db_name.json file
 #[tauri::command]
 pub fn get_db_name() -> String {
     let home_dir = dirs::home_dir().unwrap();
@@ -80,6 +80,7 @@ pub fn get_db_name() -> String {
     return file_json["name"].as_str().unwrap().to_string();
 }
 
+/// Gets the value that shows if the user has used the app for the first time
 pub fn get_first_start()-> i64{
     let home_dir = dirs::home_dir().unwrap();
     let mut file = fs::File::open(home_dir.to_str().unwrap().to_string() + "/.config/TreeDB/first_start.json").expect("Unable to open file from get_first_start");
@@ -90,6 +91,7 @@ pub fn get_first_start()-> i64{
     return file_json["val"].as_i64().unwrap();
 }
 
+/// Updates the value that shows if the user has used the app for the first time
 pub fn update_first_start(n: i32){
     let home_dir = dirs::home_dir().unwrap();
     let json = json!({
