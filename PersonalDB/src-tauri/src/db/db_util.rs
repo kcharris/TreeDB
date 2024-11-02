@@ -15,11 +15,11 @@ use regex::Regex;
 pub async fn init() -> Result<(), ItemDBError> {
     let home_dir = dirs::home_dir().unwrap();
     
-    // make sure there is a main folder for the app
+    // make sure there is a main folder with subfolders for the app
     let binding = home_dir.to_str().unwrap().to_owned() + "/.config/TreeDB/";
     let path = Path::new(&binding);
     if !path.exists(){
-        let _ = fs::create_dir(path);
+        let _ = fs::create_dir_all(path);
     }
 
     // make sure the app contains a json file to store the default database name
