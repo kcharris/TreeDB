@@ -1,45 +1,41 @@
-## Tree DB for Desktop
-A release version can be found [here](https://github.com/kcharris/TreeDB/releases/tag/v1.0.1).
+# Tree DB for Desktop
+[A release version can be found here](https://github.com/kcharris/TreeDB/releases/tag/v1.0.1)
 
-### Overview
-This is a tool to manage user created nested lists of items, that can be kept track of over time, that don't want to be forgotten. A few examples include: movies, books, music, games, art projects, chores around the house, and cooking ideas. Tens to hundreds of things in each category can build up over time and become hard to manage. This tools aims to make their management easier and more efficient.  
+## Overview
+TreeDB is a desktop application for managing nested lists of items. This tool aims to help users manage items with ease and efficiency.
 
-### Application screenshots
-<p float="left" align="center">
-  <img src="AppImages/MainPageView.jpg" name="MainPage" width="49%">
-  <img src="AppImages/FunView.jpg" name="FunPage" width="49%">
-  <img src="AppImages/EditView.jpg" name="EditPage" width="49%">
-  <img src="AppImages/TagPageView.jpg" name="TagPage" width="49%">
-  <img src="AppImages/DBPageView.jpg" name="DBPage" width="49%">
-  <img src="AppImages/BackupPageView.jpg" name="BackupPage" width="49%">
-</p>
+## Data Model
+This tool generalizes items and their properties for management.
 
-### Ease of Use
+<img src="AppImages/ER%20Diagram.png" name="ER Diagram" width=50%>
+
+## Ease of Use
 * Quick Search within every layer by typing in the search bar. Items are filtered on input using subsequences.
 * A Tag management system that allows items to be filtered by Tag.
 * Multi-sort by data headers. Data headers can be given priority in the sort process by clicking between them.
-* Calendar dialog boxes.
+* Calendar boxes where dates can be selected.
 * Quickly create and edit items with easy to access dialog boxes.
 
-### Database Management
-* Allows the CRUD management of different databases so users can keep different lists
-* Allows users to backup databases where they can be managed on another page
+## Database Management
+* Allows the CRUD management of different databases so users can keep different lists.
+* Allows users to backup databases where they can be managed on another page.
 
-### Data
-This tool generalizes items and their properties for management. Here are the properties of each item. Tag and ItemTag tables also exist for database management.
+## Built With
+| Tech         | Purpose                     |
+|--------------|-----------------------------|
+| Tauri      | Desktop app framework       |
+| Rust       | Backend logic               |
+| Vue.js     | Frontend UI framework       |
+| TypeScript | Strongly typed JS         |
+| Vuetify    | Material Design UI components |
+| SQLite     | Local database engine       |
+| SeaORM     | ORM for Rust + SQLite       |
+| VS Code      | Development environment     |
 
-| | | | |
-| --- | --- | --- | --- |
-| Name | Parent | Priority | Estimated Time |
-| Start Date | End Date | Resource | Availability |
-| Completed | Description | Resource Type | Resource Link |
-
-### Tools Used
-* Tauri
-* Rust
-* Vue
-* Typescript
-* Vuetify
-* SQLite
-* SeaORM
-* VS Code
+## Application screenshots
+<p float="left" align="center">
+  <img src="AppImages/MainPageView.jpg" name="MainPage" width="100%">
+  <img src="AppImages/EditView.jpg" name="EditPage" width="100%">
+  <img src="AppImages/TagPageView.jpg" name="TagPage" width="100%">
+  <img src="AppImages/DBPageView.jpg" name="DBPage" width="100%">
+</p>
